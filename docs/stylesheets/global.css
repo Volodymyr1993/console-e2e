@@ -1,0 +1,88 @@
+[data-md-color-scheme="limelight"] {
+  --md-primary-fg-color: #000000;
+  --md-accent-fg-color: #00b0f0;
+  --md-typeset-a-color: #00a2e0;
+}
+
+.md-header__title {
+  margin-left: 0;
+}
+
+.md-logo img {
+  width: 59px !important;
+  position: relative;
+  top: 2px;
+}
+
+.md-grid {
+  max-width: 1600px;
+}
+
+/* Styles for diagrams */
+
+/* hide diagrams until they are rendered on the client side */
+.mermaid {
+  visibility: hidden;
+}
+
+.mermaid tspan {
+  font-family: sans-serif !important;
+}
+
+/* show diagrams once they are rendered on the client side */
+.mermaid[data-processed="true"] {
+  visibility: visible;
+}
+
+.mermaid header {
+  font-size: 1.75em;
+  margin: 0;
+  line-height: 1.15em;
+  font-family: var(--md-text-font-family);
+}
+
+.mermaid header + small {
+  margin-top: 0.25em;
+}
+
+.mermaid .edgeLabel {
+  padding: 4px;
+  line-height: 1.25em;
+  font-family: var(--md-text-font-family);
+  display: block;
+}
+
+.mermaid small {
+  display: block;
+  font-size: 1.25em;
+  font-family: var(--md-text-font-family);
+}
+
+.mermaid .edge-thickness-normal {
+  opacity: 0.6;
+}
+
+.mermaid .edge-thickness-thick {
+  stroke-width: 5px !important;
+  stroke: green !important;
+}
+
+foreignObject[width="8"] {
+  display: none;
+}
+
+/* Shadows and transitions for clickable objects in diagrams */
+
+.clickable header {
+  color: #0065fc !important;
+}
+
+.clickable > rect {
+  transition: all linear 100ms;
+  filter: drop-shadow(6px 6px 6px rgba(0, 0, 0, 0.2));
+}
+
+.clickable:hover > rect {
+  filter: drop-shadow(6px 6px 10px rgba(0, 0, 0, 0.6));
+}
+

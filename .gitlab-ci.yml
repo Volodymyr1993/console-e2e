@@ -1,0 +1,107 @@
+workflow:
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: never  # Prevent pipeline run for push event
+    - when: always # Run pipeline for all other cases
+
+image: $CI_REGISTRY/limelight-networks/qa/ltf/ltf-containers/ubuntu20_python38
+
+variables:
+  PIP_CONFIG_FILE: ${CI_PROJECT_DIR}/pip.conf  # workaround
+  # Workaround because packages cannot be listed using the CI_JOB_TOKEN
+  ALLURE_RESULTS_DIR: allure-results
+  ALLURE_REPORT_DIR: allure-report
+  REPORT_FILE: ${CI_PROJECT_DIR}/junit-report.xml
+  MK_DOC:
+    value: ""
+    description: "set to true if you want to re-gen the doc"
+  EMAIL_LIST:
+    value: "mbondarenko@edge.io"
+    description: "Set the emails to send reports"
+
+
+stages:
+  - test
+  - email
+  - report
+  - mkdoc
+
+run_tests:
+  rules:
+    - if: '$MK_DOC == ""'
+      when: always
+
+  tags:
+    - docker2
+  stage: test
+  allow_failure: true
+  cache:
+    key: ${CI_JOB_NAME}
+    paths:
+      - ${CI_PROJECT_DIR}/.cache/pip
+  before_script:
+    # prepare
+    - cp $PIP_CONFIG ${CI_PROJECT_DIR}/pip.conf
+    - python3 -m venv venv/
+    - source venv/bin/activate
+    - pip install -U pip setuptools
+    # deploy
+    - pip install -e .
+    - playwright install
+    - playwright install-deps
+    - cp ${CI_PROJECT_DIR}/_ltfrc_sample ${HOME}/.ltfrc
+  script:
+    - pytest ltf2/console_app/tests/ --junitxml=junit-report.xml --alluredir=$ALLURE_RESULTS_DIR/
+  after_script:
+    - |
+      echo "date=$(date '+%Y/%m/%d %H:%M:%S')" >> $ALLURE_RESULTS_DIR/environment.properties
+  artifacts:
+    when: always
+    paths:
+      - junit-report.xml
+      - $ALLURE_RESULTS_DIR/
+    reports:
+      junit: junit-report.xml
+    expire_in: 21 days
+
+
+
+email-report:
+  tags:
+    - docker2
+  stage: email
+  image: python:3.8-alpine
+  allow_failure: true
+  before_script:
+    - cp ${PIP_CONFIG} /etc/pip.conf
+  script:
+    - python ${CI_PROJECT_DIR}/.gitlab-email-report.py
+
+
+allure-report:
+  rules:
+    - if: '$MK_DOC == ""'
+      when: always
+
+  stage: report
+  image: $CI_REGISTRY/limelight-networks/qa/ltf/ltf-containers/allure
+  variables:
+    PAGES_ARTIFACTS_URL: $CI_API_V4_URL/projects/$CI_PROJECT_ID/jobs/artifacts/master/download?job=pages&job_token=$CI_JOB_TOKEN
+  script:
+    - ls -la
+    - allure generate $ALLURE_RESULTS_DIR -c -o $ALLURE_REPORT_DIR
+    - echo $CI_JOB_URL > allure-job-url.txt
+  artifacts:
+    paths:
+      - $ALLURE_RESULTS_DIR/
+      - $ALLURE_REPORT_DIR/
+      - allure-job-url.txt
+    expire_in: 30 days
+
+include:
+  project: 'limelight-networks/qa/ltf/ltf-libs/ltf2-main'
+  ref: master
+  file: '/.gitlab-ci/cqa-mkdoc-with-allure-results.yml'
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
