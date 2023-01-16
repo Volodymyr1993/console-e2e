@@ -17,7 +17,7 @@ variables:
     value: ""
     description: "set to true if you want to re-gen the doc"
   EMAIL_LIST:
-    value: "mbondarenko@edge.io"
+    value: "mbondarenko@edg.io"
     description: "Set the emails to send reports"
 
 
