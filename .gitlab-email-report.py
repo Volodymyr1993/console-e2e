@@ -8,10 +8,9 @@ import smtplib
 
 EMAIL_LIST = os.environ.get('EMAIL_LIST')
 REPORT_FILE = os.environ.get('REPORT_FILE')
-ENV = os.environ.get('CI_COMMIT_REF_NAME')
 REPORT_URL = "https://gitlab.com/limelight-networks/qa/ltf/ltf-projects/edgio-console-app/-"\
              f"/pipelines/{os.environ.get('CI_PIPELINE_ID')}/test_report"
-REPORT_TITLE = f"Edgio Console App Regression {'stage' if ENV == 'master' else ENV} environment: "
+REPORT_TITLE = f"Edgio Console App Regression: "
 
 
 EMAIL_TEMPLATE = """<html>
@@ -41,7 +40,6 @@ def _send(subj, html_body):
 
 
 def send_email():
-
     assert all(
         (REPORT_URL, REPORT_TITLE, REPORT_FILE, EMAIL_LIST)
     ), "Some env vars weren't specified"
