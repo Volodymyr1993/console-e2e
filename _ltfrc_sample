@@ -1,5 +1,5 @@
 [edgio-console-app]
-url = https://edgio-dev.app
+url = https://edgio-stage.app
 users = mbondarenko+1@edg.io, mbondarenko+2@edg.io
 password = Testuser!23
 

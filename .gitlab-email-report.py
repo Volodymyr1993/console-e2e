@@ -10,7 +10,7 @@ EMAIL_LIST = os.environ.get('EMAIL_LIST')
 REPORT_FILE = os.environ.get('REPORT_FILE')
 REPORT_URL = "https://gitlab.com/limelight-networks/qa/ltf/ltf-projects/edgio-console-app/-"\
              f"/pipelines/{os.environ.get('CI_PIPELINE_ID')}/test_report"
-REPORT_TITLE = f"Edgio Console App Regression: "
+REPORT_TITLE = f"Edgio Console App Regression (stage): "
 
 
 EMAIL_TEMPLATE = """<html>
