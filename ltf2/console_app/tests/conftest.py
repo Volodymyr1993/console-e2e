@@ -44,14 +44,14 @@ def browser_type_launch_args(browser_type_launch_args: dict,
                              ltfrc: CaseInsensitiveDict,
                              request):
     """ Update browser parameters """
-    headless = request.config.getoption('--headed')
+    headed = request.config.getoption('--headed')
     slow_mo = request.config.getoption('--slowmo')
     return {
         **browser_type_launch_args,
-        'headless': not (headless or bool(ltfrc.get('headed'))),
+        'headless': not (headed or bool(ltfrc.get('headed'))),
         'slow_mo': slow_mo,
         'timeout': 60 * 1000,  # 60 sec
-        'devtools': True,
+       # 'devtools': True,
     }
 
 
@@ -66,7 +66,7 @@ def saved_login(browser: Browser,
     context = browser.new_context()
     page = context.new_page()
     # Log in
-    login_page = LoginPage(page, url=f'{base_url}/login')
+    login_page = LoginPage(page, url=urljoin(base_url, 'login'))
     login_page.goto()
     login_page.email.fill(credentials.users[0])
     login_page.password.fill(credentials.password)

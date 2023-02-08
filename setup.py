@@ -16,9 +16,9 @@ setup(
     packages=find_namespace_packages(include=['ltf2.console_app.*']),
 
     install_requires=[
-        'pytest',
         'allure-pytest',
-        'pytest-playwright',
         'ltf2-util',
+        'pytest',
+        'pytest-playwright',
     ],
 )

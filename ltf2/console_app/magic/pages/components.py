@@ -32,6 +32,7 @@ class CommonMixin:
         self.client_snackbar = PageElement(self.page, '#client-snackbar')
         self.save = PageElement(self.page, "button :text('Save')")
         self.select = UlElement(self.page, "ul[role='listbox']")
+        self.select_by_name = DynamicPageElement(self.page, "//ul[@role='listbox']/li[text()='{name}']")
         self.table = TableElement(self.page, "table")
         self.submit_button = PageElement(self.page, "button :text('Submit')")
         self.next_button = PageElement(self.page, "button :text('Next')")
@@ -84,6 +85,58 @@ class TeamMixin:
         self.role_select = UlElement(self.page, '#role-select-popup')
 
         self.members_table = MembersTableElement(self.page, "table")
+
+
+class EnvironmentMixin:
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+        self.environments = PageElement(self.page, "div :text('Environments')")
+        self.configuration = PageElement(self.page, "div :text('Configuration')")
+        self.hostnames = PageElement(self.page, "div :text('Hostnames')")
+        self.origins = PageElement(self.page, "div :text('Origins')")
+        self.rules = PageElement(self.page, "div :text('Rules')")
+
+        self.environment = DynamicPageElement(self.page, "a div :text('{name}')")
+        self.edit_v1_button = PageElement(self.page, "button :text('Edit v1')")
+
+        # Rules
+        self.add_rule = PageElement(self.page, 'button :text("Add Rule")')
+        self.add_condition = PageElement(self.page, 'button :text("Add Condition")')
+        self.add_feature = PageElement(self.page, 'button :text("Add Feature")')
+        self.variable_input = PageElement(self.page,
+                                          "input[name='property-input']")
+        self.variable_select = DynamicPageElement(
+            self.page, "//div[text()='All variables']/../ul/li//p[text()='{name}']")
+        self.operator_input = PageElement(self.page, "input[name='operator']")
+        self.operator_select = DynamicPageElement(self.page, "input[name='operator']")
+        self.match_value = PageElement(self.page, "div[role='textbox']")
+        self.add_condition_button = PageElement(
+            self.page, "//button[@type='submit']/span[text()='Add Condition']")
+        self.feature_type_input = PageElement(self.page,
+                                              "input[name='type']")
+        self.feature_input = PageElement(self.page,
+                                         "input[name='feature-input']")
+        self.response_header_name = PageElement(
+            self.page,
+            "//label[text()='Response Header Name']/..//div[@role='textbox']")
+        self.response_header_value = PageElement(
+            self.page,
+            "//label[text()='Response Header Value']/..//div[@role='textbox']")
+        self.add_feature_button = PageElement(
+            self.page, "//button[@type='submit']/span[text()='Add Feature']")
+        self.deploy_changes = PageElement(self.page, "button :text('Deploy Changes')")
+
+
+class ActivityMixin:
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+        # TODO
+
+
+class DeploymentsMixin:
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+        # TODO
 
 
 class SecurityMixin:
