@@ -4,6 +4,7 @@ from urllib.parse import urljoin
 
 import pytest
 from playwright.sync_api import Page
+from playwright._impl._api_types import TimeoutError
 
 from ltf2.console_app.magic.constants import PAGE_TIMEOUT
 from ltf2.console_app.magic.pages.pages import PropertyPage
@@ -27,11 +28,15 @@ def test_test(property_page):
     property_page.environment(name='default').click()
     property_page.rules.click()
     property_page.edit_v1_button.click()
-    property_page.confirm_button.click()
+    try:
+        property_page.confirm_button.wait_for(timeout=3000)
+        property_page.confirm_button.click()
+    except TimeoutError:
+        pass
     property_page.add_rule.click()
 
     # Add Condition
-    property_page.add_condition.click()
+    property_page.add_condition.last.click()
     property_page.variable_input.click()
     property_page.variable_select(name='Path').click()
     property_page.operator_input.click()
@@ -41,7 +46,7 @@ def test_test(property_page):
     property_page.add_condition_button.click()
 
     # Add Feature
-    property_page.add_feature.click()
+    property_page.add_feature.last.click()
     property_page.feature_type_input.click()
     property_page.select_by_name(name='Headers').click()
     property_page.feature_input.click()
