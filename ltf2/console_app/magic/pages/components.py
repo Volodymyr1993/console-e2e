@@ -98,7 +98,9 @@ class EnvironmentMixin:
 
         self.environment = DynamicPageElement(self.page, "a div :text('{name}')")
         self.edit_button = PageElement(self.page, "button :text('Edit v')")
-
+        self.revert_button = PageElement(self.page, "button :text('Revert')")
+        self.revert_changes_button = PageElement(self.page,
+                                                 "button :text('Revert changes')")
         # Rules
         self.add_rule = PageElement(self.page, 'button :text("Add Rule")')
         self.add_condition = PageElement(self.page, 'button :text("Add Condition")')
