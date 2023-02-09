@@ -124,6 +124,12 @@ class EnvironmentMixin:
         self.response_header_value = PageElement(
             self.page,
             "//label[text()='Response Header Value']/..//div[@role='textbox']")
+        self.source_input = PageElement(
+            self.page,
+            "//label[text()='Source']/..//div[@role='textbox']")
+        self.destination_input = PageElement(
+            self.page,
+            "//label[text()='Destination']/..//div[@role='textbox']")
         self.add_feature_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Feature']")
         self.deploy_changes = PageElement(self.page, "button :text('Deploy Changes')")
