@@ -97,7 +97,7 @@ class EnvironmentMixin:
         self.rules = PageElement(self.page, "div :text('Rules')")
 
         self.environment = DynamicPageElement(self.page, "a div :text('{name}')")
-        self.edit_v1_button = PageElement(self.page, "button :text('Edit v')")
+        self.edit_button = PageElement(self.page, "button :text('Edit v')")
 
         # Rules
         self.add_rule = PageElement(self.page, 'button :text("Add Rule")')
