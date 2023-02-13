@@ -105,6 +105,10 @@ class EnvironmentMixin:
         self.add_rule = PageElement(self.page, 'button :text("Add Rule")')
         self.add_condition = PageElement(self.page, 'button :text("Add Condition")')
         self.add_feature = PageElement(self.page, 'button :text("Add Feature")')
+        self.delete_rule_list = ListElement(
+            self.page,
+            "//div[@data-rbd-droppable-id='droppable-rules']//div[contains(@class, 'MuiBox-root')]//button")
+        self.delete_rule_button = PageElement(self.page, "button :text('Delete Rule')")
         self.variable_input = PageElement(self.page,
                                           "input[name='property-input']")
         self.variable_select = DynamicPageElement(
