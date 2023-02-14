@@ -7,7 +7,7 @@ from playwright.sync_api import Page
 
 #from ltf2.console.magic.constants import ACCESS_CONTROL_TYPE, HTTP_METHODS
 from ltf2.console_app.magic.elements import PageElement, UlElement, MembersTableElement, \
-    TableElement, ListElement, DynamicPageElement
+    TableElement, ListElement, DynamicPageElement, DynamicSelectElement
 
 
 class LoginMixin:
@@ -32,7 +32,8 @@ class CommonMixin:
         self.client_snackbar = PageElement(self.page, '#client-snackbar')
         self.save = PageElement(self.page, "button :text('Save')")
         self.select = UlElement(self.page, "ul[role='listbox']")
-        self.select_by_name = DynamicPageElement(self.page, "//ul[@role='listbox']/li[text()='{name}']")
+        self.select_by_name = DynamicSelectElement(self.page, "//ul[@role='listbox']/li[text()='{name}']")
+        # self.select_by_name = DynamicPageElement(self.page, "//ul[@role='listbox']/li[text()='{name}']")
         self.table = TableElement(self.page, "table")
         self.submit_button = PageElement(self.page, "button :text('Submit')")
         self.next_button = PageElement(self.page, "button :text('Next')")
@@ -114,7 +115,8 @@ class EnvironmentMixin:
         self.variable_select = DynamicPageElement(
             self.page, "//div[text()='All variables']/../ul/li//p[text()='{name}']")
         self.operator_input = PageElement(self.page, "input[name='operator']")
-        self.operator_select = DynamicPageElement(self.page, "input[name='operator']")
+        self.rule_checkbox = PageElement(self.page, "//label//input[@type='checkbox']")
+        self.code_input = PageElement(self.page, "input[name='feature.value.code']")
         self.match_value = PageElement(self.page, "div[role='textbox']")
         self.add_condition_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Condition']")
@@ -122,12 +124,18 @@ class EnvironmentMixin:
                                               "input[name='type']")
         self.feature_input = PageElement(self.page,
                                          "input[name='feature-input']")
-        self.response_header_name = PageElement(
+        self.header_name = PageElement(
             self.page,
-            "//label[text()='Response Header Name']/..//div[@role='textbox']")
-        self.response_header_value = PageElement(
+            "//label[contains(text(), 'Header Name')]/..//div[@role='textbox']")
+        self.header_value = PageElement(
             self.page,
-            "//label[text()='Response Header Value']/..//div[@role='textbox']")
+            "//label[contains(text(), 'Header Value')]/..//div[@role='textbox']")
+        self.response_headers = PageElement(
+            self.page,
+            "input[name='remove_response_headers']")
+        self.origin_response_headers = PageElement(
+            self.page,
+            "input[name='remove_origin_response_headers']")
         self.source_input = PageElement(
             self.page,
             "//label[text()='Source']/..//div[@role='textbox']")

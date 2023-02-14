@@ -50,6 +50,28 @@ class DynamicPageElement:
                                  self.pattern.format(*args, **kwargs))
 
 
+class DynamicSelectElement(DynamicPageElement):
+    """
+    Dynamic select element.
+
+    Check if the select element contains passed value.
+    """
+    def verify_select(self, value):
+        available_values = self.page.locator(
+            self.pattern.rsplit('/', 1)[0]).inner_text().split('\n')
+        if value not in available_values:
+            raise ValueError(
+                f'Wrong value `{value}`. Available: {available_values}')
+
+    def __call__(self, *args, **kwargs):
+        # Argument is Select value to click, so verify it
+        select_value = args or list(kwargs.values())
+        if len(select_value) == 1:
+            self.verify_select(select_value[0])
+
+        return super().__call__(*args, **kwargs)
+
+
 class ListElement(PageElement):
     """ Class for describing an element that is composed of other elements. """
     def __init__(self, page: Page, selector: str):
