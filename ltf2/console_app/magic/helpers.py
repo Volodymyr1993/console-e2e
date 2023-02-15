@@ -56,6 +56,7 @@ class RuleFeature:
                 # Add feature
                 self.page.add_feature.last.click()
                 self.page.feature_type_input.click()
+                # DOTO add decorator to methods
                 return getattr(self, method)
         except ValueError:
             pass
@@ -96,7 +97,41 @@ class RuleFeature:
             self.page.response_headers.fill(header_name)
         self.page.add_feature_button.click()
 
+    def set_variables(self, name='', value=''):
+        self.page.select_by_name(name='Set Variables').click()
+        self.page.variable_name.fill(name)
+        self.page.variable_value.fill(value)
+        self.page.add_feature_button.click()
 
+    def access(self, feature='', enable=True):
+        self.page.select_by_name(name='Access').click()
+        self.page.feature_input.click()
+        self.page.select_by_name(name=feature).click()
+        self.page.rule_checkbox.set_checked(enable)
+        self.page.add_feature_button.click()
+
+    def logs(self, feature='', custom_log_field='', enable=True):
+        self.page.select_by_name(name='Logs').click()
+        self.page.feature_input.click()
+        self.page.select_by_name(name=feature).click()
+        if feature == 'Custom Log Field':
+            self.page.custom_log_field.fill(custom_log_field)
+        else:
+            self.page.rule_checkbox.set_checked(enable)
+        self.page.add_feature_button.click()
+
+    def response(self, feature='', custom_log_field='', enable=True):
+        self.page.select_by_name(name='Response').click()
+        self.page.feature_input.click()
+        self.page.select_by_name(name=feature).click()
+        breakpoint()
+        if feature == 'Set Status Code':
+            pass
+        elif feature == 'Set Done':
+            self.page.rule_checkbox.set_checked(enable)
+        elif feature == 'Set Response Body':
+            pass
+        self.page.add_feature_button.click()
 # def delete_rules(rules: list[(Page, str)], url_section: str) -> None:
 #     for page, rule in rules:
 #         url = page.url + QUERY_STR_SECURITY_SECTION + url_section

@@ -102,7 +102,7 @@ class EnvironmentMixin:
         self.revert_button = PageElement(self.page, "button :text('Revert')")
         self.revert_changes_button = PageElement(self.page,
                                                  "button :text('Revert changes')")
-        # Rules
+        # ======== Rules =========
         self.add_rule = PageElement(self.page, 'button :text("Add Rule")')
         self.add_condition = PageElement(self.page, 'button :text("Add Condition")')
         self.add_feature = PageElement(self.page, 'button :text("Add Feature")')
@@ -110,6 +110,10 @@ class EnvironmentMixin:
             self.page,
             "//div[@data-rbd-droppable-id='droppable-rules']//div[contains(@class, 'MuiBox-root')]//button")
         self.delete_rule_button = PageElement(self.page, "button :text('Delete Rule')")
+        self.add_feature_button = PageElement(
+            self.page, "//button[@type='submit']/span[text()='Add Feature']")
+        self.deploy_changes = PageElement(self.page, "button :text('Deploy Changes')")
+
         self.variable_input = PageElement(self.page,
                                           "input[name='property-input']")
         self.variable_select = DynamicPageElement(
@@ -120,6 +124,7 @@ class EnvironmentMixin:
         self.match_value = PageElement(self.page, "div[role='textbox']")
         self.add_condition_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Condition']")
+        # Features
         self.feature_type_input = PageElement(self.page,
                                               "input[name='type']")
         self.feature_input = PageElement(self.page,
@@ -142,9 +147,17 @@ class EnvironmentMixin:
         self.destination_input = PageElement(
             self.page,
             "//label[text()='Destination']/..//div[@role='textbox']")
-        self.add_feature_button = PageElement(
-            self.page, "//button[@type='submit']/span[text()='Add Feature']")
-        self.deploy_changes = PageElement(self.page, "button :text('Deploy Changes')")
+        self.variable_name = PageElement(
+            self.page,
+            "//label[text()='Variable Name']/..//div[@role='textbox']")
+        self.variable_value = PageElement(
+            self.page,
+            "//label[text()='Variable Value']/..//div[@role='textbox']")
+        self.response_headers = PageElement(
+            self.page,
+            "input[name='remove_response_headers']")
+        self.custom_log_field = PageElement(
+            self.page, "input[name='custom_log_field_1']")
 
 
 class ActivityMixin:
