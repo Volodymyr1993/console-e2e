@@ -108,7 +108,8 @@ class EnvironmentMixin:
         self.add_feature = PageElement(self.page, 'button :text("Add Feature")')
         self.delete_rule_list = ListElement(
             self.page,
-            "//div[@data-rbd-droppable-id='droppable-rules']//div[contains(@class, 'MuiBox-root')]//button")
+            # TODO Update after adding `name` attribute
+            "//div[@data-rbd-droppable-id='droppable-rules']/div/div[not(contains(@class,'MuiCollapse-hidden'))]//div[contains(@class, 'MuiBox-root')]//button")
         self.delete_rule_button = PageElement(self.page, "button :text('Delete Rule')")
         self.add_feature_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Feature']")
