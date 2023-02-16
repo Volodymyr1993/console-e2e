@@ -137,28 +137,38 @@ class EnvironmentMixin:
             self.page,
             "//label[contains(text(), 'Header Value')]/..//div[@role='textbox']")
         self.response_headers = PageElement(
-            self.page,
-            "input[name='remove_response_headers']")
+            self.page, "input[name='remove_response_headers']")
         self.origin_response_headers = PageElement(
-            self.page,
-            "input[name='remove_origin_response_headers']")
+            self.page, "input[name='remove_origin_response_headers']")
         self.source_input = PageElement(
-            self.page,
-            "//label[text()='Source']/..//div[@role='textbox']")
+            self.page, "//label[text()='Source']/..//div[@role='textbox']")
         self.destination_input = PageElement(
-            self.page,
-            "//label[text()='Destination']/..//div[@role='textbox']")
+            self.page, "//label[text()='Destination']/..//div[@role='textbox']")
         self.variable_name = PageElement(
-            self.page,
-            "//label[text()='Variable Name']/..//div[@role='textbox']")
+            self.page, "//label[text()='Variable Name']/..//div[@role='textbox']")
         self.variable_value = PageElement(
-            self.page,
-            "//label[text()='Variable Value']/..//div[@role='textbox']")
+            self.page, "//label[text()='Variable Value']/..//div[@role='textbox']")
         self.response_headers = PageElement(
             self.page,
             "input[name='remove_response_headers']")
         self.custom_log_field = PageElement(
             self.page, "input[name='custom_log_field_1']")
+        self.status_code_input = PageElement(self.page, "input[name='set_status_code']")
+        self.response_body = PageElement(
+            self.page, "//label[text()='Response Body']/..//textarea")
+        self.kbytes_per_second = PageElement(
+            self.page, "input[name='feature.value.kbytes_per_sec']")
+        self.prebuf_seconds = PageElement(
+            self.page, "input[name='feature.value.prebuf_seconds']")
+        self.header_treatment_input = PageElement(
+            self.page, "input[name='cache_control_header_treatment']")
+        self.option_input = PageElement(self.page, "input[name='cache-key-query-string']")
+        self.include_input = PageElement(self.page, "input[name='include']")
+        self.exclude_input = PageElement(self.page, "input[name='exclude']")
+        self.cacheable_request_body_size = PageElement(
+            self.page, "input[name='cacheable_request_body_size']")
+        self.compress_file_types = PageElement(
+            self.page, "input[name='compress_file_types']")
 
 
 class ActivityMixin:
