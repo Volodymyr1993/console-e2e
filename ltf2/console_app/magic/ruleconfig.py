@@ -27,8 +27,8 @@ class FeatureCreator:
     def prepare_feature(self, feature: str):
         with self.prepare_feature_type():
             self.page.feature_input.click()
-            self.page.select_by_name(name=feature).click()
             breakpoint()
+            self.page.select_by_name(name=feature).click()
             yield
 
 
@@ -191,6 +191,106 @@ class CachingCreator(FeatureCreator):
                     self.page.exclude_input.fill(value)
                 else:
                     self.page.rule_checkbox.set_checked(enable)
+
+    def cacheable_request_body_size(self, cacheable_request_body_size: str = '100MB'):
+        with self.prepare_feature('Cacheable Request Body Size'):
+            self.page.cacheable_request_body_size.fill(str(cacheable_request_body_size))
+
+    def compress_file_types(self, compress_file_types: str = ''):
+        with self.prepare_feature('Compress File Types'):
+            self.page.compress_file_types_input.fill(compress_file_types)
+            self.page.compress_file_types_input.press('Enter')
+
+    def enable_caching_for_methods(self, post: str = '', put: str = ''):
+        with self.prepare_feature('Enable Caching for Methods'):
+            self.page.post_input.click()
+            self.page.select_by_name(name=post).click()
+            self.page.put_input.click()
+            self.page.select_by_name(name=put).click()
+
+    def enable_h264_encoding(self, h264_support: str = ''):
+        with self.prepare_feature('Enable H264 encoding'):
+            self.page.h264_support_input.fill(h264_support)
+
+    def expires_header_treatment(self, expires_header_treatment: str = ''):
+        with self.prepare_feature('Expires Header Treatment'):
+            self.page.expires_header_treatment_input.click()
+            self.page.select_by_name(name=expires_header_treatment).click()
+
+    def external_max_age(self, value: int = 0, unit: str = ''):
+        with self.prepare_feature('External Max Age'):
+            self.page.duration_value.fill(str(value))
+            self.page.duration_unit.click()
+            self.page.select_by_name(name=unit).click()
+
+    def force_internal_max_age(self, response_status_code: int = 200,
+                               value: int = 0, unit: str = ''):
+        with self.prepare_feature('Force Internal Max Age'):
+            self.page.response_status_code.fill(str(response_status_code))
+            self.page.max_age_value.fill(str(value))
+            self.page.max_age_unit.click()
+            self.page.select_by_name(name=unit).click()
+
+    def honor_no_cache_request(self, enable: bool = True):
+        with self.prepare_feature('Honor No Cache Request'):
+            self.page.rule_checkbox.set_checked(enable)
+
+    def ignore_origin_no_cache(self, value: int = 300):
+        with self.prepare_feature('Ignore Origin No Cache'):
+            self.page.ignore_origin_no_cache.fill(str(value))
+            self.page.ignore_origin_no_cache.press('Enter')
+
+    def ignore_unsatisfiable_ranges(self, enable: bool = True):
+        with self.prepare_feature('Ignore Unsatisfiable Ranges'):
+            self.page.rule_checkbox.set_checked(enable)
+
+    def internal_max_stale(self, response_status_code: int = 200,
+                           value: int = 0, unit: str = ''):
+        with self.prepare_feature('Internal Max Stale'):
+            self.page.response_status_code.fill(str(response_status_code))
+            self.page.max_age_value.fill(str(value))
+            self.page.max_age_unit.click()
+            self.page.select_by_name(name=unit).click()
+
+    def partial_cache_sharing_min_hit_size(self, value: int = 0):
+        with self.prepare_feature('Partial Cache Sharing Min Hit Size'):
+            self.page.partial_cache_sharing_min_hit_size.fill(str(value))
+
+    def prevalidate_cached_content(self, value: int = 0, unit: str = ''):
+        with self.prepare_feature('Prevalidate Cached Content'):
+            self.page.duration_value.fill(str(value))
+            self.page.duration_unit.click()
+            self.page.select_by_name(name=unit).click()
+
+    def refresh_zero_byte_cache_files(self, enable: bool = True):
+        with self.prepare_feature('Refresh Zero Byte Cache Files'):
+            self.page.rule_checkbox.set_checked(enable)
+
+    def revalidate_while_stale(self, enable: bool = True):
+        with self.prepare_feature('Revalidate While Stale'):
+            self.page.rule_checkbox.set_checked(enable)
+
+    def rewrite_cache_key(self, source: str = '', destination: str = '',
+                          ignore_case: bool = True):
+        with self.prepare_feature('Rewrite Cache Key'):
+            self.page.rule_checkbox.set_checked(ignore_case)
+            self.page.source_input.fill(source)
+            self.page.destination_input.fill(destination)
+
+    def set_cacheable_status_codes(self, value: int = 200):
+        with self.prepare_feature('Set Cacheable Status Codes'):
+            self.page.set_cacheable_status_codes.fill(str(value))
+            self.page.set_cacheable_status_codes.press('Enter')
+
+    def stale_content_delivery_on_error(self, enable: bool = True):
+        with self.prepare_feature('Stale Content Delivery On Error'):
+            self.page.rule_checkbox.set_checked(enable)
+
+    def stale_while_revalidate(self, value: int = 0, unit: str = ''):
+        with self.prepare_feature('Stale While Revalidate'):
+            self.page.duration_value.fill(str(value))
+            self.page.duration_unit.click()
+            self.page.select_by_name(name=unit).click()
 
 
 class RuleFeature:

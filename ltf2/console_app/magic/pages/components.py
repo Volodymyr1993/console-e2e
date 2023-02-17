@@ -5,7 +5,7 @@ from itertools import product
 
 from playwright.sync_api import Page
 
-#from ltf2.console.magic.constants import ACCESS_CONTROL_TYPE, HTTP_METHODS
+from ltf2.console.magic.constants import ACCESS_CONTROL_TYPE, HTTP_METHODS
 from ltf2.console_app.magic.elements import PageElement, UlElement, MembersTableElement, \
     TableElement, ListElement, DynamicPageElement, DynamicSelectElement
 
@@ -106,10 +106,8 @@ class EnvironmentMixin:
         self.add_rule = PageElement(self.page, 'button :text("Add Rule")')
         self.add_condition = PageElement(self.page, 'button :text("Add Condition")')
         self.add_feature = PageElement(self.page, 'button :text("Add Feature")')
-        self.delete_rule_list = ListElement(
-            self.page,
-            # TODO Update after adding `name` attribute
-            "//div[@data-rbd-droppable-id='droppable-rules']/div/div[not(contains(@class,'MuiCollapse-hidden'))]//div[contains(@class, 'MuiBox-root')]//button")
+        self.delete_rule_list = ListElement(self.page,
+                                            "//button[@data-qa='delete-button']")
         self.delete_rule_button = PageElement(self.page, "button :text('Delete Rule')")
         self.add_feature_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Feature']")
@@ -172,8 +170,25 @@ class EnvironmentMixin:
         self.post_input = PageElement(self.page, "//label[text()='POST']/..//input")
         self.put_input = PageElement(self.page, "//label[text()='PUT']/..//input")
         self.h264_support_input = PageElement(self.page, "input[name='h264_support']")
-        self.expires_header_treatment_input = PageElement(self.page,
-                                                          "input[name='feature-input']")
+        self.expires_header_treatment_input = PageElement(
+            self.page, "input[name='expires_header_treatment']")
+        self.duration_value = PageElement(
+            self.page, "input[name='feature.value'][type='number']")
+        self.duration_unit = PageElement(self.page,
+                                         "input[name='feature.value'][type='text']")
+        self.response_status_code = PageElement(
+            self.page, "input[name='feature.value.0.key']")
+        self.max_age_value = PageElement(self.page,
+                                         "input[name='feature.value.0.value'][type='number']")
+        self.max_age_unit = PageElement(self.page,
+                                        "input[name='feature.value.0.value'][type='text']")
+        self.ignore_origin_no_cache = PageElement(self.page,
+                                                  "input[name='ignore_origin_no_cache']")
+        self.partial_cache_sharing_min_hit_size = PageElement(
+            self.page, "input[name='partial_cache_sharing_min_hit_size']")
+        self.set_cacheable_status_codes = PageElement(
+            self.page, "input[name='set_cacheable_status_codes']")
+
 
 
 class ActivityMixin:
