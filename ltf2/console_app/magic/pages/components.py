@@ -167,8 +167,13 @@ class EnvironmentMixin:
         self.exclude_input = PageElement(self.page, "input[name='exclude']")
         self.cacheable_request_body_size = PageElement(
             self.page, "input[name='cacheable_request_body_size']")
-        self.compress_file_types = PageElement(
+        self.compress_file_types_input = PageElement(
             self.page, "input[name='compress_file_types']")
+        self.post_input = PageElement(self.page, "//label[text()='POST']/..//input")
+        self.put_input = PageElement(self.page, "//label[text()='PUT']/..//input")
+        self.h264_support_input = PageElement(self.page, "input[name='h264_support']")
+        self.expires_header_treatment_input = PageElement(self.page,
+                                                          "input[name='feature-input']")
 
 
 class ActivityMixin:

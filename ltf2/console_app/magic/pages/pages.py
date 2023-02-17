@@ -11,6 +11,7 @@ from ltf2.console_app.magic.pages.components import (LoginMixin, TeamMixin, Comm
                                                      SecurityMixin, EnvironmentMixin)
 from ltf2.console_app.magic.pages.base_page import BasePage
 from ltf2.console_app.magic.helpers import RuleFeature, RuleCondition
+from ltf2.console_app.magic.ruleconfig import RuleFeature
 
 
 class LoginPage(CommonMixin, LoginMixin, BasePage):
@@ -24,6 +25,8 @@ class TeamPage(CommonMixin, TeamMixin, BasePage):
 class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
+        # self.condition = RuleCondition(self)
+        # self.feature = RuleFeature(self)
         self.condition = RuleCondition(self)
         self.feature = RuleFeature(self)
 

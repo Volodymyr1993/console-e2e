@@ -71,10 +71,10 @@ class RuleFeature:
 
     def add_url(self, feature: str = '', code: int = 302, source: str = '',
                 destination: str = '', ignore_case: bool = False,
-                follow_redirects: bool = True):
+                enable: bool = True):
         with self.prepare_feature('URL', feature):
             if feature == 'Follow Redirects':
-                self.page.rule_checkbox.set_checked(follow_redirects)
+                self.page.rule_checkbox.set_checked(enable)
                 self.page.add_feature_button.click()
                 return
             elif feature == 'URL Redirect':
@@ -131,7 +131,8 @@ class RuleFeature:
                     prebuf_seconds: int = 0, enable: bool = True,
                     header_treatment: str = '', option: str = '', value: str = '',
                     cacheable_request_body_size: int = 0, compress_file_types: str = '',
-                    ):
+                    post: str = '', put: str = '', h264_support: str = '',
+                    expires_header_treatment: str = ''):
         with self.prepare_feature('Caching', feature):
             if feature in ('Bandwidth Parameters', 'Bypass Cache'):
                 self.page.rule_checkbox.set_checked(enable)
@@ -153,8 +154,21 @@ class RuleFeature:
             elif feature == 'Cacheable Request Body Size':
                 self.page.cacheable_request_body_size.fill(str(cacheable_request_body_size))
             elif feature == 'Compress File Types':
-                self.page.compress_file_types.fill(compress_file_types)
-                self.page.compress_file_types.press('Enter')
+                self.page.compress_file_types_input.fill(compress_file_types)
+                self.page.compress_file_types_input.press('Enter')
+            elif feature == 'Enable Caching for Methods':
+                self.page.post_input.click()
+                self.page.select_by_name(name=post).click()
+                self.page.put_input.click()
+                self.page.select_by_name(name=put).click()
+            elif feature == 'Enable H264 encoding':
+                self.page.h264_support_input.fill(h264_support)
+            elif feature == 'Expires Header Treatment':
+                self.page.expires_header_treatment_input.click()
+                self.page.select_by_name(name=expires_header_treatment).click()
+            elif feature == 'External Max Age':
+                pass
+
 
 # def delete_rules(rules: list[(Page, str)], url_section: str) -> None:
 #     for page, rule in rules:
