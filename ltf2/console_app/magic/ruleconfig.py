@@ -40,7 +40,7 @@ class UrlCreator(FeatureCreator):
             self.page.rule_checkbox.set_checked(enable)
 
     def url_redirect(self, code: int = 302, source: str = '',
-                     destination: str = '', ignore_case: bool = True):
+                     destination: str = '', ignore_case: bool = False):
         with self.prepare_feature('URL Redirect'):
             # TODO uncomment when bug with Status code is fixed
             # self.page.code_input.fill(str(code))
@@ -49,7 +49,7 @@ class UrlCreator(FeatureCreator):
             self.page.destination_input.fill(destination)
 
     def url_rewrite(self, source: str = '', destination: str = '',
-                    ignore_case: bool = True):
+                    ignore_case: bool = False):
         with self.prepare_feature('URL Rewrite'):
             self.page.rule_checkbox.set_checked(ignore_case)
             self.page.source_input.fill(source)
