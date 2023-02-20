@@ -27,7 +27,6 @@ class FeatureCreator:
     def prepare_feature(self, feature: str):
         with self.prepare_feature_type():
             self.page.feature_input.click()
-            breakpoint()
             self.page.select_by_name(name=feature).click()
             yield
 
@@ -304,3 +303,18 @@ class RuleFeature:
         self.add_logs = LogsCreator(self.page)
         self.add_response = ResponseCreator(self.page)
         self.add_caching = CachingCreator(self.page)
+
+
+class RuleCondition:
+    """ Class for work with Conditions in the Rule tab """
+    def __init__(self, page):
+        self.page = page
+
+    def add_path(self, operator='Matches', value=''):
+        self.page.add_condition.last.click()
+        self.page.variable_input.click()
+        self.page.variable_select(name='Path').click()
+        self.page.operator_input.click()
+        self.page.select_by_name(name=operator).click()
+        self.page.match_value.fill(value)
+        self.page.add_condition_button.click()

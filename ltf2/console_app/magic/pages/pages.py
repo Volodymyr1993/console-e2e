@@ -10,8 +10,7 @@ from playwright.sync_api import Page
 from ltf2.console_app.magic.pages.components import (LoginMixin, TeamMixin, CommonMixin,
                                                      SecurityMixin, EnvironmentMixin)
 from ltf2.console_app.magic.pages.base_page import BasePage
-from ltf2.console_app.magic.helpers import RuleFeature, RuleCondition
-from ltf2.console_app.magic.ruleconfig import RuleFeature
+from ltf2.console_app.magic.ruleconfig import RuleFeature, RuleCondition
 
 
 class LoginPage(CommonMixin, LoginMixin, BasePage):
@@ -25,8 +24,6 @@ class TeamPage(CommonMixin, TeamMixin, BasePage):
 class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
-        # self.condition = RuleCondition(self)
-        # self.feature = RuleFeature(self)
         self.condition = RuleCondition(self)
         self.feature = RuleFeature(self)
 
