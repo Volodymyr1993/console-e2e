@@ -4,8 +4,7 @@ import string
 
 from playwright.sync_api import Page
 
-from ltf2.console_app.magic.elements import TrElements
-
+from contextlib import contextmanager
 
 # QUERY_STR_SECURITY_SECTION = '?tab=security&section='
 
@@ -27,74 +26,6 @@ def delete_teams(teams: list[(Page, str)]) -> None:
         page.settings.click()
         page.delete_team_checkbox.click()
         page.delete_team_button.click()
-
-
-class RuleCondition:
-    """ Class for work with Conditions in the Rule tab """
-    def __init__(self, page):
-        self.page = page
-
-    def add_path(self, operator='Matches', value=''):
-        self.page.add_condition.last.click()
-        self.page.variable_input.click()
-        self.page.variable_select(name='Path').click()
-        self.page.operator_input.click()
-        self.page.select_by_name(name=operator).click()
-        self.page.match_value.fill(value)
-        self.page.add_condition_button.click()
-
-
-class RuleFeature:
-    """ Class for work with Features in the Rule tab """
-    def __init__(self, page):
-        self.page = page
-
-    def __getattr__(self, item):
-        try:
-            prefix, method = item.split('_', 1)
-            if prefix == 'add':
-                # Add feature
-                self.page.add_feature.last.click()
-                self.page.feature_type_input.click()
-                return getattr(self, method)
-        except ValueError:
-            pass
-
-    def url(self, feature='', code=302, source='', destination='',
-            ignore_case=False, follow_redirects=True):
-        # Select 'URL' feature
-        self.page.select_by_name(name='URL').click()
-        self.page.feature_input.click()
-        self.page.select_by_name(name=feature).click()
-        if feature == 'Follow Redirects':
-            self.page.rule_checkbox.set_checked(follow_redirects)
-            self.page.add_feature_button.click()
-            return
-        elif feature == 'URL Redirect':
-            # TODO uncomment when bug with Status code is fixed
-            # self.page.code_input.fill(str(code))
-            pass
-        self.page.rule_checkbox.set_checked(ignore_case)
-        self.page.source_input.fill(source)
-        self.page.destination_input.fill(destination)
-        self.page.add_feature_button.click()
-
-    def headers(self, feature='', header_name='', header_value='', debug_header=True):
-        self.page.select_by_name(name='Headers').click()
-        self.page.feature_input.click()
-        self.page.select_by_name(name=feature).click()
-        if feature in ('Set Response Header',
-                       'Add Response Header',
-                       'Set Request Header'):
-            self.page.header_name.fill(header_name)
-            self.page.header_value.fill(header_value)
-        elif feature == 'Debug Header':
-            self.page.rule_checkbox.set_checked(debug_header)
-        elif feature == 'Remove Origin Response Headers':
-            self.page.origin_response_headers.fill(header_name)
-        elif feature == 'Remove Response Headers':
-            self.page.response_headers.fill(header_name)
-        self.page.add_feature_button.click()
 
 
 # def delete_rules(rules: list[(Page, str)], url_section: str) -> None:

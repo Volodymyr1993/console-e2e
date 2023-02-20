@@ -5,7 +5,7 @@ from itertools import product
 
 from playwright.sync_api import Page
 
-#from ltf2.console.magic.constants import ACCESS_CONTROL_TYPE, HTTP_METHODS
+from ltf2.console_app.magic.constants import HTTP_METHODS
 from ltf2.console_app.magic.elements import PageElement, UlElement, MembersTableElement, \
     TableElement, ListElement, DynamicPageElement, DynamicSelectElement
 
@@ -102,15 +102,17 @@ class EnvironmentMixin:
         self.revert_button = PageElement(self.page, "button :text('Revert')")
         self.revert_changes_button = PageElement(self.page,
                                                  "button :text('Revert changes')")
-        # Rules
+        # ======== Rules =========
         self.add_rule = PageElement(self.page, 'button :text("Add Rule")')
         self.add_condition = PageElement(self.page, 'button :text("Add Condition")')
         self.add_feature = PageElement(self.page, 'button :text("Add Feature")')
-        self.delete_rule_list = ListElement(
-            self.page,
-            # TODO Update after adding `name` attribute
-            "//div[@data-rbd-droppable-id='droppable-rules']/div/div[not(contains(@class,'MuiCollapse-hidden'))]//div[contains(@class, 'MuiBox-root')]//button")
+        self.delete_rule_list = ListElement(self.page,
+                                            "//button[@data-qa='delete-button']")
         self.delete_rule_button = PageElement(self.page, "button :text('Delete Rule')")
+        self.add_feature_button = PageElement(
+            self.page, "//button[@type='submit']/span[text()='Add Feature']")
+        self.deploy_changes = PageElement(self.page, "button :text('Deploy Changes')")
+
         self.variable_input = PageElement(self.page,
                                           "input[name='property-input']")
         self.variable_select = DynamicPageElement(
@@ -121,6 +123,7 @@ class EnvironmentMixin:
         self.match_value = PageElement(self.page, "div[role='textbox']")
         self.add_condition_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Condition']")
+        # Features
         self.feature_type_input = PageElement(self.page,
                                               "input[name='type']")
         self.feature_input = PageElement(self.page,
@@ -132,20 +135,60 @@ class EnvironmentMixin:
             self.page,
             "//label[contains(text(), 'Header Value')]/..//div[@role='textbox']")
         self.response_headers = PageElement(
+            self.page, "input[name='remove_response_headers']")
+        self.origin_response_headers = PageElement(
+            self.page, "input[name='remove_origin_response_headers']")
+        self.source_input = PageElement(
+            self.page, "//label[text()='Source']/..//div[@role='textbox']")
+        self.destination_input = PageElement(
+            self.page, "//label[text()='Destination']/..//div[@role='textbox']")
+        self.variable_name = PageElement(
+            self.page, "//label[text()='Variable Name']/..//div[@role='textbox']")
+        self.variable_value = PageElement(
+            self.page, "//label[text()='Variable Value']/..//div[@role='textbox']")
+        self.response_headers = PageElement(
             self.page,
             "input[name='remove_response_headers']")
-        self.origin_response_headers = PageElement(
-            self.page,
-            "input[name='remove_origin_response_headers']")
-        self.source_input = PageElement(
-            self.page,
-            "//label[text()='Source']/..//div[@role='textbox']")
-        self.destination_input = PageElement(
-            self.page,
-            "//label[text()='Destination']/..//div[@role='textbox']")
-        self.add_feature_button = PageElement(
-            self.page, "//button[@type='submit']/span[text()='Add Feature']")
-        self.deploy_changes = PageElement(self.page, "button :text('Deploy Changes')")
+        self.custom_log_field = PageElement(
+            self.page, "input[name='custom_log_field_1']")
+        self.status_code_input = PageElement(self.page, "input[name='set_status_code']")
+        self.response_body = PageElement(
+            self.page, "//label[text()='Response Body']/..//textarea")
+        self.kbytes_per_second = PageElement(
+            self.page, "input[name='feature.value.kbytes_per_sec']")
+        self.prebuf_seconds = PageElement(
+            self.page, "input[name='feature.value.prebuf_seconds']")
+        self.header_treatment_input = PageElement(
+            self.page, "input[name='cache_control_header_treatment']")
+        self.option_input = PageElement(self.page, "input[name='cache-key-query-string']")
+        self.include_input = PageElement(self.page, "input[name='include']")
+        self.exclude_input = PageElement(self.page, "input[name='exclude']")
+        self.cacheable_request_body_size = PageElement(
+            self.page, "input[name='cacheable_request_body_size']")
+        self.compress_file_types_input = PageElement(
+            self.page, "input[name='compress_file_types']")
+        self.post_input = PageElement(self.page, "//label[text()='POST']/..//input")
+        self.put_input = PageElement(self.page, "//label[text()='PUT']/..//input")
+        self.h264_support_input = PageElement(self.page, "input[name='h264_support']")
+        self.expires_header_treatment_input = PageElement(
+            self.page, "input[name='expires_header_treatment']")
+        self.duration_value = PageElement(
+            self.page, "input[name='feature.value'][type='number']")
+        self.duration_unit = PageElement(self.page,
+                                         "input[name='feature.value'][type='text']")
+        self.response_status_code = PageElement(
+            self.page, "input[name='feature.value.0.key']")
+        self.max_age_value = PageElement(self.page,
+                                         "input[name='feature.value.0.value'][type='number']")
+        self.max_age_unit = PageElement(self.page,
+                                        "input[name='feature.value.0.value'][type='text']")
+        self.ignore_origin_no_cache = PageElement(self.page,
+                                                  "input[name='ignore_origin_no_cache']")
+        self.partial_cache_sharing_min_hit_size = PageElement(
+            self.page, "input[name='partial_cache_sharing_min_hit_size']")
+        self.set_cacheable_status_codes = PageElement(
+            self.page, "input[name='set_cacheable_status_codes']")
+
 
 
 class ActivityMixin:
