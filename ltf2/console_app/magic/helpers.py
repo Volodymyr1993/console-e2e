@@ -4,7 +4,6 @@ import string
 
 from playwright.sync_api import Page
 
-from ltf2.console_app.magic.elements import TrElements
 from contextlib import contextmanager
 
 # QUERY_STR_SECURITY_SECTION = '?tab=security&section='

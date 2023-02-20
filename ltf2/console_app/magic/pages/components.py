@@ -5,7 +5,7 @@ from itertools import product
 
 from playwright.sync_api import Page
 
-from ltf2.console.magic.constants import ACCESS_CONTROL_TYPE, HTTP_METHODS
+from ltf2.console_app.magic.constants import HTTP_METHODS
 from ltf2.console_app.magic.elements import PageElement, UlElement, MembersTableElement, \
     TableElement, ListElement, DynamicPageElement, DynamicSelectElement
 
