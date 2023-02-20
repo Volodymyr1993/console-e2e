@@ -133,7 +133,7 @@ class EnvironmentMixin:
             "//label[contains(text(), 'Header Name')]/..//div[@role='textbox']")
         self.header_value = PageElement(
             self.page,
-            "//label[contains(text(), 'Header Value')]/..//div[@role='textbox']")
+            "//label[contains(text(), 'Value')]/..//div[@role='textbox']")
         self.response_headers = PageElement(
             self.page, "input[name='remove_response_headers']")
         self.origin_response_headers = PageElement(

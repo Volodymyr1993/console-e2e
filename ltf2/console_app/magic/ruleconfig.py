@@ -60,18 +60,18 @@ class HeaderCreator(FeatureCreator):
 
     feature = 'Headers'
 
-    def set_response_header(self, header_name: str = '', header_value: str = ''):
-        with self.prepare_feature('Set Response Header'):
+    def set_response_headers(self, header_name: str = '', header_value: str = ''):
+        with self.prepare_feature('Set Response Headers'):
             self.page.header_name.fill(header_name)
             self.page.header_value.fill(header_value)
 
-    def add_response_header(self, header_name: str = '', header_value: str = ''):
-        with self.prepare_feature('Add Response Header'):
+    def add_response_headers(self, header_name: str = '', header_value: str = ''):
+        with self.prepare_feature('Add Response Headers'):
             self.page.header_name.fill(header_name)
             self.page.header_value.fill(header_value)
 
-    def set_request_header(self, header_name: str = '', header_value: str = ''):
-        with self.prepare_feature('Set Request Header'):
+    def set_request_headers(self, header_name: str = '', header_value: str = ''):
+        with self.prepare_feature('Set Request Headers'):
             self.page.header_name.fill(header_name)
             self.page.header_value.fill(header_value)
 
@@ -82,10 +82,12 @@ class HeaderCreator(FeatureCreator):
     def remove_origin_response_headers(self, header_name: str = ''):
         with self.prepare_feature('Remove Origin Response Headers'):
             self.page.origin_response_headers.fill(header_name)
+            self.page.origin_response_headers.press('Enter')
 
     def remove_response_headers(self, header_name: str = ''):
         with self.prepare_feature('Remove Response Headers'):
             self.page.response_headers.fill(header_name)
+            self.page.response_headers.press('Enter')
 
 
 class SetVariablesCreator(FeatureCreator):
