@@ -3,37 +3,23 @@ from playwright.sync_api import Page
 from contextlib import contextmanager
 
 
-class FeatureCreator:
-
-    feature = None
-
+class RuleFeature:
+    """ Class for work with Features in the Rule tab """
     def __init__(self, page: Page):
         self.page = page
 
     @contextmanager
-    def prepare_feature_type(self):
+    def prepare_feature(self, feature: str):
         """ Setup page and save feature after creation """
         self.page.add_feature.last.click()
-        self.page.feature_type_input.click()
-        self.page.select_by_name(name=self.feature).click()
+        self.page.feature_input.click()
+        self.page.get_by_text(feature).last.click()
         try:
             yield
         except Exception:
             raise
         else:
             self.page.add_feature_button.click()
-
-    @contextmanager
-    def prepare_feature(self, feature: str):
-        with self.prepare_feature_type():
-            self.page.feature_input.click()
-            self.page.select_by_name(name=feature).click()
-            yield
-
-
-class UrlCreator(FeatureCreator):
-
-    feature = 'URL'
 
     def follow_redirects(self, enable: bool = True):
         with self.prepare_feature('Follow Redirects'):
@@ -49,16 +35,14 @@ class UrlCreator(FeatureCreator):
             self.page.destination_input.fill(destination)
 
     def url_rewrite(self, source: str = '', destination: str = '',
-                    ignore_case: bool = False):
+                    match_style: str = 'simple', ignore_case: bool = False):
         with self.prepare_feature('URL Rewrite'):
-            self.page.rule_checkbox.set_checked(ignore_case)
             self.page.source_input.fill(source)
             self.page.destination_input.fill(destination)
-
-
-class HeaderCreator(FeatureCreator):
-
-    feature = 'Headers'
+            self.page.match_style_input.click()
+            self.page.select_by_name(name=match_style).click()
+            if match_style == 'regexp':
+                self.page.rule_checkbox.set_checked(ignore_case)
 
     def set_response_headers(self, header_name: str = '', header_value: str = ''):
         with self.prepare_feature('Set Response Headers'):
@@ -89,40 +73,22 @@ class HeaderCreator(FeatureCreator):
             self.page.response_headers.fill(header_name)
             self.page.response_headers.press('Enter')
 
-
-class SetVariablesCreator(FeatureCreator):
-
-    feature = 'Set Variables'
-
-    def __call__(self, name: str = '', value: str = ''):
-        with self.prepare_feature_type():
+    def set_variables(self, name: str = '', value: str = ''):
+        with self.prepare_feature('Set Variables'):
             self.page.variable_name.fill(name)
             self.page.variable_value.fill(value)
 
-
-class AccessCreator(FeatureCreator):
-
-    feature = 'Access'
-    available_features = {
-        'deny_access': 'Deny Access',
-        'token_auth': 'Token Auth',
-        'token_auth_ignore_url_case': 'Token Auth Ignore URL Case'
-    }
-
-    def __getattr__(self, item):
-        if item in self.available_features:
-            return lambda *args, **kwargs: self.add_access(self.available_features[item],
-                                                           *args,
-                                                           **kwargs)
-
-    def add_access(self, feature: str = '', enable: bool = True):
-        with self.prepare_feature(feature):
+    def deny_access(self, enable: bool = True):
+        with self.prepare_feature('Deny Access'):
             self.page.rule_checkbox.set_checked(enable)
 
+    def token_auth(self, enable: bool = True):
+        with self.prepare_feature('Token Auth'):
+            self.page.rule_checkbox.set_checked(enable)
 
-class LogsCreator(FeatureCreator):
-
-    feature = 'Logs'
+    def token_auth_ignore_url_case(self, enable: bool = True):
+        with self.prepare_feature('Token Auth Ignore URL Case'):
+            self.page.rule_checkbox.set_checked(enable)
 
     def custom_log_field(self, custom_log_field: str = ''):
         with self.prepare_feature('Custom Log Field'):
@@ -135,11 +101,6 @@ class LogsCreator(FeatureCreator):
     def mask_client_subnet(self, enable: bool = True):
         with self.prepare_feature('Mask Client Subnet'):
             self.page.rule_checkbox.set_checked(enable)
-
-
-class ResponseCreator(FeatureCreator):
-
-    feature = 'Response'
 
     def set_status_code(self, code: int = 200):
         with self.prepare_feature('Set Status Code'):
@@ -156,11 +117,6 @@ class ResponseCreator(FeatureCreator):
     def allow_prefetching_of_uncached_content(self, enable: bool = True):
         with self.prepare_feature('Allow Prefetching of Uncached Content'):
             self.page.rule_checkbox.set_checked(enable)
-
-
-class CachingCreator(FeatureCreator):
-
-    feature = 'Caching'
 
     def bandwidth_parameters(self, enable: bool = True):
         with self.prepare_feature('Bandwidth Parameters'):
@@ -292,19 +248,6 @@ class CachingCreator(FeatureCreator):
             self.page.duration_value.fill(str(value))
             self.page.duration_unit.click()
             self.page.select_by_name(name=unit).click()
-
-
-class RuleFeature:
-    """ Class for work with Features in the Rule tab """
-    def __init__(self, page):
-        self.page = page
-        self.add_url = UrlCreator(self.page)
-        self.add_headers = HeaderCreator(self.page)
-        self.add_set_variable = SetVariablesCreator(self.page)
-        self.add_access = AccessCreator(self.page)
-        self.add_logs = LogsCreator(self.page)
-        self.add_response = ResponseCreator(self.page)
-        self.add_caching = CachingCreator(self.page)
 
 
 class RuleCondition:
