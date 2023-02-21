@@ -121,6 +121,7 @@ class EnvironmentMixin:
         self.rule_checkbox = PageElement(self.page, "//label//input[@type='checkbox']")
         self.code_input = PageElement(self.page, "input[name='feature.value.code']")
         self.match_value = PageElement(self.page, "div[role='textbox']")
+        self.match_value_input = PageElement(self.page, "input[name='matchValue']")
         self.add_condition_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Condition']")
         # Features

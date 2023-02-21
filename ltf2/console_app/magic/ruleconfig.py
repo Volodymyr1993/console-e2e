@@ -3,6 +3,70 @@ from playwright.sync_api import Page
 from contextlib import contextmanager
 
 
+CONDITIONS_MAP = {
+    'path': 'Path',
+    'asn': 'ASN',
+    'brand_name': 'Brand Name',
+    'browser': 'Browser',
+    'city': 'City',
+    'client_ip': 'Client IP',
+    'continent': 'Continent',
+    'country': 'Country',
+    'directory': 'Directory',
+    'dma_code': 'DMA Code',
+    'dual_orientation': 'Dual Orientation',
+    'extensions': 'Extensions',
+    'filename': 'Filename',
+    'hostname': 'Hostname',
+    'html_preferred_dtd': 'HTML Preferred DTD',
+    'image_inlining': 'Image Inlining',
+    'is_android': 'Is Android',
+    'is_app': 'Is App',
+    'is_full_desktop': 'Is Full Desktop',
+    'is_html_preferred': 'Is HTML Preferred',
+    'is_ios': 'Is iOS',
+    'is_largescreen': 'Is Largescreen',
+    'is_mobile': 'Is Mobile',
+    'is_robot': 'Is Robot',
+    'is_smartphone': 'Is Smartphone',
+    'is_smarttv': 'Is SmartTV',
+    'is_tablet': 'Is Tablet',
+    'is_touchscreen': 'Is Touchscreen',
+    'is_windows_phone': 'Is Windows Phone',
+    'is_wireless_device': 'Is Wireless Device',
+    'is_wml_preferred': 'Is WML Preferred',
+    # 'latitude': 'Latitude',
+    # 'longitude': 'Longitude',
+    # 'marketing_name': 'Marketing Name',
+    # 'method': 'Method',
+    # 'mobile_browser': 'Mobile Browser',
+    # 'model_name': 'Model Name',
+    # 'operating_system': 'Operating System',
+    # 'original_path': 'Original Path',
+    # 'original_query': 'Original Query',
+    # 'path': 'Path',
+    # 'pointing_method': 'Pointing Method',
+    # 'pop_code': 'POP Code',
+ # 'POP Code',
+ # 'Postal Code',
+ # 'Preferred Markup',
+ # 'Progressive Download',
+ # 'Querystring',
+ # 'Random Integer',
+ # 'Referring Domain',
+ # 'Region Code',
+ # 'Release Date',
+ # 'Request Cookie',
+ # 'Request Header',
+ # 'Request URI Query',
+ # 'Resolution Height',
+ # 'Resolution Width',
+ # 'Scheme',
+ # 'UX Full Desktop',
+ # 'XHTML Support Level',
+}
+
+
 class FeatureCreator:
 
     feature = None
@@ -31,7 +95,7 @@ class FeatureCreator:
             yield
 
 
-class UrlCreator(FeatureCreator):
+class UrlFeatureCreator(FeatureCreator):
 
     feature = 'URL'
 
@@ -56,7 +120,7 @@ class UrlCreator(FeatureCreator):
             self.page.destination_input.fill(destination)
 
 
-class HeaderCreator(FeatureCreator):
+class HeaderFeatureCreator(FeatureCreator):
 
     feature = 'Headers'
 
@@ -90,7 +154,7 @@ class HeaderCreator(FeatureCreator):
             self.page.response_headers.press('Enter')
 
 
-class SetVariablesCreator(FeatureCreator):
+class SetVariablesFeatureCreator(FeatureCreator):
 
     feature = 'Set Variables'
 
@@ -100,7 +164,7 @@ class SetVariablesCreator(FeatureCreator):
             self.page.variable_value.fill(value)
 
 
-class AccessCreator(FeatureCreator):
+class AccessFeatureCreator(FeatureCreator):
 
     feature = 'Access'
     available_features = {
@@ -120,7 +184,7 @@ class AccessCreator(FeatureCreator):
             self.page.rule_checkbox.set_checked(enable)
 
 
-class LogsCreator(FeatureCreator):
+class LogsFeatureCreator(FeatureCreator):
 
     feature = 'Logs'
 
@@ -137,7 +201,7 @@ class LogsCreator(FeatureCreator):
             self.page.rule_checkbox.set_checked(enable)
 
 
-class ResponseCreator(FeatureCreator):
+class ResponseFeatureCreator(FeatureCreator):
 
     feature = 'Response'
 
@@ -158,7 +222,7 @@ class ResponseCreator(FeatureCreator):
             self.page.rule_checkbox.set_checked(enable)
 
 
-class CachingCreator(FeatureCreator):
+class CachingFeatureCreator(FeatureCreator):
 
     feature = 'Caching'
 
@@ -298,25 +362,47 @@ class RuleFeature:
     """ Class for work with Features in the Rule tab """
     def __init__(self, page):
         self.page = page
-        self.add_url = UrlCreator(self.page)
-        self.add_headers = HeaderCreator(self.page)
-        self.add_set_variable = SetVariablesCreator(self.page)
-        self.add_access = AccessCreator(self.page)
-        self.add_logs = LogsCreator(self.page)
-        self.add_response = ResponseCreator(self.page)
-        self.add_caching = CachingCreator(self.page)
+        self.add_url = UrlFeatureCreator(self.page)
+        self.add_headers = HeaderFeatureCreator(self.page)
+        self.add_set_variable = SetVariablesFeatureCreator(self.page)
+        self.add_access = AccessFeatureCreator(self.page)
+        self.add_logs = LogsFeatureCreator(self.page)
+        self.add_response = ResponseFeatureCreator(self.page)
+        self.add_caching = CachingFeatureCreator(self.page)
 
 
 class RuleCondition:
     """ Class for work with Conditions in the Rule tab """
+
     def __init__(self, page):
         self.page = page
 
-    def add_path(self, operator='Matches', value=''):
+    def __getattr__(self, item):
+        if item.startswith('add_'):
+            _, method = item.split('_', 1)
+            if method in CONDITIONS_MAP:
+                return lambda *args, **kwargs: \
+                    self.set_operator(CONDITIONS_MAP[method], *args, **kwargs)
+
+    @contextmanager
+    def prepare_condition(self, condition: str):
         self.page.add_condition.last.click()
         self.page.variable_input.click()
-        self.page.variable_select(name='Path').click()
-        self.page.operator_input.click()
-        self.page.select_by_name(name=operator).click()
-        self.page.match_value.fill(value)
-        self.page.add_condition_button.click()
+        self.page.variable_select(name=condition).click()
+        try:
+            yield
+        except Exception:
+            raise
+        else:
+            self.page.add_condition_button.click()
+
+    def set_operator(self, method: str = '', operator: str = '',
+                     value: str = '', ignore_case: bool = False):
+        with self.prepare_condition(method):
+            self.page.operator_input.click()
+            self.page.select_by_name(name=operator).click()
+            if operator in ('Matches', 'Does Not Match'):
+                self.page.match_value.fill(value)
+                self.page.rule_checkbox.set_checked(ignore_case)
+            else:
+                self.page.match_value_input.fill(value)
