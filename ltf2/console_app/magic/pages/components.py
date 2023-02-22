@@ -32,7 +32,8 @@ class CommonMixin:
         self.client_snackbar = PageElement(self.page, '#client-snackbar')
         self.save = PageElement(self.page, "button :text('Save')")
         self.select = UlElement(self.page, "ul[role='listbox']")
-        self.select_by_name = DynamicSelectElement(self.page, "//ul[@role='listbox']/li[text()='{name}']")
+        self.select_by_name = DynamicSelectElement(
+            self.page, "//ul[@role='listbox']/li[text()='{name}']")
         # self.select_by_name = DynamicPageElement(self.page, "//ul[@role='listbox']/li[text()='{name}']")
         self.table = TableElement(self.page, "table")
         self.submit_button = PageElement(self.page, "button :text('Submit')")
@@ -125,10 +126,11 @@ class EnvironmentMixin:
         self.add_condition_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Condition']")
         # Features
-        self.feature_type_input = PageElement(self.page,
-                                              "input[name='type']")
         self.feature_input = PageElement(self.page,
-                                         "input[name='feature-input']")
+                                         "//div[@role='combobox']/div/div/input")
+        self.feature_select = DynamicSelectElement(
+            self.page,
+            "//ul[@role='listbox']/li/div[text()='{type}']/../ul/li[text()='{name}']")
         self.header_name = PageElement(
             self.page,
             "//label[contains(text(), 'Header Name')]/..//div[@role='textbox']")
@@ -139,14 +141,16 @@ class EnvironmentMixin:
             self.page, "input[name='remove_response_headers']")
         self.origin_response_headers = PageElement(
             self.page, "input[name='remove_origin_response_headers']")
+        self.match_style_input = PageElement(
+            self.page, "input[name='feature.value.0.syntax']")
         self.source_input = PageElement(
-            self.page, "//label[text()='Source']/..//div[@role='textbox']")
+            self.page, "//label[contains(text(), 'Source')]/..//div[@role='textbox']")
         self.destination_input = PageElement(
-            self.page, "//label[text()='Destination']/..//div[@role='textbox']")
+            self.page, "//label[contains(text(), 'Destination')]/..//div[@role='textbox']")
         self.variable_name = PageElement(
-            self.page, "//label[text()='Variable Name']/..//div[@role='textbox']")
+            self.page, "//label[text()='Name']/..//div[@role='textbox']")
         self.variable_value = PageElement(
-            self.page, "//label[text()='Variable Value']/..//div[@role='textbox']")
+            self.page, "//label[text()='Value']/..//div[@role='textbox']")
         self.response_headers = PageElement(
             self.page,
             "input[name='remove_response_headers']")
