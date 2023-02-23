@@ -115,16 +115,21 @@ class EnvironmentMixin:
         self.deploy_changes = PageElement(self.page, "button :text('Deploy Changes')")
 
         self.variable_input = PageElement(self.page,
-                                          "input[name='property-input']")
+                                          "//label[text()='Variable']/../div/input")
         self.variable_select = DynamicPageElement(
-            self.page, "//div[text()='All variables']/../ul/li//p[text()='{name}']")
-        self.operator_input = PageElement(self.page, "input[name='operator']")
+            self.page, "//div[text()='All Variables']/../ul/li//p[text()='{name}']")
+        self.operator_input = PageElement(self.page,
+                                          "//label[text()='Operator']/../div/input")
         self.rule_checkbox = PageElement(self.page, "//label//input[@type='checkbox']")
         self.code_input = PageElement(self.page, "input[name='feature.value.code']")
-        self.match_value = PageElement(self.page, "div[role='textbox']")
+        self.name_input = PageElement(
+            self.page, "//label[contains(text(), 'Name')]/..//div[@role='textbox']")
+        self.value_div = PageElement(
+            self.page, "//label[contains(text(), 'Value')]/..//div[@role='textbox']")
+        self.match_value_input = PageElement(
+             self.page, "input[name='matchValue']")
         self.add_condition_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Condition']")
-        # Features
         self.feature_input = PageElement(self.page,
                                          "//div[@role='combobox']/div/div/input")
         self.feature_select = DynamicSelectElement(
@@ -133,9 +138,6 @@ class EnvironmentMixin:
         self.header_name = PageElement(
             self.page,
             "//label[contains(text(), 'Header Name')]/..//div[@role='textbox']")
-        self.header_value = PageElement(
-            self.page,
-            "//label[contains(text(), 'Value')]/..//div[@role='textbox']")
         self.response_headers = PageElement(
             self.page, "input[name='remove_response_headers']")
         self.origin_response_headers = PageElement(
@@ -150,6 +152,8 @@ class EnvironmentMixin:
             self.page, "//label[text()='Name']/..//div[@role='textbox']")
         self.variable_value = PageElement(
             self.page, "//label[text()='Value']/..//div[@role='textbox']")
+        self.number_input = PageElement(self.page,
+                                        "input[type='number']")
         self.response_headers = PageElement(
             self.page,
             "input[name='remove_response_headers']")
