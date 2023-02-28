@@ -7,7 +7,7 @@ from playwright.sync_api import Page
 
 from ltf2.console_app.magic.constants import HTTP_METHODS
 from ltf2.console_app.magic.elements import PageElement, UlElement, MembersTableElement, \
-    TableElement, ListElement, DynamicPageElement, DynamicSelectElement
+    TableElement, ListElement, DynamicPageElement, DynamicSelectElement, IframeElement
 
 
 class LoginMixin:
@@ -71,6 +71,9 @@ class CommonMixin:
 
         self.visible_page_content = PageElement(self.page,
                                                 '#__next:not([aria-hidden="true"])')
+        self.status_iframe = PageElement(self.page, "iframe[title='Layer0 Status']")
+        self.status_iframe_close_button = IframeElement(self.status_iframe,
+                                                        'div .frame-close button')
 
 
 class TeamMixin:

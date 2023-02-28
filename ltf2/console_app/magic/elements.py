@@ -19,6 +19,12 @@ class PageElement:
             return getattr(self._locator, attr)
 
 
+class IframeElement(PageElement):
+    def __init__(self, iframe, selector: str):
+        super().__init__(iframe, selector)
+        self._locator = self.page.frame_locator(':scope').locator(selector)
+
+
 class DynamicPageElement:
     """ Factory for creating elements using selector pattern
 
