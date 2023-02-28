@@ -43,8 +43,8 @@ CONDITIONS_MAP = {
     'mobile_browser': 'Mobile Browser',
     'model_name': 'Model Name',
     'operating_system': 'Operating System',
-    'original_path': 'Original Path',
-    'original_query': 'Original Query',
+    'origin_path': 'Origin Path',
+    #'original_query': 'Original Query',
     'path': 'Path',
     'pointing_method': 'Pointing Method',
     'pop_code': 'POP Code',
@@ -76,7 +76,7 @@ class RuleFeature:
         """ Setup page and save feature after creation """
         self.page.add_feature.last.click()
         self.page.feature_input.click()
-        self.page.get_by_text(feature).last.click()
+        self.page.get_by_text(feature, exact=True).last.click()
         try:
             yield
         except Exception:
@@ -218,10 +218,10 @@ class RuleFeature:
         with self.prepare_feature('Cacheable Request Body Size'):
             self.page.cacheable_request_body_size.fill(str(cacheable_request_body_size))
 
-    def add_compress_file_types(self, compress_file_types: str = ''):
-        with self.prepare_feature('Compress File Types'):
-            self.page.compress_file_types_input.fill(compress_file_types)
-            self.page.compress_file_types_input.press('Enter')
+    def add_compress_content_types(self, types: str = ''):
+        with self.prepare_feature('Compress Content Types'):
+            self.page.compress_content_types_input.fill(types)
+            self.page.compress_content_types_input.press('Enter')
 
     def add_enable_caching_for_methods(self, post: str = '', put: str = ''):
         with self.prepare_feature('Enable Caching for Methods'):
@@ -239,22 +239,22 @@ class RuleFeature:
             self.page.expires_header_treatment_input.click()
             self.page.select_by_name(name=expires_header_treatment).click()
 
-    def add_external_max_age(self, value: int = 0, unit: str = ''):
-        with self.prepare_feature('External Max Age'):
+    def add_client_max_age(self, value: int = 0, unit: str = ''):
+        with self.prepare_feature('Client Max Age'):
             self.page.duration_value.fill(str(value))
             self.page.duration_unit.click()
             self.page.select_by_name(name=unit).click()
 
-    def add_force_internal_max_age(self, response_status_code: int = 200,
+    def add_max_age(self, response_status_code: int = 200,
                                    value: int = 0, unit: str = ''):
-        with self.prepare_feature('Force Internal Max Age'):
+        with self.prepare_feature('Max Age'):
             self.page.response_status_code.fill(str(response_status_code))
             self.page.max_age_value.fill(str(value))
             self.page.max_age_unit.click()
             self.page.select_by_name(name=unit).click()
 
-    def add_honor_no_cache_request(self, enable: bool = True):
-        with self.prepare_feature('Honor No Cache Request'):
+    def add_honor_no_cache_request_header(self, enable: bool = True):
+        with self.prepare_feature('Honor No Cache Request Header'):
             self.page.rule_checkbox.set_checked(enable)
 
     def add_ignore_origin_no_cache(self, value: int = 300):
@@ -266,12 +266,10 @@ class RuleFeature:
         with self.prepare_feature('Ignore Unsatisfiable Ranges'):
             self.page.rule_checkbox.set_checked(enable)
 
-    def add_internal_max_stale(self, response_status_code: int = 200,
-                               value: int = 0, unit: str = ''):
-        with self.prepare_feature('Internal Max Stale'):
-            self.page.response_status_code.fill(str(response_status_code))
-            self.page.max_age_value.fill(str(value))
-            self.page.max_age_unit.click()
+    def add_service_worker_max_age(self, value: int = 0, unit: str = ''):
+        with self.prepare_feature('Service Worker Max Age'):
+            self.page.duration_value.fill(str(value))
+            self.page.duration_unit.click()
             self.page.select_by_name(name=unit).click()
 
     def add_partial_cache_sharing_min_hit_size(self, value: int = 0):
@@ -288,10 +286,6 @@ class RuleFeature:
         with self.prepare_feature('Refresh Zero Byte Cache Files'):
             self.page.rule_checkbox.set_checked(enable)
 
-    def add_revalidate_while_stale(self, enable: bool = True):
-        with self.prepare_feature('Revalidate While Stale'):
-            self.page.rule_checkbox.set_checked(enable)
-
     def add_rewrite_cache_key(self, source: str = '', destination: str = '',
                               ignore_case: bool = True):
         with self.prepare_feature('Rewrite Cache Key'):
@@ -299,13 +293,13 @@ class RuleFeature:
             self.page.source_input.fill(source)
             self.page.destination_input.fill(destination)
 
-    def add_set_cacheable_status_codes(self, value: int = 200):
-        with self.prepare_feature('Set Cacheable Status Codes'):
-            self.page.set_cacheable_status_codes.fill(str(value))
-            self.page.set_cacheable_status_codes.press('Enter')
+    def add_cacheable_status_codes(self, value: int = 200):
+        with self.prepare_feature('Cacheable Status Codes'):
+            self.page.cacheable_status_codes.fill(str(value))
+            self.page.cacheable_status_codes.press('Enter')
 
-    def add_stale_content_delivery_on_error(self, enable: bool = True):
-        with self.prepare_feature('Stale Content Delivery On Error'):
+    def add_stale_on_error(self, enable: bool = True):
+        with self.prepare_feature('Stale On Error'):
             self.page.rule_checkbox.set_checked(enable)
 
     def add_stale_while_revalidate(self, value: int = 0, unit: str = ''):

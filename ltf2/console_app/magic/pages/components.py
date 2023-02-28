@@ -160,7 +160,7 @@ class EnvironmentMixin:
             self.page,
             "input[name='remove_response_headers']")
         self.custom_log_field = PageElement(
-            self.page, "input[name='custom_log_field_1']")
+            self.page, "input[name='custom_log_field_format']")
         self.status_code_input = PageElement(self.page, "input[name='set_status_code']")
         self.response_body = PageElement(
             self.page, "//label[text()='Response Body']/..//textarea")
@@ -175,8 +175,8 @@ class EnvironmentMixin:
         self.exclude_input = PageElement(self.page, "input[name='exclude']")
         self.cacheable_request_body_size = PageElement(
             self.page, "input[name='cacheable_request_body_size']")
-        self.compress_file_types_input = PageElement(
-            self.page, "input[name='compress_file_types']")
+        self.compress_content_types_input = PageElement(
+            self.page, "input[name='compress_content_types']")
         self.post_input = PageElement(self.page, "//label[text()='POST']/..//input")
         self.put_input = PageElement(self.page, "//label[text()='PUT']/..//input")
         self.h264_support_input = PageElement(self.page, "input[name='h264_support']")
@@ -196,8 +196,8 @@ class EnvironmentMixin:
                                                   "input[name='ignore_origin_no_cache']")
         self.partial_cache_sharing_min_hit_size = PageElement(
             self.page, "input[name='partial_cache_sharing_min_hit_size']")
-        self.set_cacheable_status_codes = PageElement(
-            self.page, "input[name='set_cacheable_status_codes']")
+        self.cacheable_status_codes = PageElement(
+            self.page, "input[name='cacheable_status_codes']")
 
 
 
