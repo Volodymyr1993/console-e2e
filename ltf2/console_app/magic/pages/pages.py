@@ -27,6 +27,11 @@ class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
         self.condition = RuleCondition(self)
         self.feature = RuleFeature(self)
 
+    def delete_all_rules(self):
+        for _ in range(self.delete_rule_list.count()):
+            self.delete_rule_list.first.click()
+            self.delete_rule_button.click()
+
 
 class SecurityPage(CommonMixin, SecurityMixin, BasePage):
     pass
