@@ -5,11 +5,11 @@ from typing import Union, Optional
 
 
 CONDITIONS_MAP = {
-    'path': 'Path',
     'asn': 'ASN',
     'brand_name': 'Brand Name',
     'browser': 'Browser',
     'city': 'City',
+    'cookie': 'Cookie',
     'client_ip': 'Client IP',
     'continent': 'Continent',
     'country': 'Country',
@@ -18,7 +18,6 @@ CONDITIONS_MAP = {
     'dual_orientation': 'Dual Orientation',
     'extensions': 'Extensions',
     'filename': 'Filename',
-    'hostname': 'Hostname',
     'html_preferred_dtd': 'HTML Preferred DTD',
     'image_inlining': 'Image Inlining',
     'is_android': 'Is Android',
@@ -324,6 +323,8 @@ class RuleCondition:
             if method in CONDITIONS_MAP:
                 return lambda *args, **kwargs: \
                     self.set_operator(CONDITIONS_MAP[method], *args, **kwargs)
+            raise AttributeError(
+                f'{self.__class__} does not have {item} attribute')
 
     @contextmanager
     def prepare_condition(self, condition: str):
