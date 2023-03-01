@@ -44,7 +44,6 @@ CONDITIONS_MAP = {
     'model_name': 'Model Name',
     'operating_system': 'Operating System',
     'origin_path': 'Origin Path',
-    #'original_query': 'Original Query',
     'path': 'Path',
     'pointing_method': 'Pointing Method',
     'pop_code': 'POP Code',
@@ -64,6 +63,10 @@ CONDITIONS_MAP = {
     'ux_full_desktop': 'UX Full Desktop',
     'xhtml_support_level': 'XHTML Support Level',
 }
+
+MATCHES = 'matches regular expression'
+DOES_NOT_MATCH = 'does not match regular expression'
+MATCHES_SIMPLE = 'matches (simple)'
 
 
 class RuleFeature:
@@ -358,7 +361,7 @@ class RuleCondition:
                 self.page.match_value_input.fill(str(value))
             else:
                 self.page.value_div.fill(value)
-                if operator in ('matches', 'does not match'):
+                if operator in (MATCHES, DOES_NOT_MATCH):
                     self.page.rule_checkbox.set_checked(ignore_case)
 
     def add_scheme(self,
@@ -368,8 +371,9 @@ class RuleCondition:
         with self.prepare_condition('Scheme'):
             self.page.operator_input.click()
             self.page.select_by_name(name=operator).click()
-            if operator in ('matches', 'does not match'):
+            if operator in (MATCHES, DOES_NOT_MATCH, MATCHES_SIMPLE):
                 self.page.value_div.fill(value)
+                if operator == MATCHES_SIMPLE: return
                 self.page.rule_checkbox.set_checked(ignore_case)
             else:
                 self.page.match_value_input.click()

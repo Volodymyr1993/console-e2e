@@ -200,7 +200,6 @@ class EnvironmentMixin:
             self.page, "input[name='cacheable_status_codes']")
 
 
-
 class ActivityMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
