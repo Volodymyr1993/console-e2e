@@ -129,7 +129,7 @@ class EnvironmentMixin:
         self.value_div = PageElement(
             self.page, "//label[contains(text(), 'Value')]/..//div[@role='textbox']")
         self.match_value_input = PageElement(
-             self.page, "input[name='matchValue']")
+            self.page, "input[name='matchValue']")
         self.add_condition_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Condition']")
         self.feature_input = PageElement(self.page,
@@ -198,6 +198,15 @@ class EnvironmentMixin:
             self.page, "input[name='partial_cache_sharing_min_hit_size']")
         self.cacheable_status_codes = PageElement(
             self.page, "input[name='cacheable_status_codes']")
+        self.revalidate_while_stale_timer_input = PageElement(
+            self.page, "input[name='revalidate_while_stale_timer']")
+        self.service_worker_max_age_input = PageElement(
+            self.page, "input[name='service_worker_max_age']")
+        self.max_keep_alive_requests_input = PageElement(
+            self.page, "input[name='max_keep_alive_requests']")
+        self.proxy_special_headers_input = PageElement(
+            self.page, "input[name='proxy_special_headers']")
+        self.set_origin_input = PageElement(self.page, "input[name='set_origin']")
 
 
 class ActivityMixin:
