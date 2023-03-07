@@ -402,8 +402,10 @@ class RuleCondition:
                 self.page.number_input.fill(str(number))
             self.page.operator_input.click()
             self.page.select_by_name(name=operator).click()
-            if operator in ('in', 'not in') or \
-                    'less than' in operator or \
+            if operator in ('in', 'not in'):
+                self.page.match_value_input.fill(str(value))
+                self.page.match_value_input.press('Enter')
+            elif 'less than' in operator or \
                     'greater than' in operator:
                 self.page.match_value_input.fill(str(value))
             else:

@@ -129,7 +129,7 @@ class EnvironmentMixin:
         self.value_div = PageElement(
             self.page, "//label[contains(text(), 'Value')]/..//div[@role='textbox']")
         self.match_value_input = PageElement(
-            self.page, "input[name='matchValue']")
+            self.page, "input[name='condition.matchValue']")
         self.add_condition_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Condition']")
         self.feature_input = PageElement(self.page,
