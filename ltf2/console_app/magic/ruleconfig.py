@@ -129,7 +129,7 @@ class RuleFeature:
             if option == 'Include':
                 self.page.include_input.fill(value)
                 self.page.include_input.press('Enter')
-            elif option == 'Exclude':
+            elif option == 'Include All Except':
                 self.page.exclude_input.fill(value)
                 self.page.exclude_input.press('Enter')
             else:
