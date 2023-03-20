@@ -177,7 +177,7 @@ class RuleFeature:
 
     def add_partial_cache_sharing_min_hit_size(self, value: int = 0):
         with self.prepare_feature('Partial Cache Sharing Min Hit Size'):
-            self.page.partial_cache_sharing_min_hit_size.fill(str(value))
+            self.page.feature_value_input.fill(str(value))
 
     def add_prevalidate_cached_content(self, value: int = 0, unit: str = ''):
         with self.prepare_feature('Prevalidate Cached Content'):
@@ -199,7 +199,7 @@ class RuleFeature:
 
     def add_revalidate_while_stale_timer(self, value: int = 0):
         with self.prepare_feature('Revalidate While Stale Timer'):
-            self.page.revalidate_while_stale_timer_input.fill(str(value))
+            self.page.feature_value_input.fill(str(value))
 
     def add_rewrite_cache_key(self, source: str = '', destination: str = '',
                               ignore_case: bool = True):
@@ -224,7 +224,7 @@ class RuleFeature:
 
     def add_set_service_worker_max_age(self, value: int = 0):
         with self.prepare_feature('Set Service Worker Max Age'):
-            self.page.service_worker_max_age_input.fill(str(value))
+            self.page.feature_value_input.fill(str(value))
 
     def add_stale_on_error(self, enable: bool = True):
         with self.prepare_feature('Stale On Error'):
@@ -285,7 +285,7 @@ class RuleFeature:
 
     def add_max_keep_alive_requests(self, value: int = 0):
         with self.prepare_feature('Max Keep-Alive Requests'):
-            self.page.max_keep_alive_requests_input.fill(str(value))
+            self.page.feature_value_input.fill(str(value))
 
     def add_proxy_special_headers(self, value: Optional[list, str] = ''):
         with self.prepare_feature('Proxy Special Headers'):
@@ -322,7 +322,7 @@ class RuleFeature:
 
     def add_set_status_code(self, code: int = 200):
         with self.prepare_feature('Set Status Code'):
-            self.page.status_code_input.fill(str(code))
+            self.page.feature_value_input.fill(str(code))
 
     # ============ Set Variable
 
@@ -346,9 +346,9 @@ class RuleFeature:
             self.page.source_input.fill(source)
             self.page.destination_input.fill(destination)
 
-    def add_url_rewrite(self, source: str = '', destination: str = '',
+    def add_rewrite_url(self, source: str = '', destination: str = '',
                         match_style: str = 'simple', ignore_case: bool = False):
-        with self.prepare_feature('URL Rewrite'):
+        with self.prepare_feature('Rewrite URL'):
             self.page.source_input.fill(source)
             self.page.destination_input.fill(destination)
             self.page.match_style_input.click()

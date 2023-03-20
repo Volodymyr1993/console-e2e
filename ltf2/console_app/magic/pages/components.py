@@ -161,7 +161,6 @@ class EnvironmentMixin:
             "input[name='remove_response_headers']")
         self.custom_log_field = PageElement(
             self.page, "input[name='custom_log_field_format']")
-        self.status_code_input = PageElement(self.page, "input[name='set_status_code']")
         self.response_body = PageElement(
             self.page, "//label[text()='Response Body']/..//textarea")
         self.kbytes_per_second = PageElement(
@@ -194,16 +193,10 @@ class EnvironmentMixin:
                                         "input[name='feature.value.0.value'][type='text']")
         self.ignore_origin_no_cache = PageElement(self.page,
                                                   "input[name='ignore_origin_no_cache']")
-        self.partial_cache_sharing_min_hit_size = PageElement(
-            self.page, "input[name='partial_cache_sharing_min_hit_size']")
         self.cacheable_status_codes = PageElement(
             self.page, "input[name='cacheable_status_codes']")
-        self.revalidate_while_stale_timer_input = PageElement(
-            self.page, "input[name='revalidate_while_stale_timer']")
-        self.service_worker_max_age_input = PageElement(
-            self.page, "input[name='service_worker_max_age']")
-        self.max_keep_alive_requests_input = PageElement(
-            self.page, "input[name='max_keep_alive_requests']")
+        self.feature_value_input = PageElement(
+            self.page, "input[name='feature.value']")
         self.proxy_special_headers_input = PageElement(
             self.page, "input[name='proxy_special_headers']")
         self.set_origin_input = PageElement(self.page, "input[name='set_origin']")
