@@ -31,6 +31,7 @@ class CommonMixin:
         self.input_name = PageElement(self.page, 'input#name')
         self.client_snackbar = PageElement(self.page, '#client-snackbar')
         self.save = PageElement(self.page, "button :text('Save')")
+        self.create = PageElement(self.page, "button :text('Create')")
         self.select = UlElement(self.page, "ul[role='listbox']")
         self.select_by_name = DynamicSelectElement(
             self.page, "//ul[@role='listbox']/li[text()='{name}']")
@@ -50,7 +51,7 @@ class CommonMixin:
 
         self.overview = PageElement(self.page, "div :text('Overview')")
         self.activity = PageElement(self.page, "div :text('Activity')")
-        self.members = PageElement(self.page, "div :text('Members')")
+        self.members = PageElement(self.page, "div :text-is('Members')")
         self.settings = PageElement(self.page, "div :text('Settings')")
         self.security = PageElement(self.page, "div :text('Security')")
 
@@ -90,12 +91,20 @@ class TeamMixin:
         self.role_select = UlElement(self.page, '#role-select-popup')
 
         self.members_table = MembersTableElement(self.page, "table")
+        # Create property
+        self.new_property_button = PageElement(self.page, "div :text('New Property')")
+        self.origin_hostname_input = PageElement(
+            self.page, "input[name='origins.0.hosts.0.hostname']")
+        self.create_property_button = PageElement(self.page,
+                                                  "div :text('Create Property')")
 
 
 class EnvironmentMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
         self.environments = PageElement(self.page, "div :text('Environments')")
+        self.new_environment_button = PageElement(self.page,
+                                                  "div :text('New Environment')")
         self.configuration = PageElement(self.page, "div :text('Configuration')")
         self.hostnames = PageElement(self.page, "div :text('Hostnames')")
         self.origins = PageElement(self.page, "div :text('Origins')")
