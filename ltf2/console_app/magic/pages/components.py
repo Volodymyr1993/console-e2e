@@ -51,7 +51,7 @@ class CommonMixin:
 
         self.overview = PageElement(self.page, "div :text('Overview')")
         self.activity = PageElement(self.page, "div :text('Activity')")
-        self.members = PageElement(self.page, "div :text('Members')")
+        self.members = PageElement(self.page, "div :text-is('Members')")
         self.settings = PageElement(self.page, "div :text('Settings')")
         self.security = PageElement(self.page, "div :text('Security')")
 
