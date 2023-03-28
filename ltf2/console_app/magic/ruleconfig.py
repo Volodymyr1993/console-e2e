@@ -16,7 +16,6 @@ CONDITIONS_MAP = {
     'directory': 'Directory',
     'dma_code': 'DMA Code',
     'dual_orientation': 'Dual Orientation',
-    'extensions': 'Extensions',
     'filename': 'Filename',
     'html_preferred_dtd': 'HTML Preferred DTD',
     'image_inlining': 'Image Inlining',
@@ -393,8 +392,12 @@ class RuleCondition:
                      number: Optional[int] = None):
         with self.prepare_condition(method):
             if operator == '' and value:
-                self.page.match_value_input.click()
-                self.page.select_by_name(name=value).click()
+                if value == 'no':
+                    self.page.rule_checkbox.set_checked(False)
+                elif value == 'yes':
+                    self.page.rule_checkbox.set_checked(True)
+                # self.page.match_value_input.click()
+                # self.page.select_by_name(name=value).click()
                 return
             if name:
                 self.page.name_input.fill(name)
@@ -427,3 +430,18 @@ class RuleCondition:
             else:
                 self.page.match_value_input.click()
                 self.page.select_by_name(name=value).click()
+
+    def add_method(self,
+                   operator: str = '',
+                   value: Optional[str, float] = None,
+                   ignore_case: bool = False):
+        with self.prepare_condition('Method'):
+            self.page.operator_input.click()
+            self.page.select_by_name(name=operator).click()
+            if operator in (MATCHES, DOES_NOT_MATCH):
+                self.page.value_div.fill(value)
+                self.page.rule_checkbox.set_checked(ignore_case)
+            else:
+                self.page.method_value_input.click()
+                self.page.select_by_name(name=value).click()
+
