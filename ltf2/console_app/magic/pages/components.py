@@ -189,9 +189,11 @@ class EnvironmentMixin:
             self.page, "//label[text()='Compress Content Types']/../div/input")
         self.post_input = PageElement(self.page, "//label[text()='POST']/..//input")
         self.put_input = PageElement(self.page, "//label[text()='PUT']/..//input")
-        self.h264_support_input = PageElement(self.page, "input[name='h264_support']")
+        self.h264_support_input = PageElement(
+            self.page,
+            "//label[text()='Enable H264 encoding']/../div/input")
         self.expires_header_treatment_input = PageElement(
-            self.page, "input[name='expires_header_treatment']")
+            self.page, "//label[text()='Expires Header Treatment']/../div/input")
         self.duration_value = PageElement(
             self.page, "input[name='feature.value'][type='number']")
         self.duration_unit = PageElement(self.page,
@@ -209,7 +211,7 @@ class EnvironmentMixin:
         self.feature_value_input = PageElement(
             self.page, "input[name='feature.value']")
         self.proxy_special_headers_input = PageElement(
-            self.page, "input[name='proxy_special_headers']")
+            self.page, "//label[text()='Proxy Special Headers']/../div/input")
         self.set_origin_input = PageElement(self.page, "//label[text()='Origin Name']/../div/input")
 
 
