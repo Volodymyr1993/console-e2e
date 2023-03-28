@@ -152,7 +152,7 @@ class EnvironmentMixin:
         self.response_headers = PageElement(
             self.page, "input[name='remove_response_headers']")
         self.origin_response_headers = PageElement(
-            self.page, "input[name='remove_origin_response_headers']")
+            self.page, "//label[text()='Response Headers']/../div/input")
         self.match_style_input = PageElement(
             self.page, "input[name='feature.value.0.syntax']")
         self.source_input = PageElement(
@@ -167,9 +167,9 @@ class EnvironmentMixin:
                                         "input[type='number']")
         self.response_headers = PageElement(
             self.page,
-            "input[name='remove_response_headers']")
+            "//label[text()='Response Headers']/../div/input")
         self.custom_log_field = PageElement(
-            self.page, "input[name='custom_log_field_format']")
+            self.page, "//label[text()='Custom Log Field']/../div/input")
         self.response_body = PageElement(
             self.page, "//label[text()='Response Body']/..//textarea")
         self.kbytes_per_second = PageElement(
@@ -177,14 +177,14 @@ class EnvironmentMixin:
         self.prebuf_seconds = PageElement(
             self.page, "input[name='feature.value.prebuf_seconds']")
         self.header_treatment_input = PageElement(
-            self.page, "input[name='cache_control_header_treatment']")
+            self.page, "//label[text()='Cache Control Header Treatment']/../div/input")
         self.option_input = PageElement(self.page, "input[name='cache-key-query-string']")
         self.include_input = PageElement(self.page, "input[name='include']")
         self.exclude_input = PageElement(self.page, "input[name='exclude']")
         self.cacheable_request_body_size = PageElement(
-            self.page, "input[name='cacheable_request_body_size']")
+            self.page, "//label[text()='Cacheable Request Body Size']/../div/input")
         self.compress_content_types_input = PageElement(
-            self.page, "input[name='compress_content_types']")
+            self.page, "//label[text()='Compress Content Types']/../div/input")
         self.post_input = PageElement(self.page, "//label[text()='POST']/..//input")
         self.put_input = PageElement(self.page, "//label[text()='PUT']/..//input")
         self.h264_support_input = PageElement(self.page, "input[name='h264_support']")
@@ -201,14 +201,14 @@ class EnvironmentMixin:
         self.max_age_unit = PageElement(self.page,
                                         "input[name='feature.value.0.value'][type='text']")
         self.ignore_origin_no_cache = PageElement(self.page,
-                                                  "input[name='ignore_origin_no_cache']")
+                "//label[text()='Ignore no-cache headers when the origin returns one of these status codes:']/../div/input")
         self.cacheable_status_codes = PageElement(
-            self.page, "input[name='cacheable_status_codes']")
+            self.page, "//label[text()='Cacheable Status Codes']/../div/input")
         self.feature_value_input = PageElement(
             self.page, "input[name='feature.value']")
         self.proxy_special_headers_input = PageElement(
             self.page, "input[name='proxy_special_headers']")
-        self.set_origin_input = PageElement(self.page, "input[name='set_origin']")
+        self.set_origin_input = PageElement(self.page, "//label[text()='Origin Name']/../div/input")
 
 
 class ActivityMixin:
