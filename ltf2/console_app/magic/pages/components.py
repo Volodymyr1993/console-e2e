@@ -322,11 +322,13 @@ class SecurityMixin:
 
         self.add_new = PageElement(self.page, "button :text('Add new')")
         self.host_input = PageElement(self.page, "input[name='host.type']")
-        self.host_select = UlElement(self.page, "ul[role='listbox']")
-        self.host_value_input = PageElement(self.page, "input[name='host.value']")
+        self.host_values_input = PageElement(self.page, "input[name='host.values']")
+        self.host_values_buttons = PageElement(
+            self.page, "//input[@name='host.values']/..//div[@role='button']")
         self.url_path_input = PageElement(self.page, "input[name='path.type']")
-        self.url_value_input = PageElement(self.page, "input[name='path.value']")
-        self.url_path_select = UlElement(self.page, "ul[role='listbox']")
+        self.url_values_input = PageElement(self.page, "input[name='path.values']")
+        self.url_values_buttons = PageElement(
+            self.page, "//input[@name='path.values']/..//div[@role='button']")
         self.host_negative_match_checkbox = PageElement(
             self.page, "input[name='host.isNegated']")
         self.path_negative_match_checkbox = PageElement(

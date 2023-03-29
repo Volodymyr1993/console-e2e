@@ -6,7 +6,7 @@ from urllib.parse import urljoin
 import pytest
 from playwright.sync_api import Page
 
-from ltf2.console_app.magic.helpers import delete_rules, QUERY_STR_SECURITY_SECTION
+from ltf2.console_app.magic.helpers import delete_rules
 from ltf2.console_app.magic.constants import PAGE_TIMEOUT
 from ltf2.console_app.magic.pages.pages import SecurityPage
 
@@ -45,12 +45,9 @@ def delete_sec_app():
     yield rules
 
     # Remove all mock schedules
-    for page, _ in rules:
-        page.mock.clear()
-
     for page, rule in rules:
-        page.goto(f'{page.url}{QUERY_STR_SECURITY_SECTION}security-application',
-                  timeout=60)
+        page.mock.clear()
+        page.goto(f"{page.url.strip('/')}/security/application")
         page.table.wait_for()
         for row in page.table.tbody.tr:
             if row[1].text_content() == rule:
