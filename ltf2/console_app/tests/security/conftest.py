@@ -31,11 +31,11 @@ def inject_fixture(name: str, rule_type: str):
 
 
 # Add fixtures that delete specified rules
+inject_fixture('delete_access_rules', 'access_rules')
 inject_fixture('delete_managed_rules', 'managed_rules')
 inject_fixture('delete_rate_rules', 'rate_rules')
-inject_fixture('delete_bot_rules', 'bot_rules')
-inject_fixture('delete_access_rules', 'access_rules')
-inject_fixture('delete_custom_rules', 'custom_rules')
+#inject_fixture('delete_bot_rules', 'bot_rules')
+#inject_fixture('delete_custom_rules', 'custom_rules')
 
 
 @pytest.fixture
