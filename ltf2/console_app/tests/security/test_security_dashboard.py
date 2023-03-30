@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 
-def test_event_logs_current_time_range(security_logged):
+def test_dashboard_logs_current_time_range(security_logged):
     """ Dashboard - Current time range
 
     Preconditions:
