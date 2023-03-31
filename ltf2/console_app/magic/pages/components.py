@@ -5,7 +5,7 @@ from itertools import product
 
 from playwright.sync_api import Page
 
-from ltf2.console_app.magic.constants import HTTP_METHODS
+from ltf2.console_app.magic.constants import ACCESS_CONTROL_TYPE, HTTP_METHODS
 from ltf2.console_app.magic.elements import PageElement, UlElement, MembersTableElement, \
     TableElement, ListElement, DynamicPageElement, DynamicSelectElement, IframeElement
 
@@ -53,7 +53,7 @@ class CommonMixin:
         self.activity = PageElement(self.page, "div :text('Activity')")
         self.members = PageElement(self.page, "div :text-is('Members')")
         self.settings = PageElement(self.page, "div :text('Settings')")
-        self.security = PageElement(self.page, "div :text('Security')")
+        self.security = PageElement(self.page, "div :text-is('Security')")
 
         self.website_url = PageElement(self.page, '#url')
         self.launch_site = PageElement(self.page, "button :text('Launch my site')")
@@ -230,18 +230,17 @@ class DeploymentsMixin:
 class SecurityMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
-        self.security = PageElement(self.page, "button :text('Security')")
-        self.dashboard = PageElement(self.page, "button :text('Dashboard')")
-        self.event_logs = PageElement(self.page, "button :text('Event Logs')")
+        self.event_logs = PageElement(self.page, "div :text('Logs')")
         self.security_application = PageElement(self.page,
-                                                "button :text('Security Application')")
-        self.access_rules = PageElement(self.page, "button :text('Access Rules')")
-        self.rate_rules = PageElement(self.page, "button :text('Rate Rules')")
-        self.bot_rules = PageElement(self.page, "button :text('Bot Rules')")
-        self.custom_rules = PageElement(self.page, "button :text('Custom Rules')")
-        self.managed_rules = PageElement(self.page, "button :text('Managed Rules')")
+                                                "div :text('Security Apps')")
+        self.access_rules = PageElement(self.page, "div :text('Access Rules')")
+        self.rate_rules = PageElement(self.page, "div :text('Rate Rules')")
+        #self.bot_rules = PageElement(self.page, "div :text('Bot Rules')")
+        #self.custom_rules = PageElement(self.page, "div :text('Custom Rules')")
+        self.managed_rules = PageElement(self.page, "div :text('Managed Rules')")
 
         self.add_rule = PageElement(self.page, "button :text('Add Rule')")
+        self.no_data_to_display = PageElement(self.page, "div :text('No data to display')")
 
         # ========= Rate Rules ======
 
@@ -323,11 +322,13 @@ class SecurityMixin:
 
         self.add_new = PageElement(self.page, "button :text('Add new')")
         self.host_input = PageElement(self.page, "input[name='host.type']")
-        self.host_select = UlElement(self.page, "ul[role='listbox']")
-        self.host_value_input = PageElement(self.page, "input[name='host.value']")
+        self.host_values_input = PageElement(self.page, "input[name='host.values']")
+        self.host_values_buttons = PageElement(
+            self.page, "//input[@name='host.values']/..//div[@role='button']")
         self.url_path_input = PageElement(self.page, "input[name='path.type']")
-        self.url_value_input = PageElement(self.page, "input[name='path.value']")
-        self.url_path_select = UlElement(self.page, "ul[role='listbox']")
+        self.url_values_input = PageElement(self.page, "input[name='path.values']")
+        self.url_values_buttons = PageElement(
+            self.page, "//input[@name='path.values']/..//div[@role='button']")
         self.host_negative_match_checkbox = PageElement(
             self.page, "input[name='host.isNegated']")
         self.path_negative_match_checkbox = PageElement(

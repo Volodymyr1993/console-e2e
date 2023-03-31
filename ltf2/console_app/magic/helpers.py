@@ -4,9 +4,10 @@ import string
 
 from playwright.sync_api import Page
 
-from contextlib import contextmanager
+from ltf2.console_app.magic.elements import TrElements
 
-# QUERY_STR_SECURITY_SECTION = '?tab=security&section='
+
+QUERY_STR_SECURITY_SECTION = '?tab=security&section='
 
 
 def random_str(n: int) -> str:
@@ -28,37 +29,37 @@ def delete_teams(teams: list[(Page, str)]) -> None:
         page.delete_team_button.click()
 
 
-# def delete_rules(rules: list[(Page, str)], url_section: str) -> None:
-#     for page, rule in rules:
-#         url = page.url + QUERY_STR_SECURITY_SECTION + url_section
-#         page.goto(url)
-#         page.table.wait_for()
-#         for row in page.table.tbody.tr:
-#             if row[0].text_content() == rule:
-#                 row[0].click()
-#                 page.delete_button.click()
-#                 page.confirm_button.click()
-#                 # Wait message on snackbar to change
-#                 page.client_snackbar.get_by_text('Successfully deleted').wait_for()
-#                 break
-#
-#
-# def open_rule_editor(page: Page, url_section: str,
-#                      name: str, name_index: int = 0) -> TrElements:
-#     # Make sure every dialog is closed - refresh page
-#     url = page.url + QUERY_STR_SECURITY_SECTION + url_section
-#     page.goto(url)
-#     page.table.wait_for()
-#     for row in page.table.tbody.tr:
-#         if row[name_index].text_content() == name:
-#             row[name_index].click()
-#             return True
-#     else:
-#         raise AssertionError("Rule was not saved")
-#
-#
-# def mock_frame_request(page: Page) -> Page:
-#     page.route("*/embed/frame",
-#                lambda route: route.fulfill(status=200,
-#                                            body=''))
-#     return page
+def delete_rules(rules: list[(Page, str)], url_section: str) -> None:
+    for page, rule in rules:
+        url = f"{page.url.strip('/')}/security/{url_section}"
+        page.goto(url)
+        page.table.wait_for()
+        for row in page.table.tbody.tr:
+            if row[0].text_content() == rule:
+                row[0].click()
+                page.delete_button.click()
+                page.confirm_button.click()
+                # Wait message on snackbar to change
+                page.client_snackbar.get_by_text('Successfully deleted').wait_for()
+                break
+
+
+def open_rule_editor(page: Page, url_section: str,
+                     name: str, name_index: int = 0) -> TrElements:
+    # Make sure every dialog is closed - refresh page
+    url = f"{page.url.strip('/')}/security/{url_section}"
+    page.goto(url)
+    page.table.wait_for()
+    for row in page.table.tbody.tr:
+        if row[name_index].text_content() == name:
+            row[name_index].click()
+            return True
+    else:
+        raise AssertionError("Rule was not saved")
+
+
+def mock_frame_request(page: Page) -> Page:
+    page.route("*/embed/frame",
+               lambda route: route.fulfill(status=200,
+                                           body=''))
+    return page
