@@ -52,6 +52,8 @@ run_tests:
     - playwright install-deps
     - cp ${CI_PROJECT_DIR}/_ltfrc_sample ${HOME}/.ltfrc
   script:
+    - export EDGIO_USER=$EDGIO_USER
+    - export EDGIO_PASSWORD=$EDGIO_PASSWORD
     - pytest ltf2/console_app/tests/ --junitxml=junit-report.xml --alluredir=$ALLURE_RESULTS_DIR/
   after_script:
     - |
