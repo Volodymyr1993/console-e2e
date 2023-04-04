@@ -304,10 +304,10 @@ class RuleFeature:
         with self.prepare_feature('Allow Prefetching of Uncached Content'):
             self.page.rule_checkbox.set_checked(enable)
 
-    def add_compress_content_types(self, types: str = ''):
-        with self.prepare_feature('Compress Content Types'):
-            self.page.compress_content_types_input.fill(types)
-            self.page.compress_content_types_input.press('Enter')
+    # def add_compress_content_types(self, types: str = ''):
+    #     with self.prepare_feature('Compress Content Types'):
+    #         self.page.compress_content_types_input.fill(types)
+    #         self.page.compress_content_types_input.press('Enter')
 
     def add_set_done(self, enable: bool = True):
         with self.prepare_feature('Set Done'):
