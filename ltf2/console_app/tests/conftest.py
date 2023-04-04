@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import time
 from collections import namedtuple
 from typing import Generator
@@ -35,8 +36,13 @@ def base_url(ltfrc: CaseInsensitiveDict) -> str:
 
 @pytest.fixture(scope='session')
 def credentials(ltfrc: CaseInsensitiveDict) -> Credentials:
-    return Credentials([u.strip() for u in ltfrc['users'].split(',') if u],
-                       ltfrc['password'])
+    users_str = os.getenv('EDGIO_USER') or ltfrc.get('users')
+    password = os.getenv('EDGIO_PASSWORD') or ltfrc.get('password')
+    if not password or not users_str:
+        raise RuntimeError('EDGIO_USER and EDGIO_PASSWORD should be '
+                           'set as env variables or in ~/.ltfrc file')
+    return Credentials([u.strip() for u in users_str.split(',') if u],
+                       password)
 
 
 @pytest.fixture(scope="session")

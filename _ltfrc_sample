@@ -1,8 +1,11 @@
 [edgio-console-app]
 url = https://edgio-stage.app
 team = ltf2-e2e
-users = mbondarenko+1@edg.io, mbondarenko+2@edg.io
-password = Testuser!23
+# Can be specified as EDGIO_USER env var
+# users = <email>
+# Can be specified as EDGIO_PASSWORD env var
+# password = <password>
+# headed = True
 
 # Optional. If set, browser will be started in headed mode
 # headed = True
