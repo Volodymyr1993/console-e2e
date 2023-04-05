@@ -144,7 +144,7 @@ class EnvironmentMixin:
         self.add_condition_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Condition']")
         self.feature_input = PageElement(self.page,
-                                         "//div[@role='combobox']/div/div/input")
+                                         "input[placeholder='Search Features...']")
         self.feature_select = DynamicSelectElement(
             self.page,
             "//ul[@role='listbox']/li/div[text()='{type}']/../ul/li[text()='{name}']")
