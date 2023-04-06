@@ -120,6 +120,8 @@ class EnvironmentMixin:
         self.add_feature = PageElement(self.page, 'button :text("Add Feature")')
         self.delete_rule_list = ListElement(self.page,
                                             "//button[@data-qa='delete-button']")
+        self.condition_operator_list = ListElement(
+            self.page, "//div[@role='combobox']//input")
         self.delete_rule_button = PageElement(self.page, "button :text('Delete Rule')")
         self.add_feature_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Feature']")
