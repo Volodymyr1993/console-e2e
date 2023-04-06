@@ -32,6 +32,16 @@ class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
             self.delete_rule_list.first.click()
             self.delete_rule_button.click()
 
+    def change_conditions_operator(self, value: str):
+        self.condition_operator_list.last.click()
+        self.select_by_name(name=value).click()
+
+    def set_conditions_operator_or(self):
+        self.change_conditions_operator('or')
+
+    def set_conditions_operator_and(self):
+        self.change_conditions_operator('and')
+
 
 class SecurityPage(CommonMixin, SecurityMixin, BasePage):
     pass
