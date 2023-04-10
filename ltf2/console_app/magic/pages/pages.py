@@ -34,7 +34,7 @@ class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
 
     def change_conditions_operator(self, value: str):
         self.condition_operator_list.last.click()
-        self.select_by_name(name=value).click()
+        self.select_operator_name(name=value).click()
 
     def set_conditions_operator_or(self):
         self.change_conditions_operator('or')

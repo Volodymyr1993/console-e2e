@@ -121,7 +121,10 @@ class EnvironmentMixin:
         self.delete_rule_list = ListElement(self.page,
                                             "//button[@data-qa='delete-button']")
         self.condition_operator_list = ListElement(
-            self.page, "//div[@role='combobox']//input")
+            self.page, "//div[contains(@class, 'MuiCollapse-entered')]//div[@role='button']")
+        self.select_operator_name = DynamicSelectElement(
+            self.page,
+            "//div[@role='presentation' and not(@aria-hidden='true')]/div/ul[@role='menu']/li[text()='{name}']")
         self.delete_rule_button = PageElement(self.page, "button :text('Delete Rule')")
         self.add_feature_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Feature']")
