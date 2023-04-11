@@ -9,23 +9,23 @@ CONDITIONS_MAP = {
     'brand_name': 'Brand Name',
     'city': 'City',
     'client_ip': 'Client IP',
-    'continent': 'Continent',
+  #  'continent': 'Continent',
     'cookie': 'Cookie',
     'country': 'Country',
     'dma_code': 'DMA Code',
     'dual_orientation': 'Dual Orientation',
     'filename': 'Filename',
-    'html_preferred_dtd': 'HTML Preferred DTD',
+ #   'html_preferred_dtd': 'HTML Preferred DTD',
     'image_inlining': 'Image Inlining',
     'is_android': 'Is Android',
     'is_app': 'Is App',
-    'is_full_desktop': 'Is Full Desktop',
-    'is_html_preferred': 'Is HTML Preferred',
     'is_ios': 'Is iOS',
-    'is_largescreen': 'Is Largescreen',
-    'is_mobile': 'Is Mobile',
     'is_robot': 'Is Robot',
     'is_smartphone': 'Is Smartphone',
+ #   'is_full_desktop': 'Is Full Desktop',
+ #   'is_html_preferred': 'Is HTML Preferred',
+ #   'is_largescreen': 'Is Largescreen',
+ #   'is_mobile': 'Is Mobile',
     'is_smarttv': 'Is SmartTV',
     'is_tablet': 'Is Tablet',
     'is_touchscreen': 'Is Touchscreen',
@@ -40,10 +40,10 @@ CONDITIONS_MAP = {
     'model_name': 'Model Name',
     'origin_path': 'Origin Path',
     'path': 'Path',
-    'pointing_method': 'Pointing Method',
+ #   'pointing_method': 'Pointing Method',
     'pop_code': 'POP Code',
     'postal_code': 'Postal Code',
-    'preferred_markup': 'Preferred Markup',
+ #   'preferred_markup': 'Preferred Markup',
     'progressive_download': 'Progressive Download',
     'query': 'Query',
     'query_parameter': 'Query Parameter',
@@ -56,8 +56,8 @@ CONDITIONS_MAP = {
     'resolution_height': 'Resolution Height',
     'resolution_width': 'Resolution Width',
     'scheme': 'Scheme',
-    'ux_full_desktop': 'UX Full Desktop',
-    'xhtml_support_level': 'XHTML Support Level',
+ #   'ux_full_desktop': 'UX Full Desktop',
+ #   'xhtml_support_level': 'XHTML Support Level',
 }
 
 MATCHES = 'matches regular expression'
@@ -186,8 +186,8 @@ class RuleFeature:
         with self.prepare_feature('Refresh Zero Byte Cache Files'):
             self.page.rule_checkbox.set_checked(enable)
 
-    def add_prevalidate_after_origin_content(self, response_status_code: int = 200,
-                                             value: int = 0, unit: str = ''):
+    def add_revalidate_after_origin_unavaliable(self, response_status_code: int = 200,
+                                                value: int = 0, unit: str = ''):
         with self.prepare_feature('Revalidate After Origin Unavailable'):
             self.page.response_status_code.fill(str(response_status_code))
             self.page.max_age_value.fill(str(value))
@@ -219,9 +219,12 @@ class RuleFeature:
             self.page.max_age_unit.click()
             self.page.select_by_name(name=unit).click()
 
-    def add_set_service_worker_max_age(self, value: int = 0):
+    def add_set_service_worker_max_age(self, value: int = 0,
+                                       unit: str = ''):
         with self.prepare_feature('Set Service Worker Max Age'):
-            self.page.feature_value_input.fill(str(value))
+            self.page.service_worker_max_age_value.fill(str(value))
+            self.page.service_worker_max_age_unit.click()
+            self.page.select_by_name(name=unit).click()
 
     def add_stale_on_error(self, enable: bool = True):
         with self.prepare_feature('Stale On Error'):
@@ -253,6 +256,14 @@ class RuleFeature:
         with self.prepare_feature('Remove Response Headers'):
             self.page.response_headers.fill(header_name)
             self.page.response_headers.press('Enter')
+
+    def add_server_timing_header(self, enable: bool = True):
+        with self.prepare_feature('Server-Timing Header'):
+            self.page.rule_checkbox.set_checked(enable)
+
+    def add_set_client_ip_custom_header(self, header_name: str = ''):
+        with self.prepare_feature('Set Client IP Custom Header'):
+            self.page.feature_value_input.fill(header_name)
 
     def add_set_request_headers(self, header_name: str = '', header_value: str = ''):
         with self.prepare_feature('Set Request Headers'):
@@ -294,9 +305,10 @@ class RuleFeature:
                 self.page.proxy_special_headers_input.fill(value)
                 self.page.proxy_special_headers_input.press('Enter')
 
-    def add_set_origin(self, value: int = 0):
+    def add_set_origin(self, value: str):
         with self.prepare_feature('Set Origin'):
-            self.page.set_origin_input.fill(value)
+            self.page.set_origin_input.click()
+            self.page.select_by_name(name=value).click()
 
     # ============= Response
 
@@ -313,7 +325,7 @@ class RuleFeature:
         with self.prepare_feature('Set Done'):
             self.page.rule_checkbox.set_checked(enable)
 
-    def add_set_response_body(self, body: str = '',):
+    def add_set_response_body(self, body: str = ''):
         with self.prepare_feature('Set Response Body'):
             self.page.response_body.fill(body)
 

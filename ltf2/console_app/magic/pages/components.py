@@ -209,6 +209,10 @@ class EnvironmentMixin:
                                          "input[name='feature.value.0.value'][type='number']")
         self.max_age_unit = PageElement(self.page,
                                         "input[name='feature.value.0.value'][type='text']")
+        self.service_worker_max_age_value = PageElement(
+            self.page, "input[name='feature.value'][type='number']")
+        self.service_worker_max_age_unit = PageElement(
+            self.page, "input[name='feature.value'][type='text']")
         self.ignore_origin_no_cache = PageElement(self.page,
                 "//label[text()='Ignore no-cache headers when the origin returns one of these status codes:']/../div/input")
         self.cacheable_status_codes = PageElement(
