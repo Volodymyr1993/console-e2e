@@ -171,7 +171,7 @@ class EnvironmentMixin:
         self.variable_value = PageElement(
             self.page, "//label[text()='Value']/..//div[@role='textbox']")
         self.number_input = PageElement(self.page,
-                                        "input[type='number']")
+                                        "input[name='condition.ruleVariable.value']")
         self.response_headers = PageElement(
             self.page,
             "//label[text()='Response Headers']/../div/input")
