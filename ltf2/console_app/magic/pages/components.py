@@ -242,10 +242,12 @@ class SecurityMixin:
         self.event_logs = PageElement(self.page, "div :text('Logs')")
         self.security_application = PageElement(self.page,
                                                 "div :text('Security Apps')")
+        self.dashboard = PageElement(self.page, "div :text('Dashboard')")
+        self.rules_manager = PageElement(self.page, "div :text('Rules Manager')")
         self.access_rules = PageElement(self.page, "div :text('Access Rules')")
         self.rate_rules = PageElement(self.page, "div :text('Rate Rules')")
-        #self.bot_rules = PageElement(self.page, "div :text('Bot Rules')")
-        #self.custom_rules = PageElement(self.page, "div :text('Custom Rules')")
+        self.bot_rules = PageElement(self.page, "div :text('Bot Rules')")
+        self.custom_rules = PageElement(self.page, "div :text('Custom Rules')")
         self.managed_rules = PageElement(self.page, "div :text('Managed Rules')")
 
         self.add_rule = PageElement(self.page, "button :text('Add Rule')")
@@ -502,7 +504,10 @@ class SecurityMixin:
 
         # ==================== Dashboard & Event Logs ==============
 
-        self.time_frame_input = PageElement(self.page, "input[name='time']")
+        self.dashboard_time_frame_input = PageElement(
+            self.page, "input[name='time']").nth(0)
+        self.event_log_time_frame_input = PageElement(
+            self.page, "input[name='time']").nth(1)
         self.view_input = PageElement(self.page, "input[name='view']")
         self.refresh_input = PageElement(self.page, "input[name='refresh']")
 
@@ -516,9 +521,12 @@ class SecurityMixin:
         self.field_input = PageElement(self.page, "input[name='field']")
         self.value_input = PageElement(self.page, "input[name='value']")
 
-        self.add_filter_button = PageElement(self.page, "button :text('Add Filter')")
+        self.apply_filters = PageElement(self.page, "button :text('Apply Filters')")
         self.filter_names = ListElement(self.page,
                                         "//div[p[contains(., 'Filters:')]]//div//p")
         self.filter_remove = ListElement(self.page,
                                          "//div[p[contains(., 'Filters:')]]//button")
-        self.current_time = PageElement(self.page, "//h3/span")
+        self.dashboard_current_time = PageElement(
+            self.page, "//h6/span[text()='Current Time Range']/../../h3/span").nth(0)
+        self.event_log_current_time = PageElement(
+            self.page, "//h6/span[text()='Current Time Range']/../../h3/span").nth(1)

@@ -55,6 +55,7 @@ def test_managed_rules_add_delete(managed_rules_page: SecurityPage,
     # Make sure every dialog is closed - refresh page
     managed_rules_page.goto()
     managed_rules_page.security.click()
+    managed_rules_page.rules_manager.click()
     managed_rules_page.managed_rules.click()
 
     for row in managed_rules_page.table.tbody.tr:
@@ -488,6 +489,7 @@ def test_managed_rules_request_limit(security_logged):
     security_logged.mock.schedule(
         match={'variables': {"path": "/profile"}},
         body_json=mock_data)
+    security_logged.rules_manager.click()
     security_logged.managed_rules.click()
     security_logged.table.wait_for(timeout=5000)
     time.sleep(1)
