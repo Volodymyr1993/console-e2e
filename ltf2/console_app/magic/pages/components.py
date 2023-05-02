@@ -38,7 +38,6 @@ class CommonMixin:
         # self.select_by_name = DynamicPageElement(self.page, "//ul[@role='listbox']/li[text()='{name}']")
         self.table = TableElement(self.page, "table")
         self.submit_button = PageElement(self.page, "button :text('Submit')")
-        self.next_button = PageElement(self.page, "button :text('Next')")
         self.delete_button = PageElement(self.page, "button :text('Delete')")
         self.confirm_button = PageElement(self.page, "button :text('Confirm')")
 
@@ -311,7 +310,6 @@ class SecurityMixin:
         self.paranoia_level_input = PageElement(
             self.page, "input[name='generalSettings.paranoiaLevel']")
         self.ruleset_switch = PageElement(self.page, "input[name='rulesetswitch']")
-
         # Exceptions
         self.exceptions = PageElement(self.page, "button :text('Exceptions')")
         self.add_condition = PageElement(self.page, "button :text('Add New Condition')")

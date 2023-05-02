@@ -278,7 +278,7 @@ def test_managed_rules_add_rule_with_policies(managed_rules_page: SecurityPage, 
     """
     # Add rule
     name = fill_in_rule_name(managed_rules_page)
-    managed_rules_page.next_button.click()
+    managed_rules_page.policies.click()
 
     # Select last one Ruleset ECRS
     managed_rules_page.ruleset_input.click()
