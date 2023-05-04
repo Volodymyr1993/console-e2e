@@ -114,7 +114,7 @@ class EnvironmentMixin:
         self.revert_changes_button = PageElement(self.page,
                                                  "button :text('Revert changes')")
         # ======== Rules =========
-        self.add_rule = PageElement(self.page, 'button :text("Add Rule")')
+        self.add_rule = PageElement(self.page, 'button :text-is("Add Rule")')
         self.add_condition = PageElement(self.page, 'button :text("Add Condition")')
         self.add_feature = PageElement(self.page, 'button :text("Add Feature")')
         self.delete_rule_list = ListElement(self.page,
