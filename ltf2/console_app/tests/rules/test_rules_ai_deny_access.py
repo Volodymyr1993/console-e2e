@@ -26,12 +26,12 @@ def test_rules_ai_deny_access(property_page):
     property_page.add_rule_using_ai_input.fill('Reject all requests from Russia')
     property_page.generate_rule.click()
     # Validate Condition
-    property_page.created_conditions.click()
+    property_page.created_conditions(rule_num=0, condition_num=0).click()
     assert property_page.variable_input.input_value() == 'Country', 'Wrong Variable'
     assert property_page.operator_input.input_value() == 'equals', 'Wrong Operator'
     assert property_page.value_div.text_content() == 'RU', 'Wrong Value'
     property_page.close.click()
     # Validate Feature
-    property_page.created_features.click()
+    property_page.created_features(rule_num=0, feature_num=0).click()
     assert property_page.feature_input.input_value() == 'Deny Access', 'Wrong Feature'
     assert property_page.rule_checkbox.is_checked(), 'Feature is not enabled'

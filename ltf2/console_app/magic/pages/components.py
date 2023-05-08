@@ -229,10 +229,10 @@ class EnvironmentMixin:
         self.add_rule_using_ai_input = PageElement(
             self.page, "//input[@data-qa='add-rule-using-ai-text']")
         self.generate_rule = PageElement(self.page, "button :text('Generate Rule')")
-        self.created_conditions = PageElement(
-            self.page, "//div[@role='region']//h3[text()='Conditions']/following-sibling::div[1]/div[1]")
-        self.created_features = PageElement(
-            self.page, "//div[@role='region']//h3[text()='Features']/following-sibling::div[1]/div[1]")
+        self.created_conditions = DynamicPageElement(
+            self.page, "(//h3[text()='Conditions'])[{rule_num}+1]/following-sibling::div[1]/div[1]/div[{condition_num}+1]")
+        self.created_features = DynamicPageElement(
+            self.page, "(//h3[text()='Features'])[{rule_num}+1]/following-sibling::div[1]/div[1]/div[{feature_num}+1]")
 
 
 class ActivityMixin:

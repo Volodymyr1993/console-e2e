@@ -3,6 +3,7 @@ from random import randint, choice
 import string
 
 from playwright.sync_api import Page
+from playwright._impl._api_types import TimeoutError
 
 from ltf2.console_app.magic.elements import TrElements
 
