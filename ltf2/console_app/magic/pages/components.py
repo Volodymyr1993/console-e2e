@@ -32,6 +32,7 @@ class CommonMixin:
         self.client_snackbar = PageElement(self.page, '#client-snackbar')
         self.save = PageElement(self.page, "button :text('Save')")
         self.create = PageElement(self.page, "button :text('Create')")
+        self.close = PageElement(self.page, "button :text('Close')").nth(1)
         self.select = UlElement(self.page, "ul[role='listbox']")
         self.select_by_name = DynamicSelectElement(
             self.page, "//ul[@role='listbox']/li[text()='{name}']")
@@ -220,7 +221,18 @@ class EnvironmentMixin:
             self.page, "input[name='feature.value']")
         self.proxy_special_headers_input = PageElement(
             self.page, "//label[text()='Proxy Special Headers']/../div/input")
-        self.set_origin_input = PageElement(self.page, "//label[text()='Origin Name']/../div/input")
+        self.set_origin_input = PageElement(self.page,
+                                            "//label[text()='Origin Name']/../div/input")
+        # AI Rules
+        self.add_rule_using_ai = PageElement(self.page,
+                                             "button :text('Add Rule Using AI')")
+        self.add_rule_using_ai_input = PageElement(
+            self.page, "//input[@data-qa='add-rule-using-ai-text']")
+        self.generate_rule = PageElement(self.page, "button :text('Generate Rule')")
+        self.created_conditions = PageElement(
+            self.page, "//div[@role='region']//h3[text()='Conditions']/following-sibling::div[1]/div[1]")
+        self.created_features = PageElement(
+            self.page, "//div[@role='region']//h3[text()='Features']/following-sibling::div[1]/div[1]")
 
 
 class ActivityMixin:

@@ -63,3 +63,14 @@ def mock_frame_request(page: Page) -> Page:
                lambda route: route.fulfill(status=200,
                                            body=''))
     return page
+
+
+def revert_rules(page: Page):
+    try:
+        # Click `Revert` button if available
+        page.revert_button.click(timeout=4000)
+        page.revert_changes_button.click()
+        page.wait_for_timeout(timeout=2000)
+    except TimeoutError:
+        pass
+

@@ -14,10 +14,13 @@
 Example of config in `${HOME}/.ltfrc`:
 ```ini
 [edgio-console-app]
-url = https://edgio-dev.app
-# At least 2 emails should be specified
-users = <email_1>, <email_2>, ...
-password = <login password>
+url = https://edgio-stage.app
+team = ltf2-e2e
+property = component-ui-test
+# Can be specified as EDGIO_USER env var
+users = <email>
+# Can be specified as EDGIO_PASSWORD env var
+password = <password>
 # Optional. If set, browser will be started in headed mode
 headed = True
 ```

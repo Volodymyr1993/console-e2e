@@ -1,6 +1,7 @@
 [edgio-console-app]
 url = https://edgio-stage.app
 team = ltf2-e2e
+property = component-ui-test
 # Can be specified as EDGIO_USER env var
 # users = <email>
 # Can be specified as EDGIO_PASSWORD env var
