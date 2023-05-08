@@ -7,7 +7,7 @@ from playwright.sync_api import Page
 
 from ltf2.console_app.magic.constants import ACCESS_CONTROL_TYPE, HTTP_METHODS
 from ltf2.console_app.magic.elements import PageElement, UlElement, MembersTableElement, \
-    TableElement, ListElement, DynamicPageElement, DynamicSelectElement, IframeElement
+    TableElement, ListElement, DynamicPageElement, DynamicSelectElement, IframeElement, CreatedRuleElement
 
 
 class LoginMixin:
@@ -229,10 +229,10 @@ class EnvironmentMixin:
         self.add_rule_using_ai_input = PageElement(
             self.page, "//input[@data-qa='add-rule-using-ai-text']")
         self.generate_rule = PageElement(self.page, "button :text('Generate Rule')")
-        self.created_conditions = DynamicPageElement(
-            self.page, "(//h3[text()='Conditions'])[{rule_num}+1]/following-sibling::div[1]/div[1]/div[{condition_num}+1]")
-        self.created_features = DynamicPageElement(
-            self.page, "(//h3[text()='Features'])[{rule_num}+1]/following-sibling::div[1]/div[1]/div[{feature_num}+1]")
+        self.created_rule = CreatedRuleElement(
+            self.page,
+            "(//h3[text()='Conditions'])[{rule_num}]/following-sibling::div[1]/div[1]/div[{{num}}]",
+            "(//h3[text()='Features'])[{rule_num}]/following-sibling::div[1]/div[1]/div[{{num}}]")
 
 
 class ActivityMixin:

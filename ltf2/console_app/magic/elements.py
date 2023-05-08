@@ -56,6 +56,33 @@ class DynamicPageElement:
                                  self.pattern.format(*args, **kwargs))
 
 
+class DynamicIndexElement:
+    """ Dynamic index element.
+
+    Substitute index in XPATH selector pattern
+
+    1. Add +1 to index
+    2. Replace -1 index with 'last()' XPATH method
+    """
+    def __init__(self,
+                 page: Page,
+                 pattern: str,
+                 element_type: Type[PageElement] = PageElement):
+        self.page = page
+        self.pattern = pattern
+        self.element_type = element_type
+
+    def __call__(self, *args, **kwargs):
+        new_args = []
+        for arg in args:
+            new_args.append('last()' if arg == -1 else arg + 1)
+        new_kwargs = {}
+        for k, v in kwargs.items():
+            new_kwargs.update({k: 'last()' if v == -1 else v + 1})
+        return self.element_type(self.page,
+                                 self.pattern.format(*new_args, **new_kwargs))
+
+
 class DynamicSelectElement(DynamicPageElement):
     """
     Dynamic select element.
@@ -167,3 +194,18 @@ class MembersTableElement(PageElement):
         self.thead = TheadElement(page, f'{selector} thead')
         self.tbody = TbodyElement(page, f'{selector} tbody',
                                   TrElements, MembersTableElement.TdMembersElement)
+
+
+class CreatedRuleElement:
+    def __init__(self, page: Page, condition_selector: str, feature_selector: str):
+        self.page = page
+        self.condition_selector = condition_selector
+        self.feature_selector = feature_selector
+        self.log = logging.getLogger(self.__class__.__name__)
+
+    def __call__(self, num=None):
+        rule_num = 'last()' if num == -1 else num + 1
+        for attr in ('condition', 'feature'):
+            selector = getattr(self, f'{attr}_selector').format(rule_num=rule_num)
+            setattr(self, attr, DynamicIndexElement(self.page, selector))
+        return self
