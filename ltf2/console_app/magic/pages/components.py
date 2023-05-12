@@ -233,6 +233,13 @@ class EnvironmentMixin:
             self.page,
             "(//h3[text()='Conditions'])[{rule_num}]/following-sibling::div[1]/div[1]/div[{{num}}]",
             "(//h3[text()='Features'])[{rule_num}]/following-sibling::div[1]/div[1]/div[{{num}}]")
+        # ====== Cache =====
+        self.purge_the_cache = PageElement(self.page, "button :text('Purge the Cache')")
+        self.purge_cache = PageElement(self.page, "button :text('Purge Cache')")
+        self.purge = PageElement(self.page, "button :text-is('Purge')")
+        self.purge_all_entries = PageElement(self.page, "input[value='all_entries']")
+        self.purge_by_path = PageElement(self.page, "input[value='path']")
+        self.purge_by_key = PageElement(self.page, "input[value='surrogate_key']")
 
 
 class ActivityMixin:

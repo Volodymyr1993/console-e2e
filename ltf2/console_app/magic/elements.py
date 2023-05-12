@@ -18,6 +18,10 @@ class PageElement:
             self.log.debug(f'Doing `{attr}` to: `{self.selector}`')
             return getattr(self._locator, attr)
 
+    def __dir__(self) -> List[str]:
+        """Include methods from self._locator in dir() output"""
+        return sorted(set(dir(type(self)) + list(self.__dict__.keys()) + dir(self._locator)))
+
 
 class IframeElement(PageElement):
     def __init__(self, iframe, selector: str):
