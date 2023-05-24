@@ -112,7 +112,7 @@ def test_rate_rules_add_delete_rule_with_condition_group(rate_rules_page: Page,
     name = fill_in_rule_name(rate_rules_page)
     rate_rules_page.rate_new_condition_group.click()
     rate_rules_page.rate_new_condition_group.click()
-    rate_rules_page.match_condition_input(group=0, condition=0).click()
+    rate_rules_page.rate_condition_match_by(group=0, condition=0).click()
     rate_rules_page.select_by_name(name=match_param).click()
     # Request header has additional drop-down
     if match_param == 'Request header':
@@ -172,15 +172,12 @@ def test_rate_rules_add_delete_rule_with_five_conditions(rate_rules_page: Page,
     name = fill_in_rule_name(rate_rules_page)
     rate_rules_page.rate_new_condition_group.click()
     rate_rules_page.rate_new_condition_group.click()
-    for i in range(0, 5):
+    for i in range(5):
         if i >= 1:
             rate_rules_page.rate_new_condition.click()
-        rate_rules_page.match_condition_input(group=0, condition=i).click()
+            rate_rules_page.rate_conditions(group=0, condition=i).click()
+        rate_rules_page.rate_condition_match_by(group=0, condition=i).click()
         rate_rules_page.select_by_name(name='IP address').click()
-        # for item in rate_rules_page.select.li:
-        #     if item.text_content() == 'IP address':
-        #         item.click()
-        #         break
         rate_rules_page.rate_add_condition_value.fill(f'10.10.10.{i}')
     rate_rules_page.save.click()
     # Verify if created

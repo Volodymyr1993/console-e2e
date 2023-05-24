@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from playwright.sync_api import Page
-from typing import Type
+from typing import Type, List
 import logging
 
 
@@ -60,7 +60,7 @@ class DynamicPageElement:
                                  self.pattern.format(*args, **kwargs))
 
 
-class DynamicIndexElement:
+class DynamicIndexElement(DynamicPageElement):
     """ Dynamic index element.
 
     Substitute index in XPATH selector pattern
@@ -68,14 +68,6 @@ class DynamicIndexElement:
     1. Add +1 to index
     2. Replace -1 index with 'last()' XPATH method
     """
-    def __init__(self,
-                 page: Page,
-                 pattern: str,
-                 element_type: Type[PageElement] = PageElement):
-        self.page = page
-        self.pattern = pattern
-        self.element_type = element_type
-
     def __call__(self, *args, **kwargs):
         new_args = []
         for arg in args:
@@ -107,6 +99,11 @@ class DynamicSelectElement(DynamicPageElement):
             self.verify_select(select_value[0])
 
         return super().__call__(*args, **kwargs)
+
+
+class DynamicRateConditions(DynamicPageElement):
+    def __call__(self, group, condition):
+        return super().__call__(group=group, condition=condition+1)
 
 
 class ListElement(PageElement):
