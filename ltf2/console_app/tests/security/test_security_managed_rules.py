@@ -355,7 +355,6 @@ def test_managed_rules_add_rule_with_exception(managed_rules_page: SecurityPage,
     managed_rules_page.save.click()
     delete_managed_rules.append((managed_rules_page, name))
     assert managed_rules_page.client_snackbar.text_content() == f"Managed rule created"
-
     # Verification
     open_managed_rule(managed_rules_page, name)
     managed_rules_page.exceptions.click()

@@ -39,8 +39,7 @@ def test_security_application_add_rule(security_app_page: SecurityPage, delete_s
     5.3 Rule should contain filled in values on 3rd step
     """
     rule_name = create_app_name(security_app_page)
-    value = 'some val'
-
+    value = random_str(8)
     # Select last hostname
     security_app_page.host_input.click()
     host_match = security_app_page.select.li[-1].text_content()

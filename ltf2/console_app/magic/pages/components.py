@@ -7,7 +7,8 @@ from playwright.sync_api import Page
 
 from ltf2.console_app.magic.constants import ACCESS_CONTROL_TYPE, HTTP_METHODS
 from ltf2.console_app.magic.elements import PageElement, UlElement, MembersTableElement, \
-    TableElement, ListElement, DynamicPageElement, DynamicSelectElement, IframeElement, CreatedRuleElement
+    TableElement, ListElement, DynamicPageElement, DynamicSelectElement, IframeElement, \
+    CreatedRuleElement, DynamicRateConditions
 
 
 class LoginMixin:
@@ -278,8 +279,13 @@ class SecurityMixin:
         self.rate_new_condition_group = PageElement(self.page, "button :text-is('New Condition Group')")
         self.rate_new_condition = PageElement(self.page, 'button :text-is("New Condition")')
         self.rate_add_condition_value = PageElement(self.page, 'input[placeholder="Add..."]')
-        self.match_condition_input = DynamicPageElement(self.page,
-            'input[name="conditionGroups[{group}].conditions[{condition}].target.type"]')
+        self.rate_conditions = DynamicRateConditions(
+            self.page,
+            '//div[@data-rbd-draggable-context-id="{group}" and @data-rbd-draggable-id="Condition {condition}"]'
+            )
+        self.rate_condition_match_by = DynamicPageElement(
+            self.page,
+            "input[name='conditionGroups[{group}].conditions[{condition}].target.type']")
         self.match_req_header_input = PageElement(self.page, 'input[placeholder="Type or select header name"]')
 
         # ======== Managed Rules ==========
@@ -344,7 +350,7 @@ class SecurityMixin:
             "//input[@name='ruleTargetUpdates[0].ruleIds']/..//div[@role='button']")
 
         self.conditions = ListElement(
-            self.page, "//button[span='Add New Condition']/../../../button")
+            self.page, "//div[@data-rbd-droppable-id='droppable']/div")
 
         # ============= Security application manager ============
 
@@ -366,7 +372,7 @@ class SecurityMixin:
         # Access Rules
         self.config_access_rules = PageElement(
             self.page,
-            "div[aria-label='Managed rule exceptions'] button:has-text('Access Rule')")
+            "//div[@data-rbd-drag-handle-draggable-id='Access Rule']")
         self.prod_access_rule_input = PageElement(self.page, "input[name='aclProdId']")
         self.action_access_rule_input = PageElement(self.page, "input[name='aclProdAction.enfType']")
         self.audit_access_rule_input = PageElement(self.page, "input[name='aclAuditId']")
