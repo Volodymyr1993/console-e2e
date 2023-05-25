@@ -62,7 +62,6 @@ def test_dashboard_add_filter_and_change_tab(dashboard_page):
     filter_value = 'qwerty'
     dashboard_page.apply_filters.click()
     dashboard_page.field_input.click()
-    dashboard_page.select.li[-1].text_content()
     dashboard_page.select.li[-1].click()
 
     dashboard_page.value_input.fill(filter_value)
