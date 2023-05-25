@@ -62,13 +62,13 @@ def test_dashboard_add_filter_and_change_tab(dashboard_page):
     filter_value = 'qwerty'
     dashboard_page.apply_filters.click()
     dashboard_page.field_input.click()
-    filter_name = dashboard_page.select.li[-1].text_content()
+    dashboard_page.select.li[-1].text_content()
     dashboard_page.select.li[-1].click()
 
     dashboard_page.value_input.fill(filter_value)
     dashboard_page.value_input.press('Enter')
     f_name = dashboard_page.filter_names[0].text_content()
-    assert f_name == f'{filter_name}', \
+    assert f_name == filter_value, \
         "Wrong filter name or value before changing a tab"
 
     dashboard_page.rate_enforcement_button.click()
