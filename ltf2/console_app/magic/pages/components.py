@@ -281,7 +281,7 @@ class SecurityMixin:
         self.rate_add_condition_value = PageElement(self.page, 'input[placeholder="Add..."]')
         self.rate_conditions = DynamicRateConditions(
             self.page,
-            '//div[@data-rbd-draggable-context-id="{group}" and @data-rbd-draggable-id="Condition {condition}"]'
+            "//button[@data-rbd-draggable-context-id='{group}' and @title='Condition {condition}']"
             )
         self.rate_condition_match_by = DynamicPageElement(
             self.page,
@@ -350,7 +350,7 @@ class SecurityMixin:
             "//input[@name='ruleTargetUpdates[0].ruleIds']/..//div[@role='button']")
 
         self.conditions = ListElement(
-            self.page, "//div[@data-rbd-droppable-id='droppable']/div")
+            self.page, "//div[@aria-label='Managed rule exceptions']/button")
 
         # ============= Security application manager ============
 
@@ -372,7 +372,7 @@ class SecurityMixin:
         # Access Rules
         self.config_access_rules = PageElement(
             self.page,
-            "//div[@data-rbd-drag-handle-draggable-id='Access Rule']")
+            "button[id='vertical-tab-0']")
         self.prod_access_rule_input = PageElement(self.page, "input[name='aclProdId']")
         self.action_access_rule_input = PageElement(self.page, "input[name='aclProdAction.enfType']")
         self.audit_access_rule_input = PageElement(self.page, "input[name='aclAuditId']")
