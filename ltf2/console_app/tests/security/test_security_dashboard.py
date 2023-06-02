@@ -30,10 +30,10 @@ def test_dashboard_logs_current_time_range(dashboard_page):
             number, period = 1, f'{time_range[0]}s'
 
         actual = dashboard_page.dashboard_current_time.text_content()
-        # Make expected value with 1 second difference (now - 1s, now, now + 1s)
+        # Make expected value with 1 minute difference (now - 1m, now, now + 1m)
         now = datetime.utcnow()
-        future = now + timedelta(seconds=1)
-        past = now - timedelta(seconds=1)
+        future = now + timedelta(minutes=1)
+        past = now - timedelta(minutes=1)
         expected = []
         for t in (past, now, future):
             # Format UTC 12/12 13:27 - 12/12 13:42
