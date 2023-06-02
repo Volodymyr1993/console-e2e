@@ -275,7 +275,7 @@ class SecurityMixin:
         # ========= Rate Rules ======
 
         self.input_num = PageElement(self.page, 'input#num')
-        self.add_rate_rule = PageElement(self.page, "button :text('Add Rate Rule')")
+        self.add_rate_rule = PageElement(self.page, "button :text('New Rate Ruleset')")
         self.rate_new_condition_group = PageElement(self.page, "button :text-is('New Condition Group')")
         self.rate_new_condition = PageElement(self.page, 'button :text-is("New Condition")')
         self.rate_add_condition_value = PageElement(self.page, 'input[placeholder="Add..."]')
@@ -290,7 +290,7 @@ class SecurityMixin:
 
         # ======== Managed Rules ==========
 
-        self.add_managed_rule = PageElement(self.page, "button :text('Add Managed Rule')")
+        self.add_managed_rule = PageElement(self.page, "button :text('New Managed Ruleset')")
 
         # Ignore list
         self.header_name_input = PageElement(
@@ -354,7 +354,7 @@ class SecurityMixin:
 
         # ============= Security application manager ============
 
-        self.add_new = PageElement(self.page, "button :text('Add new')")
+        self.add_new = PageElement(self.page, "button :text('New Security App')")
         self.host_input = PageElement(self.page, "input[name='host.type']")
         self.host_values_input = PageElement(self.page, "input[name='host.values']")
         self.host_values_buttons = PageElement(
@@ -412,7 +412,7 @@ class SecurityMixin:
 
         # ================= Access Rules ==========
 
-        self.add_access_rule = PageElement(self.page, "button :text('Add Access Rule')")
+        self.add_access_rule = PageElement(self.page, "button :text('New Access Ruleset')")
         # Access Control
         self.access_control_input = PageElement(self.page,
                                                 "input[name='access-control-dropdown']")
