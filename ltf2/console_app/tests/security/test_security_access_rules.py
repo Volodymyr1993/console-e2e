@@ -56,7 +56,7 @@ def test_access_rule_access_control(access_rules_page: SecurityPage,
         'Cookie': 'string',
         'Country': 'UA',
         'Country Subdivision (ISO3166-2)': 'UA-46',
-        'IP': '127.0.0.1',
+        'IP': '10.10.10.1',
         'Referrer': 'string',
         'URL': 'string',
         'User-Agent': 'string'
@@ -76,7 +76,6 @@ def test_access_rule_access_control(access_rules_page: SecurityPage,
         button.click()
         input_field = getattr(access_rules_page, f'{type_id}_{list_name}_input')
         input_field.fill(valid_input_values[parameter])
-
     # Save rule
     access_rules_page.save.click()
     assert access_rules_page.client_snackbar.text_content() == "Access rule created"
