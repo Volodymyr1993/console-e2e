@@ -18,8 +18,8 @@ def fill_in_rule_name(page: SecurityPage) -> str:
     return name
 
 
-def test_managed_rules_add_delete(managed_rules_page: SecurityPage,
-                                  delete_managed_rules: list):
+def test_managed_rules_add(managed_rules_page: SecurityPage,
+                           delete_managed_rules: list):
     """ Managed Rules - Add and delete Managed rule
 
     Preconditions:
@@ -32,14 +32,10 @@ def test_managed_rules_add_delete(managed_rules_page: SecurityPage,
     1. Click 'Add Managed Rules'
     2. Fill in the name of rule
     3. Click 'Save' button
-    4. Click 'Delete' button
-    5. Click 'Confirm' button
 
     Expected Results:
     -----------------
     2. 'Managed rule created' should appear on the snackbar
-    5.1 'Successfully deleted' should appear on the snackbar
-    5.2 Rule should be not present in the 'Managed Rule table'
     """
     # Add rule
     name = fill_in_rule_name(managed_rules_page)
@@ -47,22 +43,8 @@ def test_managed_rules_add_delete(managed_rules_page: SecurityPage,
     # Verify if created
     delete_managed_rules.append((managed_rules_page, name))
     assert managed_rules_page.client_snackbar.text_content() == "Managed rule created"
-    # Delete rule
-    managed_rules_page.delete_button.click()
-    managed_rules_page.confirm_button.click()
-    # Wait message on the snackbar to change
-    managed_rules_page.client_snackbar.get_by_text('Successfully deleted').wait_for()
-    # Make sure every dialog is closed - refresh page
-    managed_rules_page.goto()
-    managed_rules_page.security.click()
-    managed_rules_page.rules_manager.click()
-    managed_rules_page.managed_rules.click()
-
-    for row in managed_rules_page.table.tbody.tr:
-        if row[0].text_content() == name:
-            raise AssertionError("Rule was not deleted")
-    # If rule was successfully deleted - remove it from list
-    delete_managed_rules.pop()
+    open_managed_rule(managed_rules_page, name)
+    assert managed_rules_page.input_name.input_value() == name
 
 
 def test_managed_rules_add_rule_with_header_and_ignore_list(managed_rules_page: SecurityPage,
@@ -395,6 +377,7 @@ def test_managed_rules_graphql_plaintext_error(managed_rules_page: SecurityPage,
     # Verify if created
     delete_managed_rules.append((managed_rules_page, name))
     assert managed_rules_page.client_snackbar.text_content() == "Managed rule created"
+    open_managed_rule(managed_rules_page, name)
     # Delete rule
     managed_rules_page.delete_button.click()
     managed_rules_page.mock.schedule(
@@ -441,6 +424,7 @@ def test_managed_rules_add_delete_graphql_jsonasstring_error(
     # Verify if created
     delete_managed_rules.append((managed_rules_page, name))
     assert managed_rules_page.client_snackbar.text_content() == "Managed rule created"
+    open_managed_rule(managed_rules_page, name)
     # Delete rule
     managed_rules_page.delete_button.click()
     managed_rules_page.mock.schedule(

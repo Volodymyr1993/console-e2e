@@ -34,7 +34,12 @@ def delete_rules(rules: list[(Page, str)], url_section: str) -> None:
     for page, rule in rules:
         url = f"{page.url.strip('/')}/security/{url_section}"
         page.goto(url)
-        page.table.wait_for()
+        try:
+            page.table.wait_for(timeout=10000)  # ms
+        except TimeoutError:
+            # Check if there is no rules present
+            page.no_data_to_display.wait_for(timeout=500)  # ms
+            return
         for row in page.table.tbody.tr:
             if row[0].text_content() == rule:
                 row[0].click()

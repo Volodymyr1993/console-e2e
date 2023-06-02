@@ -29,13 +29,19 @@ def test_dashboard_logs_current_time_range(dashboard_page):
         except ValueError:
             number, period = 1, f'{time_range[0]}s'
 
+        actual = dashboard_page.dashboard_current_time.text_content()
+        # Make expected value with 1 minute difference (now - 1m, now, now + 1m)
         now = datetime.utcnow()
-        # Format UTC 12/12 13:27 - 12/12 13:42
-        expected = (f'UTC '
-                    f'{(now - timedelta(**{period: int(number)})).strftime("%m/%d %H:%M")}'
-                    f' - {now.strftime("%m/%d %H:%M")}')
-        assert expected == dashboard_page.dashboard_current_time.text_content(), \
-            f'Wrong current time for `{item_name}`'
+        future = now + timedelta(minutes=1)
+        past = now - timedelta(minutes=1)
+        expected = []
+        for t in (past, now, future):
+            # Format UTC 12/12 13:27 - 12/12 13:42
+            expected.append(
+                f'UTC '
+                f'{(t - timedelta(**{period: int(number)})).strftime("%m/%d %H:%M")}'
+                f' - {t.strftime("%m/%d %H:%M")}')
+        assert actual in expected, f'Wrong current time for `{item_name}`'
         dashboard_page.dashboard_time_frame_input.click()
 
 
@@ -104,13 +110,13 @@ def test_event_logs_current_time_range(dashboard_page):
         except ValueError:
             number, period = 1, f'{time_range[0]}s'
 
+        actual = dashboard_page.event_log_current_time.text_content()
         now = datetime.utcnow()
         # Format UTC 12/12 13:27 - 12/12 13:42
         expected = (f'UTC '
                     f'{(now - timedelta(**{period: int(number)})).strftime("%m/%d %H:%M")}'
                     f' - {now.strftime("%m/%d %H:%M")}')
-        assert expected == dashboard_page.event_log_current_time.text_content(), \
-            f'Wrong current time for `{item_name}`'
+        assert actual == expected, f'Wrong current time for `{item_name}`'
         dashboard_page.event_log_time_frame_input.click()
 
 

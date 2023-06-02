@@ -278,7 +278,7 @@ class SecurityMixin:
         self.add_rate_rule = PageElement(self.page, "button :text('New Rate Ruleset')")
         self.rate_new_condition_group = PageElement(self.page, "button :text-is('New Condition Group')")
         self.rate_new_condition = PageElement(self.page, 'button :text-is("New Condition")')
-        self.rate_add_condition_value = PageElement(self.page, 'input[placeholder="Add..."]')
+        self.rate_condition_value_input = PageElement(self.page, 'input[placeholder="Add..."]')
         self.rate_conditions = DynamicRateConditions(
             self.page,
             "//button[@data-rbd-draggable-context-id='{group}' and @title='Condition {condition}']"
@@ -286,6 +286,9 @@ class SecurityMixin:
         self.rate_condition_match_by = DynamicPageElement(
             self.page,
             "input[name='conditionGroups[{group}].conditions[{condition}].target.type']")
+        self.rate_condition_values = ListElement(
+            self.page,
+            "//label[text()='Values']/..//div[@role='button']")
         self.match_req_header_input = PageElement(self.page, 'input[placeholder="Type or select header name"]')
 
         # ======== Managed Rules ==========
