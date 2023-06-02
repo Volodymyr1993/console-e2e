@@ -4,7 +4,10 @@ from datetime import datetime, timezone
 import pytest
 from playwright.sync_api import Page
 
-from ltf2.console_app.magic.helpers import random_str
+from ltf2.console_app.magic.helpers import random_str, random_int, open_rule_editor
+
+
+open_rate_rule = lambda page, rule: open_rule_editor(page, 'rate_rules', rule)
 
 
 def fill_in_rule_name(page: Page) -> str:
@@ -17,8 +20,8 @@ def fill_in_rule_name(page: Page) -> str:
     return name
 
 
-def test_rate_rules_add_delete_rule_without_condition_group(rate_rules_page: Page,
-                                                            delete_rate_rules: list):
+def test_rate_rules_add_rule_without_condition_group(rate_rules_page: Page,
+                                                     delete_rate_rules: list):
     """ Rate Rules - Add and delete Managed rule
 
     Preconditions:
@@ -31,51 +34,34 @@ def test_rate_rules_add_delete_rule_without_condition_group(rate_rules_page: Pag
     1. Click 'Add Rate Rules'
     2. Fill in the name and rate limit of the rule
     3. Click 'Save' button
-    4. Click 'Delete' button
-    5. Click 'Confirm' button
 
     Expected Results:
     -----------------
     3. 'Rate rule created' should appear on the snackbar
-    5.1. 'Successfully deleted' should appear on the snackbar
-    5.2. Rule should be not present in the 'Rate Rule table'
     """
     # Add rule
     name = f'ltf-{random_str(10)}'
-    rate = '1000'
+    rate = random_int(4)
     # Add rule
     rate_rules_page.add_rate_rule.click()
     rate_rules_page.input_name.fill(name)
     rate_rules_page.input_num.fill(rate)
-    ######
+
     rate_rules_page.save.click()
     # Verify if created
     delete_rate_rules.append((rate_rules_page, name))
     assert rate_rules_page.client_snackbar.text_content() == "Rate rule created"
-    # Delete rule
-    rate_rules_page.delete_button.click()
-    rate_rules_page.confirm_button.click()
-    # Wait message on the snackbar to change
-    rate_rules_page.client_snackbar.get_by_text('Successfully deleted').wait_for()
-    # Make sure every dialog is closed - refresh page
-    rate_rules_page.goto()
-    rate_rules_page.security.click()
-    rate_rules_page.rules_manager.click()
-    rate_rules_page.rate_rules.click()
-
-    for row in rate_rules_page.table.tbody.tr:
-        if row[0].text_content() == name:
-            raise AssertionError("Rule was not deleted")
-    # If rule was successfully deleted - remove it from list
-    delete_rate_rules.pop()
+    open_rate_rule(rate_rules_page, name)
+    assert rate_rules_page.input_name.input_value() == name
+    assert rate_rules_page.input_num.input_value() == rate
 
 
 @pytest.mark.parametrize('param',
-                         ['ASN', 'Country', 'File_extension', 'IP_address',
+                         ['ASN','Country', 'File_extension', 'IP_address',
                           'Request_header', 'Request_method', 'Request_URL_path'])
-def test_rate_rules_add_delete_rule_with_condition_group(rate_rules_page: Page,
-                                                         delete_rate_rules: list,
-                                                         param: str):
+def test_rate_rules_add_rule_with_condition_group(rate_rules_page: Page,
+                                                  delete_rate_rules: list,
+                                                  param: str):
     """ Rate Rules - Add WAF rate rule with condition group and one {match_param} condition
 
     Preconditions:
@@ -91,14 +77,11 @@ def test_rate_rules_add_delete_rule_with_condition_group(rate_rules_page: Page,
     4. In 'Matched By' dropdown select {match_param}
     5. Add 'Value'
     6. Click 'Save' button
-    7. Click 'Delete' button
-    8. Click 'Confirm' button
 
     Expected Results:
     -----------------
-    6. 'Rate rule created' should appear on the snackbar
-    8.1. 'Successfully deleted' should appear on the snackbar
-    8.2. Rule should be not present in the 'Rate Rule table'
+    6.1 'Rate rule created' should appear on the snackbar
+    6.2 Condition group should be present
     """
     match_param = param.replace('_', ' ')
     value = {'ASN': '12345',
@@ -118,30 +101,21 @@ def test_rate_rules_add_delete_rule_with_condition_group(rate_rules_page: Page,
     if match_param == 'Request header':
         rate_rules_page.match_req_header_input.click()
         rate_rules_page.select.li[0].click()
-    rate_rules_page.rate_add_condition_value.fill(value[match_param])
+    rate_rules_page.rate_condition_value_input.fill(value[match_param])
     rate_rules_page.save.click()
     # Verify if created
     delete_rate_rules.append((rate_rules_page, name))
     assert rate_rules_page.client_snackbar.text_content() == "Rate rule created"
-    # Delete rule
-    rate_rules_page.delete_button.click()
-    rate_rules_page.confirm_button.click()
-    # Wait message on the snackbar to change
-    rate_rules_page.client_snackbar.get_by_text('Successfully deleted').wait_for()
-    # Make sure every dialog is closed - refresh page
-    rate_rules_page.goto()
-    rate_rules_page.security.click()
-    rate_rules_page.rules_manager.click()
-    rate_rules_page.rate_rules.click()
 
-    for row in rate_rules_page.table.tbody.tr:
-        if row[0].text_content() == name:
-            raise AssertionError("Rule was not deleted")
-    # If rule was successfully deleted - remove it from list
-    delete_rate_rules.pop()
+    open_rate_rule(rate_rules_page, name)
+    # Verification
+    assert rate_rules_page.rate_condition_match_by(
+        group=0, condition=0).input_value == match_param
+    assert rate_rules_page.rate_condition_values.text_content() == value[match_param]
 
 
-def test_rate_rules_add_delete_rule_with_five_conditions(rate_rules_page: Page,
+
+def test_rate_rules_add_rule_with_five_conditions(rate_rules_page: Page,
                                                          delete_rate_rules: list):
     """ Rate Rules - Add WAF rate rule with 5 conditions
 
@@ -159,14 +133,11 @@ def test_rate_rules_add_delete_rule_with_five_conditions(rate_rules_page: Page,
     5. Add 'Value'
     6. Add 4 more conditions
     7. Click 'Save' button
-    8. Click 'Delete' button
-    9. Click 'Confirm' button
 
     Expected Results:
     -----------------
-    7. 'Rate rule created' should appear on the snackbar
-    9.1. 'Successfully deleted' should appear on the snackbar
-    9.2. Rule should be not present in the 'Rate Rule table'
+    7.1 'Rate rule created' should appear on the snackbar
+    7.2 Created conditions should be present in the rule
     """
     # Add rule
     name = fill_in_rule_name(rate_rules_page)
@@ -178,27 +149,19 @@ def test_rate_rules_add_delete_rule_with_five_conditions(rate_rules_page: Page,
             rate_rules_page.rate_conditions(group=0, condition=i).click()
         rate_rules_page.rate_condition_match_by(group=0, condition=i).click()
         rate_rules_page.select_by_name(name='IP address').click()
-        rate_rules_page.rate_add_condition_value.fill(f'10.10.10.{i}')
+        rate_rules_page.rate_condition_value_input.fill(f'10.10.10.{i}')
     rate_rules_page.save.click()
     # Verify if created
     delete_rate_rules.append((rate_rules_page, name))
     assert rate_rules_page.client_snackbar.text_content() == "Rate rule created"
-    # Delete rule
-    rate_rules_page.delete_button.click()
-    rate_rules_page.confirm_button.click()
-    # Wait message on the snackbar to change
-    rate_rules_page.client_snackbar.get_by_text('Successfully deleted').wait_for()
-    # Make sure every dialog is closed - refresh page
-    rate_rules_page.goto()
-    rate_rules_page.security.click()
-    rate_rules_page.rules_manager.click()
-    rate_rules_page.rate_rules.click()
 
-    for row in rate_rules_page.table.tbody.tr:
-        if row[0].text_content() == name:
-            raise AssertionError("Rule was not deleted")
-    # If rule was successfully deleted - remove it from list
-    delete_rate_rules.pop()
+    open_rate_rule(rate_rules_page, name)
+    # Validate conditions
+    for i in range(5):
+        rate_rules_page.rate_conditions(group=0, condition=i).click()
+        rate_rules_page.rate_condition_match_by(group=0, condition=i).click()
+        rate_rules_page.select_by_name(name='IP address').click()
+        assert rate_rules_page.rate_condition_values.text_content() == f'10.10.10.{i}'
 
 
 def test_rate_rules_add_rule_with_empty_condition_value(rate_rules_page: Page,
@@ -231,16 +194,15 @@ def test_rate_rules_add_rule_with_empty_condition_value(rate_rules_page: Page,
     rate_rules_page.rate_new_condition_group.click()
 
     # Trying to save the rule
-    rate_rules_page.rate_add_condition_value.fill('')
+    rate_rules_page.rate_condition_value_input.fill('')
     rate_rules_page.save.click()
     # Verify if created
     delete_rate_rules.append((rate_rules_page, name))
 
-    for item, err in ((rate_rules_page.rate_add_condition_value,
+    for item, err in ((rate_rules_page.rate_condition_value_input,
                        'Type desired value and ENTER to apply.'),):
         assert item.locator('../../p').text_content() == f'Required', \
                         f'{item.selector} should contain error'
-
     # Refresh page
     rate_rules_page.goto()
     rate_rules_page.security.click()
