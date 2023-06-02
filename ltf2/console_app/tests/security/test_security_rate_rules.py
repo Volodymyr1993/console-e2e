@@ -110,7 +110,7 @@ def test_rate_rules_add_rule_with_condition_group(rate_rules_page: Page,
     open_rate_rule(rate_rules_page, name)
     # Verification
     assert rate_rules_page.rate_condition_match_by(
-        group=0, condition=0).input_value == match_param
+        group=0, condition=0).input_value() == match_param
     assert rate_rules_page.rate_condition_values.text_content() == value[match_param]
 
 
