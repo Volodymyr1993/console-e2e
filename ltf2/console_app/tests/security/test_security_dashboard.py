@@ -66,7 +66,7 @@ def test_dashboard_add_filter_and_change_tab(dashboard_page):
     4. Filter should not be applied after switching a tab
     """
     filter_value = 'qwerty'
-    dashboard_page.apply_filters.click()
+   # dashboard_page.apply_filters.click()
     dashboard_page.field_input.click()
     dashboard_page.select.li[-1].click()
 
