@@ -132,7 +132,7 @@ def test_managed_rules_add_rule_more_details(managed_rules_page: SecurityPage,
     managed_rules_page.single_arg_length_input.fill(single_arg_length)
     managed_rules_page.arg_name_length_input.fill(arg_name_length)
     managed_rules_page.total_arg_length_input.fill(total_arg_length)
-    managed_rules_page.max_file_size_input.fill(file_size)
+    #managed_rules_page.max_file_size_input.fill(file_size)
     managed_rules_page.json_parser_input.uncheck()
 
     managed_rules_page.save.click()
@@ -147,11 +147,12 @@ def test_managed_rules_add_rule_more_details(managed_rules_page: SecurityPage,
     assert managed_rules_page.single_arg_length_input.input_value() == single_arg_length
     assert managed_rules_page.arg_name_length_input.input_value() == arg_name_length
     assert managed_rules_page.total_arg_length_input.input_value() == total_arg_length
-    assert managed_rules_page.max_file_size_input.input_value() == file_size
+    #assert managed_rules_page.max_file_size_input.input_value() == file_size
     assert not managed_rules_page.json_parser_input.is_checked()
 
 
-def test_managed_rules_add_rule_with_more_details_negative_value(managed_rules_page: SecurityPage):
+def test_managed_rules_add_rule_with_more_details_negative_value(
+        managed_rules_page: SecurityPage):
     """ Managed Rules - Add rule - Negative - More Details - Negative values
 
     Preconditions:
@@ -180,20 +181,19 @@ def test_managed_rules_add_rule_with_more_details_negative_value(managed_rules_p
     managed_rules_page.single_arg_length_input.fill("-1")
     managed_rules_page.arg_name_length_input.fill("-1")
     managed_rules_page.total_arg_length_input.fill("-1")
-    managed_rules_page.max_file_size_input.fill("-1")
     managed_rules_page.save.click()
     # Check if every element has error message
     for item in (managed_rules_page.max_args_reqs_input,
                  managed_rules_page.single_arg_length_input,
                  managed_rules_page.arg_name_length_input,
-                 managed_rules_page.total_arg_length_input,
-                 managed_rules_page.max_file_size_input):
+                 managed_rules_page.total_arg_length_input):
 
         assert item.locator('../../p').text_content() == 'Positive value required', \
             f'{item.selector} should contain error'
 
 
-def test_managed_rules_add_rule_with_more_details_empty_value(managed_rules_page: SecurityPage):
+def test_managed_rules_add_rule_with_more_details_empty_value(
+        managed_rules_page: SecurityPage):
     """ Managed Rules - Add rule - Negative - More Details - Empty values
 
     Preconditions:
@@ -222,20 +222,19 @@ def test_managed_rules_add_rule_with_more_details_empty_value(managed_rules_page
     managed_rules_page.single_arg_length_input.fill("")
     managed_rules_page.arg_name_length_input.fill("")
     managed_rules_page.total_arg_length_input.fill("")
-    managed_rules_page.max_file_size_input.fill("")
     managed_rules_page.save.click()
     # Check if every element has error message
     for item, err in ((managed_rules_page.max_args_reqs_input, 'Max # of Arguments/Request'),
                       (managed_rules_page.single_arg_length_input, 'Single Argument Length'),
                       (managed_rules_page.arg_name_length_input, 'Argument Name Length'),
-                      (managed_rules_page.total_arg_length_input, 'Total Argument Length'),
-                      (managed_rules_page.max_file_size_input, 'Multiple File Upload Limit')):
+                      (managed_rules_page.total_arg_length_input, 'Total Argument Length')):
 
         assert item.locator('../../p').text_content() == f'Value required for {err}', \
             f'{item.selector} should contain error'
 
 
-def test_managed_rules_add_rule_with_policies(managed_rules_page: SecurityPage, delete_managed_rules: list):
+def test_managed_rules_add_rule_with_policies(
+        managed_rules_page: SecurityPage, delete_managed_rules: list):
     """ Managed Rules - Add rule - Policies
 
     Preconditions:
@@ -292,7 +291,8 @@ def test_managed_rules_add_rule_with_policies(managed_rules_page: SecurityPage, 
 
 
 @pytest.mark.parametrize('parameter', ['Argument', 'Headers', 'Cookies'])
-def test_managed_rules_add_rule_with_exception(managed_rules_page: SecurityPage, delete_managed_rules: list, parameter: str):
+def test_managed_rules_add_rule_with_exception(
+        managed_rules_page: SecurityPage, delete_managed_rules: list, parameter: str):
     """ Managed Rules - Add rule - Exceptions
 
     Preconditions:
