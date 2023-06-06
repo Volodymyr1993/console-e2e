@@ -324,8 +324,6 @@ class SecurityMixin:
             self.page, "input[name='generalSettings.argNameLength']")
         self.total_arg_length_input = PageElement(
             self.page, "input[name='generalSettings.totalArgLength']")
-        self.max_file_size_input = PageElement(
-            self.page, "input[name='generalSettings.maxFileSize']")
         self.json_parser_input = PageElement(
             self.page, "input[name='generalSettings.jsonParser']")
 
@@ -451,7 +449,11 @@ class SecurityMixin:
 
         self.response_header_name = PageElement(self.page,
                                                 "input[name='responseHeaderName']")
-        self.upload_limit = PageElement(self.page, "input[name='maxFileSize']")
+        # TODO fix 2 same selectors
+        self.single_file_upload_limit = PageElement(self.page, "input[name='maxFileSize']")
+        self.multiple_file_upload_limit = PageElement(
+            self.page, "input[name='maxFileSize']")
+
         self.request_content_type = PageElement(self.page,
                                                 "input[name='allowedRequestContentTypes']")
         self.request_content_type_buttons = ListElement(
