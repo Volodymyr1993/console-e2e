@@ -30,7 +30,8 @@ def test_rules_ai_deny_access(property_page):
     property_page.created_rule(num=-1).condition(num=0).click()
     assert property_page.variable_input.input_value() == 'Country', 'Wrong Variable'
     assert property_page.operator_input.input_value() == 'equals', 'Wrong Operator'
-    assert property_page.value_div.text_content() == 'RU', 'Wrong Value'
+    assert property_page.match_value_input.input_value() == 'Russian Federation', \
+        'Wrong Value'
     property_page.close.click()
     # Validate Feature
     property_page.created_rule(num=-1).feature(num=0).click()
