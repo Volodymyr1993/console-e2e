@@ -1,8 +1,8 @@
 from __future__ import annotations
+
 from playwright.sync_api import Page
 from contextlib import contextmanager
-from typing import Union, Optional
-
+from typing import Union, Optional, List
 
 CONDITIONS_MAP = {
     'asn': 'ASN',
@@ -59,6 +59,7 @@ CONDITIONS_MAP = {
  #   'ux_full_desktop': 'UX Full Desktop',
  #   'xhtml_support_level': 'XHTML Support Level',
 }
+
 
 MATCHES = 'matches regular expression'
 DOES_NOT_MATCH = 'does not match regular expression'
@@ -377,7 +378,7 @@ class RuleCondition:
             _, method = item.split('_', 1)
             if method in CONDITIONS_MAP:
                 return lambda *args, **kwargs: \
-                    self.set_operator(CONDITIONS_MAP[method], *args, **kwargs)
+                    self.set_condition(CONDITIONS_MAP[method], *args, **kwargs)
             raise AttributeError(
                 f'{self.__class__} does not have {item} attribute')
 
@@ -393,13 +394,13 @@ class RuleCondition:
         else:
             self.page.add_condition_button.click()
 
-    def set_operator(self,
-                     method: str = '',
-                     operator: str = '',
-                     value: Optional[str, float] = None,
-                     ignore_case: bool = False,
-                     name: Optional[str] = None,
-                     number: Optional[int] = None):
+    def set_condition(self,
+                      method: str = '',
+                      operator: str = '',
+                      value: Optional[str, float, List[str]] = None,
+                      ignore_case: bool = False,
+                      name: Optional[str] = None,
+                      number: Optional[int] = None):
         with self.prepare_condition(method):
             if operator == '' and value:
                 if value == 'no':
@@ -415,9 +416,12 @@ class RuleCondition:
                 self.page.number_input.fill(str(number))
             self.page.operator_input.click()
             self.page.select_by_name(name=operator).click()
-            if operator in ('in', 'not in'):
-                self.page.match_value_input.fill(str(value))
-                self.page.match_value_input.press('Enter')
+            if operator in ('is one of', 'is not one of'):
+                if isinstance(value, str):
+                    value = [value]
+                for v in value:
+                    self.page.match_value_input.fill(str(v))
+                    self.page.match_value_input.press('Enter')
             elif 'less than' in operator or \
                     'greater than' in operator:
                 self.page.match_value_input.fill(str(value))
@@ -426,6 +430,7 @@ class RuleCondition:
                 if operator in (MATCHES, DOES_NOT_MATCH):
                     self.page.rule_checkbox.set_checked(ignore_case)
 
+    # TODO refactor the following methods
     def add_scheme(self,
                    operator: str = '',
                    value: Optional[str, float] = None,
@@ -452,6 +457,17 @@ class RuleCondition:
                 self.page.value_div.fill(value)
                 self.page.rule_checkbox.set_checked(ignore_case)
             else:
-                self.page.method_value_input.click()
+                self.page.match_value_input.click()
                 self.page.select_by_name(name=value).click()
 
+    def add_country(self,
+                    operator: str = '',
+                    value: Optional[str, List[str]] = None):
+        with self.prepare_condition('Country'):
+            self.page.operator_input.click()
+            self.page.select_by_name(name=operator).click()
+            if isinstance(value, str):
+                value = [value]
+            for v in value:
+                self.page.match_value_input.click()
+                self.page.select_by_name(name=v).click()
