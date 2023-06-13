@@ -5,7 +5,7 @@ workflow:
       when: never  # Prevent pipeline run for push event
     - when: always # Run pipeline for all other cases
 
-image: $CI_REGISTRY/limelight-networks/qa/ltf/ltf-containers/ubuntu20_python38
+image: $CI_REGISTRY/limelight-networks/qa/ltf/ltf-containers/ubuntu20_py38_playwright
 
 variables:
   PIP_CONFIG_FILE: ${CI_PROJECT_DIR}/pip.conf  # workaround
@@ -31,9 +31,6 @@ run_tests:
   rules:
     - if: '$MK_DOC == ""'
       when: always
-
-  tags:
-    - docker2
   stage: test
   allow_failure: true
   cache:
@@ -48,8 +45,7 @@ run_tests:
     - pip install -U pip setuptools
     # deploy
     - pip install -e .
-    - playwright install
-    - playwright install-deps
+    - playwright install --with-deps
     - cp ${CI_PROJECT_DIR}/_ltfrc_sample ${HOME}/.ltfrc
   script:
     - export EDGIO_USER=$EDGIO_USER
@@ -68,11 +64,7 @@ run_tests:
       junit: junit-report.xml
     expire_in: 30 days
 
-
-
 email-report:
-  tags:
-    - docker2
   stage: email
   image: python:3.8-alpine
   allow_failure: true
@@ -81,12 +73,10 @@ email-report:
   script:
     - python ${CI_PROJECT_DIR}/.gitlab-email-report.py
 
-
 allure-report:
   rules:
     - if: '$MK_DOC == ""'
       when: always
-
   stage: report
   image: $CI_REGISTRY/limelight-networks/qa/ltf/ltf-containers/allure
   variables:
