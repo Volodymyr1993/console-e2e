@@ -7,6 +7,10 @@ workflow:
 
 image: $CI_REGISTRY/limelight-networks/qa/ltf/ltf-containers/ubuntu20_py38_playwright
 
+default:
+  tags:
+    - docker2
+
 variables:
   PIP_CONFIG_FILE: ${CI_PROJECT_DIR}/pip.conf  # workaround
   # Workaround because packages cannot be listed using the CI_JOB_TOKEN
@@ -19,7 +23,6 @@ variables:
   EMAIL_LIST:
     value: "mbondarenko@edg.io"
     description: "Set the emails to send reports"
-
 
 stages:
   - test
