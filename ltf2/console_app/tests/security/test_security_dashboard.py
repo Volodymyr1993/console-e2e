@@ -1,6 +1,29 @@
 from datetime import datetime, timedelta
 
 
+def make_time_frame(time_range: str):
+    """ Make expected time value with 1 minute difference (now - 1m, now, now + 1m)
+
+    :param time_range: time range, e.g. '1 day', '6 hours', ...
+    :return list of time frames [now - 1m, now, now + 1m] in the following format:
+        'UTC 12/12 13:27 - 12/12 13:42'
+    """
+    try:
+        number, period = time_range
+    except ValueError:
+        number, period = 1, f'{time_range[0]}s'
+    now = datetime.utcnow()
+    future = now + timedelta(minutes=1)
+    past = now - timedelta(minutes=1)
+    frames = []
+    for t in (past, now, future):
+        frames.append(
+            f'UTC '
+            f'{(t - timedelta(**{period: int(number)})).strftime("%m/%d %H:%M")}'
+            f' - {t.strftime("%m/%d %H:%M")}')
+    return frames
+
+
 def test_dashboard_logs_current_time_range(dashboard_page):
     """ Dashboard - Current time range
 
@@ -24,23 +47,8 @@ def test_dashboard_logs_current_time_range(dashboard_page):
         _, *time_range = item_name.split()
         # Select Time Frame
         li.click()
-        try:
-            number, period = time_range
-        except ValueError:
-            number, period = 1, f'{time_range[0]}s'
-
         actual = dashboard_page.dashboard_current_time.text_content()
-        # Make expected value with 1 minute difference (now - 1m, now, now + 1m)
-        now = datetime.utcnow()
-        future = now + timedelta(minutes=1)
-        past = now - timedelta(minutes=1)
-        expected = []
-        for t in (past, now, future):
-            # Format UTC 12/12 13:27 - 12/12 13:42
-            expected.append(
-                f'UTC '
-                f'{(t - timedelta(**{period: int(number)})).strftime("%m/%d %H:%M")}'
-                f' - {t.strftime("%m/%d %H:%M")}')
+        expected = make_time_frame(time_range)
         assert actual in expected, f'Wrong current time for `{item_name}`'
         dashboard_page.dashboard_time_frame_input.click()
 
@@ -105,18 +113,9 @@ def test_event_logs_current_time_range(dashboard_page):
         _, *time_range = item_name.split()
         # Select Time Frame
         li.click()
-        try:
-            number, period = time_range
-        except ValueError:
-            number, period = 1, f'{time_range[0]}s'
-
         actual = dashboard_page.event_log_current_time.text_content()
-        now = datetime.utcnow()
-        # Format UTC 12/12 13:27 - 12/12 13:42
-        expected = (f'UTC '
-                    f'{(now - timedelta(**{period: int(number)})).strftime("%m/%d %H:%M")}'
-                    f' - {now.strftime("%m/%d %H:%M")}')
-        assert actual == expected, f'Wrong current time for `{item_name}`'
+        expected = make_time_frame(time_range)
+        assert actual in expected, f'Wrong current time for `{item_name}`'
         dashboard_page.event_log_time_frame_input.click()
 
 
