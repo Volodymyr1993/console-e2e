@@ -117,8 +117,10 @@ class EnvironmentMixin:
                                                  "button :text('Revert changes')")
         # ======== Rules =========
         self.add_rule = PageElement(self.page, 'button :text-is("Add Rule")')
-        self.add_condition = PageElement(self.page, 'button :text("Add Condition")')
-        self.add_feature = PageElement(self.page, 'button :text("Add Feature")')
+        self.add_element = PageElement(self.page, "button :text-is('Add')")
+        self.select_rule_element = DynamicSelectElement(
+            self.page,
+            "//div[not(@aria-hidden='true')]/div/ul[@role='menu']/*[@role='menuitem' and text()='{name}']")
         self.delete_rule_list = ListElement(self.page,
                                             "//button[@data-qa='delete-button']")
         self.condition_operator_list = ListElement(
