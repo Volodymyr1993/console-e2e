@@ -74,7 +74,8 @@ class RuleFeature:
     @contextmanager
     def prepare_feature(self, feature: str):
         """ Setup page and save feature after creation """
-        self.page.add_feature.last.click()
+        self.page.add_element.last.click()
+        self.page.select_rule_element(name='Add Feature').click()
         self.page.feature_input.click()
         self.page.get_by_text(feature, exact=True).last.click()
         try:
@@ -384,7 +385,8 @@ class RuleCondition:
 
     @contextmanager
     def prepare_condition(self, condition: str):
-        self.page.add_condition.last.click()
+        self.page.add_element.last.click()
+        self.page.select_rule_element(name='Add Condition').click()
         self.page.variable_input.click()
         self.page.variable_select(name=condition).click()
         try:
