@@ -232,8 +232,8 @@ class EnvironmentMixin:
         self.generate_rule = PageElement(self.page, "button :text('Generate Rule')")
         self.created_rule = CreatedRuleElement(
             self.page,
-            "(//h3[text()='Conditions'])[{rule_num}]/following-sibling::div[1]/div[1]/div[{{num}}]",
-            "(//h3[text()='Features'])[{rule_num}]/following-sibling::div[1]/div[1]/div[{{num}}]")
+            "((//div[@data-qa='rule-conditions'])[{rule_num}]//div[@data-qa='rule-condition'])[{{num}}]",
+            "((//div[@data-qa='rule-features'])[{rule_num}]//div[@data-qa='rule-feature'])[{{num}}]")
         # ====== Cache =====
         self.purge_the_cache = PageElement(self.page, "button :text('Purge the Cache')")
         self.purge_cache = PageElement(self.page, "button :text('Purge Cache')")
