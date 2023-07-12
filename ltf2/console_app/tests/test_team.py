@@ -26,7 +26,7 @@ def test_create_team(team_page: TeamPage, teams_to_delete: list):
     """
     team_name = f'testname-{time.time()}'
     team_page.team_switcher_button.click()
-    assert team_page.team_switcher_list.li[-1].text_content() == 'Create a team'
+    assert team_page.team_switcher_list.li[-1].text_content() == 'Create a Team'
     # Create new team
     team_page.team_switcher_list.li[-1].click()
     team_page.input_name.fill(team_name)
@@ -40,7 +40,7 @@ def test_create_team(team_page: TeamPage, teams_to_delete: list):
     # Team name is in team switcher list
     assert team_name in texts
     # last element is `Create a team`
-    assert texts[-1] == 'Create a team'
+    assert texts[-1] == 'Create a Team'
 
 
 @pytest.mark.parametrize("role",
