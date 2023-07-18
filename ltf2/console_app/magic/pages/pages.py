@@ -11,7 +11,7 @@ from ltf2.console_app.magic.pages.components import (LoginMixin, TeamMixin, Comm
                                                      SecurityMixin, EnvironmentMixin)
 from ltf2.console_app.magic.pages.base_page import BasePage
 from ltf2.console_app.magic.ruleconfig import RuleFeature, RuleCondition
-
+from ltf2.console_app.magic.nested_rules import NestedRules
 
 class LoginPage(CommonMixin, LoginMixin, BasePage):
     pass
@@ -26,6 +26,7 @@ class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
         super().__init__(page, url)
         self.condition = RuleCondition(self)
         self.feature = RuleFeature(self)
+        self.nested_rule = NestedRules(self)
 
     def delete_all_rules(self):
         for _ in range(self.delete_rule_list.count()):
