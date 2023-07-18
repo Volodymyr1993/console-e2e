@@ -8,7 +8,7 @@ from playwright.sync_api import Page
 from ltf2.console_app.magic.constants import ACCESS_CONTROL_TYPE, HTTP_METHODS
 from ltf2.console_app.magic.elements import PageElement, UlElement, MembersTableElement, \
     TableElement, ListElement, DynamicPageElement, DynamicSelectElement, IframeElement, \
-    CreatedRuleElement, DynamicRateConditions
+    CreatedRuleElement, DynamicRateConditions, DynamicIndexElement
 
 
 class LoginMixin:
@@ -234,7 +234,17 @@ class EnvironmentMixin:
             self.page,
             "((//div[@data-qa='rule-conditions'])[{rule_num}]//div[@data-qa='rule-condition'])[{{num}}]",
             "((//div[@data-qa='rule-features'])[{rule_num}]//div[@data-qa='rule-feature'])[{{num}}]")
+        self.rule_div = PageElement(self.page,
+                                    "//form/div/div/div[@data-rbd-draggable-context-id]")
+        self.nested_rule_add_element_button = DynamicPageElement(
+            self.page,
+            "((//div[@data-rbd-droppable-id='{id}']/div)[{num}]//button[span='Add'])[last()]")
+        self.rule_add_element_button = DynamicIndexElement(
+            self.page,
+            "(//form/div/div/div[@data-rbd-draggable-id][{num}]//button[span='Add'])[last()]")
+
         # ====== Cache =====
+
         self.purge_the_cache = PageElement(self.page, "button :text('Purge the Cache')")
         self.purge_cache = PageElement(self.page, "button :text('Purge Cache')")
         self.purge = PageElement(self.page, "button :text-is('Purge')")

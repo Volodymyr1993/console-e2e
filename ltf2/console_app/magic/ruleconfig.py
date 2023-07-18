@@ -4,6 +4,9 @@ from playwright.sync_api import Page
 from contextlib import contextmanager
 from typing import Union, Optional, List
 
+from ltf2.console_app.magic.elements import PageElement
+
+
 CONDITIONS_MAP = {
     'asn': 'ASN',
     'brand_name': 'Brand Name',
@@ -68,13 +71,17 @@ MATCHES_SIMPLE = 'matches (simple)'
 
 class RuleFeature:
     """ Class for work with Features in the Rule tab """
-    def __init__(self, page: Page):
+    def __init__(self,
+                 page: Page,
+                 add_feature_button: Optional[PageElement] = None):
         self.page = page
+        self.add_feature_button = (self.page.add_element.last if add_feature_button is None
+                                   else add_feature_button)
 
     @contextmanager
     def prepare_feature(self, feature: str):
         """ Setup page and save feature after creation """
-        self.page.add_element.last.click()
+        self.add_feature_button.click()
         self.page.select_rule_element(name='Add Feature').click()
         self.page.feature_input.click()
         self.page.get_by_text(feature, exact=True).last.click()
@@ -371,8 +378,12 @@ class RuleFeature:
 class RuleCondition:
     """ Class for work with Conditions in the Rule tab """
 
-    def __init__(self, page):
+    def __init__(self,
+                 page: Page,
+                 add_condition_button: Optional[PageElement] = None):
         self.page = page
+        self.add_condition_button = (self.page.add_element.last if add_condition_button is None
+                                   else add_condition_button)
 
     def __getattr__(self, item):
         if item.startswith('add_'):
@@ -385,7 +396,7 @@ class RuleCondition:
 
     @contextmanager
     def prepare_condition(self, condition: str):
-        self.page.add_element.last.click()
+        self.add_condition_button.click()
         self.page.select_rule_element(name='Add Condition').click()
         self.page.variable_input.click()
         self.page.variable_select(name=condition).click()
