@@ -170,7 +170,6 @@ class EnvironmentMixin:
             self.page, "//label[contains(text(), 'Source')]/..//div[@role='textbox']")
         self.destination_input = PageElement(
             self.page, "//label[contains(text(), 'Destination')]/..//div[@role='textbox']")
-
         self.variable_name = PageElement(
             self.page, "//label[text()='Name']/..//div[@role='textbox']")
         self.variable_value = PageElement(
