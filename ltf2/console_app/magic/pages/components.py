@@ -147,6 +147,9 @@ class EnvironmentMixin:
             self.page, "//label[contains(text(), 'Value')]/..//div[@role='textbox']")
         self.match_value_input = PageElement(
             self.page, "//label[contains(text(), 'Value')]/../div/input")
+        self.values_list = PageElement(
+            self.page, "//label[contains(text(), 'Value(s')]/../div"
+        )
         self.add_condition_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Condition']")
         self.feature_input = PageElement(self.page,
@@ -167,6 +170,7 @@ class EnvironmentMixin:
             self.page, "//label[contains(text(), 'Source')]/..//div[@role='textbox']")
         self.destination_input = PageElement(
             self.page, "//label[contains(text(), 'Destination')]/..//div[@role='textbox']")
+
         self.variable_name = PageElement(
             self.page, "//label[text()='Name']/..//div[@role='textbox']")
         self.variable_value = PageElement(
