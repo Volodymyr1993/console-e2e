@@ -38,6 +38,7 @@ def test_rules_ai_deny_access(property_page):
     assert property_page.feature_input.input_value() == 'Deny Access', 'Wrong Feature'
     assert property_page.rule_checkbox.is_checked(), 'Feature is not enabled'
 
+
 def test_rules_ai_deny_all_except_one(property_page):
     """Rules - AI rule - Deny all requests except from one country
 
@@ -77,6 +78,7 @@ def test_rules_ai_deny_all_except_one(property_page):
     property_page.created_rule(num=-1).feature(num=0).click()
     assert property_page.feature_input.input_value() == 'Deny Access', 'Wrong Feature'
     assert property_page.rule_checkbox.is_checked(), 'Feature is not enabled'
+
 
 def test_rules_ai_deny_all_sanctioned_countries(property_page):
     """Rules - AI rule - Deny access for all sanctioned countries
@@ -130,6 +132,7 @@ def test_rules_ai_deny_all_sanctioned_countries(property_page):
     assert property_page.feature_input.input_value() == 'Deny Access', 'Wrong Feature'
     assert property_page.rule_checkbox.is_checked(), 'Feature is not enabled'
 
+
 def test_rules_ai_url_redirect(property_page):
     """Rules - AI rule - URL redirect
 
@@ -174,7 +177,8 @@ def test_rules_ai_url_redirect(property_page):
         'Wrong Destination'
     assert not property_page.rule_checkbox.is_checked(), "Wrong 'ignore case'"
 
-def test_rules_ai_generate_cache_rule_for_statis_object(property_page):
+
+def test_rules_ai_generate_cache_rule_for_static_object(property_page):
     """Rules - AI rule - Generate cache rule for static objects.
 
     Preconditions:
