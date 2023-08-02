@@ -8,10 +8,12 @@ and BasePage class. Please note that the position of the mixins and BasePage is 
 from playwright.sync_api import Page
 
 from ltf2.console_app.magic.pages.components import (LoginMixin, TeamMixin, CommonMixin,
-                                                     SecurityMixin, EnvironmentMixin)
+                                                     SecurityMixin, EnvironmentMixin,
+                                                     DeploymentsMixin)
 from ltf2.console_app.magic.pages.base_page import BasePage
 from ltf2.console_app.magic.ruleconfig import RuleFeature, RuleCondition
 from ltf2.console_app.magic.nested_rules import NestedRules
+
 
 class LoginPage(CommonMixin, LoginMixin, BasePage):
     pass
@@ -46,3 +48,9 @@ class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
 
 class SecurityPage(CommonMixin, SecurityMixin, BasePage):
     pass
+
+
+class DeploymentsPage(CommonMixin, DeploymentsMixin, BasePage):
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+        self.last_deployed = self.table.tbody.tr[0][1]
