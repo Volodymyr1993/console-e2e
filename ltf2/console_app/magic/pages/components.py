@@ -269,7 +269,7 @@ class DeploymentsMixin:
         # Change it when data-qa attr is ready
         self.resume_logs = PageElement(
             self.page,
-            "//label[span='Filter by my IP address']/../../../button").first
+            "//button[@data-qa='resume-logs']")
 
 
 
