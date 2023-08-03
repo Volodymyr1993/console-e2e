@@ -265,7 +265,12 @@ class ActivityMixin:
 class DeploymentsMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
-        # TODO
+        self.serverless = PageElement(self.page, '#server-logs')
+        # Change it when data-qa attr is ready
+        self.resume_logs = PageElement(
+            self.page,
+            "//button[@data-qa='resume-logs']")
+
 
 
 class SecurityMixin:

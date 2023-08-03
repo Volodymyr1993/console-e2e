@@ -22,7 +22,7 @@ Credentials = namedtuple('Credentials', 'users password')
 
 
 @pytest.fixture(scope='session')
-def ltfrc() -> CaseInsensitiveDict:
+def ltfrc_console_app() -> CaseInsensitiveDict:
     """
     Returns .ltfrc config dict
     """
@@ -30,14 +30,14 @@ def ltfrc() -> CaseInsensitiveDict:
 
 
 @pytest.fixture(scope='session')
-def base_url(ltfrc: CaseInsensitiveDict) -> str:
-    return ltfrc['url']
+def base_url(ltfrc_console_app: CaseInsensitiveDict) -> str:
+    return ltfrc_console_app['url']
 
 
 @pytest.fixture(scope='session')
-def credentials(ltfrc: CaseInsensitiveDict) -> Credentials:
-    users_str = os.getenv('EDGIO_USER') or ltfrc.get('users')
-    password = os.getenv('EDGIO_PASSWORD') or ltfrc.get('password')
+def credentials(ltfrc_console_app: CaseInsensitiveDict) -> Credentials:
+    users_str = os.getenv('EDGIO_USER') or ltfrc_console_app.get('users')
+    password = os.getenv('EDGIO_PASSWORD') or ltfrc_console_app.get('password')
     if not password or not users_str:
         raise RuntimeError('EDGIO_USER and EDGIO_PASSWORD should be '
                            'set as env variables or in ~/.ltfrc file')
@@ -47,14 +47,14 @@ def credentials(ltfrc: CaseInsensitiveDict) -> Credentials:
 
 @pytest.fixture(scope="session")
 def browser_type_launch_args(browser_type_launch_args: dict,
-                             ltfrc: CaseInsensitiveDict,
+                             ltfrc_console_app: CaseInsensitiveDict,
                              request):
     """ Update browser parameters """
     headed = request.config.getoption('--headed')
     slow_mo = request.config.getoption('--slowmo')
     return {
         **browser_type_launch_args,
-        'headless': not (headed or bool(ltfrc.get('headed'))),
+        'headless': not (headed or bool(ltfrc_console_app.get('headed'))),
         'slow_mo': slow_mo,
         'timeout': 60 * 1000,  # 60 sec
        # 'devtools': True,

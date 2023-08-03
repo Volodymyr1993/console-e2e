@@ -68,10 +68,10 @@ def delete_sec_app():
 def security_logged(use_login_state: dict,
                     page: Page,
                     base_url: str,
-                    ltfrc) -> Generator[Page, None, None]:
+                    ltfrc_console_app) -> Generator[Page, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
-    main_page = SecurityPage(page, url=urljoin(base_url, ltfrc['team']))
+    main_page = SecurityPage(page, url=urljoin(base_url, ltfrc_console_app['team']))
     main_page.goto()
     main_page.security.click()
     # Close the status banner if present

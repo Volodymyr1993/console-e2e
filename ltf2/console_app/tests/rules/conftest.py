@@ -11,14 +11,14 @@ from playwright.sync_api import Page
 @pytest.fixture
 def property_page(use_login_state: dict,
                   page: Page,
-                  ltfrc: dict,
+                  ltfrc_console_app: dict,
                   base_url: str) -> Generator[Page, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
 
     try:
-        property_path = \
-            f"{ltfrc['team']}/{ltfrc['property']}/env/production/configuration/rules"
+        property_path = (f"{ltfrc_console_app['team']}/{ltfrc_console_app['property']}"
+                         "/env/production/configuration/rules")
     except KeyError:
         raise ValueError(f'team and property variables are missed in .ltfrc')
     prop_page = PropertyPage(page, url=urljoin(base_url, property_path))
