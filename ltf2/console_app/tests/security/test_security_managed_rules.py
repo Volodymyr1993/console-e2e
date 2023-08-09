@@ -261,10 +261,8 @@ def test_managed_rules_add_rule_with_policies(
     name = fill_in_rule_name(managed_rules_page)
     managed_rules_page.policies.click()
 
-    # Select last one Ruleset ECRS
-    managed_rules_page.ruleset_input.click()
-    ruleset = managed_rules_page.ruleset_select.li[-1].text_content()
-    managed_rules_page.ruleset_select.li[-1].click()
+    # Get Ruleset ECRS name
+    ruleset = managed_rules_page.ruleset_input.input_value()
 
     # Select first one Threshold
     managed_rules_page.threshold_input.click()
