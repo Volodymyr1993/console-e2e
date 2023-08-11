@@ -147,9 +147,14 @@ class EnvironmentMixin:
             self.page, "//label[contains(text(), 'Value')]/..//div[@role='textbox']")
         self.match_value_input = PageElement(
             self.page, "//label[contains(text(), 'Value')]/../div/input")
+        self.match_tags_inputs = PageElement(
+            self.page, "//label[contains(text(), 'Value')]/../div")
+        self.match_compress_content_type_inputs = PageElement(
+            self.page, "//label[contains(text(), 'Compress Content Type')]/../div")
+        self.match_value_regex = PageElement(
+            self.page, "//label[contains(text(), 'Match Value')]/..//div[@role='textbox']")
         self.values_list = PageElement(
-            self.page, "//label[contains(text(), 'Value(s')]/../div"
-        )
+            self.page, "//label[contains(text(), 'Value(s')]/../div")
         self.add_condition_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Condition']")
         self.feature_input = PageElement(self.page,
@@ -179,6 +184,8 @@ class EnvironmentMixin:
         self.response_headers = PageElement(
             self.page,
             "//label[text()='Response Headers']/../div/input")
+        self.parameter_name = PageElement(self.page,
+                                          "//label[text()='Parameter Name']/..//div[@role='textbox']")
         self.custom_log_field = PageElement(
             self.page, "//label[text()='Custom Log Field']/../div/input")
         self.response_body = PageElement(
@@ -237,6 +244,7 @@ class EnvironmentMixin:
             self.page,
             "((//div[@data-qa='rule-conditions'])[{rule_num}]//div[@data-qa='rule-condition'])[{{num}}]",
             "((//div[@data-qa='rule-features'])[{rule_num}]//div[@data-qa='rule-feature'])[{{num}}]")
+        self.single_condition = ListElement(self.page, "//div[@data-qa='rule-condition']")
         self.rule_div = PageElement(self.page,
                                     "//form/div/div/div[@data-rbd-draggable-context-id]")
         self.nested_rule_add_element_button = DynamicPageElement(
