@@ -10,6 +10,7 @@ import pytest
 from ltf2.util.config import get_ltfrc_section
 from playwright.sync_api import Page, Browser
 from requests.structures import CaseInsensitiveDict
+from playwright._impl._api_types import TimeoutError
 
 from ltf2.console_app.magic.helpers import delete_teams
 from ltf2.console_app.magic.constants import PAGE_TIMEOUT
@@ -80,6 +81,10 @@ def saved_login(browser: Browser,
     login_page.submit.click()
     login_page.password.fill(credentials.password)
     login_page.submit.click()
+    try:
+        login_page.team_switcher_button.wait_for()
+    except TimeoutError:
+        raise AssertionError(f"Cannot login to {base_url}")
     login_page.team_switcher_button.wait_for()
     assert not login_page.submit.is_visible()
     # Save storage state into the file.
