@@ -13,15 +13,15 @@ def test_negative_wrong_email_format(login_page: LoginPage, credentials: namedtu
     Steps:
     ------
     1. Put wrong email format string in Email field
-    2. Push 'Sign In' button
+    2. Push 'Next' button
 
     Expected Results:
     -----------------
-    2. 'Invalid email' message should appear
+    2. 'Invalid username' message should appear
     """
-    login_page.email.fill('wrong email format')
-    login_page.password.fill(credentials.password)
-    assert login_page.error_message.text_content() == 'Invalid email'
+    login_page.username.fill('wrong username format')
+    login_page.submit.click()
+    assert login_page.invalid_email_or_password_message.text_content() == 'Invalid username'
 
 
 def test_negative_empty_email_password(login_page: LoginPage, credentials: namedtuple):
