@@ -10,6 +10,7 @@ import pytest
 from ltf2.util.config import get_ltfrc_section
 from playwright.sync_api import Page, Browser
 from requests.structures import CaseInsensitiveDict
+from playwright._impl._api_types import TimeoutError
 
 from ltf2.console_app.magic.helpers import delete_teams
 from ltf2.console_app.magic.constants import PAGE_TIMEOUT
@@ -71,14 +72,21 @@ def saved_login(browser: Browser,
     """
     context = browser.new_context()
     page = context.new_page()
-    # Log in
-    login_page = LoginPage(page, url=urljoin(base_url, 'login'))
+    # go to login page
+    login_page = LoginPage(page, url=base_url)
     login_page.goto()
-    login_page.email.fill(credentials.users[0])
+    login_page.login_button.click()
+    # perform login
+    login_page.username.fill(credentials.users[0])
+    login_page.submit.click()
     login_page.password.fill(credentials.password)
     login_page.submit.click()
-    login_page.login_successful.wait_for()
-    assert login_page.login_successful.text_content() == 'Login successful!'
+    try:
+        login_page.team_switcher_button.wait_for()
+    except TimeoutError:
+        raise AssertionError(f"Cannot login to {base_url}")
+    login_page.team_switcher_button.wait_for()
+    assert not login_page.submit.is_visible()
     # Save storage state into the file.
     storage_state = {'cookies': context.cookies()}
     context.close()
@@ -152,6 +160,7 @@ def login_page(page: Page,
                base_url: str) -> Generator[Page, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
-    login_page = LoginPage(page, url=urljoin(base_url, 'login'))
+    login_page = LoginPage(page, url=base_url)
     login_page.goto()
+    login_page.login_button.click()
     yield login_page

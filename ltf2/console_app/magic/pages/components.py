@@ -14,14 +14,15 @@ from ltf2.console_app.magic.elements import PageElement, UlElement, MembersTable
 class LoginMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
-        self.email = PageElement(self.page, '#email')
+        self.login_button = PageElement(self.page, "button :text('Login')")
+        self.username = PageElement(self.page, '#username')
         self.password = PageElement(self.page, '#password')
+        self.next_button = PageElement(self.page, "button :text('Next')")
         self.submit = PageElement(self.page, 'button[type=submit]')
         self.error_message = PageElement(self.page, 'p.Mui-error')
         self.invalid_email_or_password_message = PageElement(
             self.page,
-            'p.MuiTypography-colorError')
-        self.login_successful = PageElement(self.page, '#client-snackbar')
+            '//*[contains(@class, "Login-errorWhite")]/*[text()]')
 
 
 class CommonMixin:
@@ -64,7 +65,7 @@ class CommonMixin:
             self.page,
             'div[role="dialog"] button:has-text("Create a Team")')
 
-        self.team_switcher_button = PageElement(self.page, '#team-switcher')
+        self.team_switcher_button = PageElement(self.page, '//button[@id="team-switcher"]')
         self.team_switcher_list = UlElement(self.page, 'div:not([id="user-menu"]) div ul')
         self.delete_team_checkbox = PageElement(
             self.page,
