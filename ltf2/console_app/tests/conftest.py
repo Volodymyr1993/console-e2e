@@ -71,14 +71,17 @@ def saved_login(browser: Browser,
     """
     context = browser.new_context()
     page = context.new_page()
-    # Log in
-    login_page = LoginPage(page, url=urljoin(base_url, 'login'))
+    # go to login page
+    login_page = LoginPage(page, url=base_url)
     login_page.goto()
-    login_page.email.fill(credentials.users[0])
+    login_page.login_button.click()
+    # perform login
+    login_page.username.fill(credentials.users[0])
+    login_page.submit.click()
     login_page.password.fill(credentials.password)
     login_page.submit.click()
-    login_page.login_successful.wait_for()
-    assert login_page.login_successful.text_content() == 'Login successful!'
+    login_page.team_switcher_button.wait_for()
+    assert not login_page.submit.is_visible()
     # Save storage state into the file.
     storage_state = {'cookies': context.cookies()}
     context.close()
