@@ -23,6 +23,8 @@ class LoginMixin:
         self.invalid_email_or_password_message = PageElement(
             self.page,
             '//*[contains(@class, "Login-errorWhite")]/*[text()]')
+        self.skip_this_step = PageElement(self.page,
+                                          "//label[text()='Skip This Step']")
 
 
 class CommonMixin:

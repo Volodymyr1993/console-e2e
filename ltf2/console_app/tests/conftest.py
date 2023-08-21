@@ -81,11 +81,16 @@ def saved_login(browser: Browser,
     login_page.submit.click()
     login_page.password.fill(credentials.password)
     login_page.submit.click()
+
+    # Skip multi-factor auth if present
     try:
-        login_page.team_switcher_button.wait_for()
+        login_page.skip_this_step.click(timeout=2000)
+    except TimeoutError:
+        pass
+    try:
+        login_page.overview.wait_for()
     except TimeoutError:
         raise AssertionError(f"Cannot login to {base_url}")
-    login_page.team_switcher_button.wait_for()
     assert not login_page.submit.is_visible()
     # Save storage state into the file.
     storage_state = {'cookies': context.cookies()}
