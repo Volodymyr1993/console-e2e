@@ -14,10 +14,10 @@ from ltf2.console_app.magic.elements import PageElement, UlElement, MembersTable
 class LoginMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
-        self.login_button = PageElement(self.page, "//button[contains(span, 'Login')]")
+        self.login_button = PageElement(self.page, "//button//span[text()='Login']")
         self.username = PageElement(self.page, "//input[@id='username']")
         self.password = PageElement(self.page, "//input[@id='password']")
-        self.next_button = PageElement(self.page, "//button[contains(span, 'Next')]")
+        self.next_button = PageElement(self.page, "//button//span[text()='Next']")
         self.submit = PageElement(self.page, "//button[@type='submit']")
         self.error_message = PageElement(self.page, "//p[contains(@class, 'Mui-error')]")
         self.invalid_email_or_password_message = PageElement(
@@ -33,18 +33,18 @@ class CommonMixin:
         super().__init__(page, url)
         # General
         self.input_name = PageElement(self.page, "//input[@id='name']")
-        self.client_snackbar = PageElement(self.page, "//.[@id='client-snackbar']")
-        self.save = PageElement(self.page, "//button[contains(span, 'Save')]")
-        self.create = PageElement(self.page, "//button[contains(span, 'Create')]")
-        self.close = PageElement(self.page, "//button[contains(span, 'Close')]").nth(1)
+        self.client_snackbar = PageElement(self.page, "//*[@id='client-snackbar']")
+        self.save = PageElement(self.page, "//button//span[text()='Save']")
+        self.create = PageElement(self.page, "//button//span[text()='Create']")
+        self.close = PageElement(self.page, "//button//span[text()='Close']").nth(1)
         self.select = UlElement(self.page, "//ul[@role='listbox']")
         self.select_by_name = DynamicSelectElement(
             self.page, "//ul[@role='listbox']/li[text()='{name}']")
         # self.select_by_name = DynamicPageElement(self.page, "//ul[@role='listbox']/li[text()='{name}']")
         self.table = TableElement(self.page, "//table")
-        self.submit_button = PageElement(self.page, "//button[contains(span, 'Submit')]")
-        self.delete_button = PageElement(self.page, "//button[contains(span, 'Delete')]")
-        self.confirm_button = PageElement(self.page, "//button[contains(span, 'Confirm')]")
+        self.submit_button = PageElement(self.page, "//button//span[text()='Submit']")
+        self.delete_button = PageElement(self.page, "//button//span[text()='Delete']")
+        self.confirm_button = PageElement(self.page, "//button//span[text()='Confirm']")
 
         self.create_org_button = PageElement(self.page, "//span[text()='Create an Organization']")
 
@@ -57,7 +57,7 @@ class CommonMixin:
         self.activity = PageElement(self.page, "//span[text()='Activity']")
         self.members = PageElement(self.page, "//span[text()='Members']")
         self.settings = PageElement(self.page, "//span[text()='Settings']")
-        self.security = PageElement(self.page, "//span[text()='Security']")
+        self.security = PageElement(self.page, "//div/span[text()='Security']")
 
         # Create organization dialog
         self.button_create_org_dialog = PageElement(
@@ -81,9 +81,9 @@ class CommonMixin:
 class OrgMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
-        self.add_member_button = PageElement(self.page, "//button[contains(span, 'Add Members')]")
+        self.add_member_button = PageElement(self.page, "//button//span[text()='Add Members']")
         self.invite_member_button = PageElement(self.page,
-                                                "//button[contains(span, 'Invite Members')]")
+                                                "//button//span[text()='Invite Members']")
         self.email = PageElement(self.page, "//input[@id='email']")
         self.plus_button = PageElement(self.page, "//button[@title='Add']")
         self.role_select_input = PageElement(
@@ -92,31 +92,31 @@ class OrgMixin:
 
         self.members_table = MembersTableElement(self.page, "//table")
         # Create property
-        self.new_property_button = PageElement(self.page, "//div[text()='New Property']")
+        self.new_property_button = PageElement(self.page, "//span[text()='New Property']")
         self.origin_hostname_input = PageElement(
             self.page, "//input[@name='origins.0.hosts.0.hostname']")
         self.create_property_button = PageElement(self.page,
-                                                  "//div[text()='Create Property']")
+                                                  "//span[text()='Create Property']")
 
 
 class EnvironmentMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
-        self.environments = PageElement(self.page, "div :text('Environments')")
+        self.environments = PageElement(self.page, "//span[text()='Environments']")
         self.new_environment_button = PageElement(self.page,
-                                                  "div :text('New Environment')")
-        self.configuration = PageElement(self.page, "div :text('Configuration')")
-        self.hostnames = PageElement(self.page, "div :text('Hostnames')")
-        self.origins = PageElement(self.page, "div :text('Origins')")
-        self.rules = PageElement(self.page, "div :text('Rules')")
+                                                  "//span[text()='New Environment']")
+        self.configuration = PageElement(self.page, "//span[text()='Configuration']")
+        self.hostnames = PageElement(self.page, "//span[text()='Hostnames']")
+        self.origins = PageElement(self.page, "//span[text()='Origins']")
+        self.rules = PageElement(self.page, "//span[text()='Rules']")
 
-        self.environment = DynamicPageElement(self.page, "a div :text('{name}')")
-        self.revert_button = PageElement(self.page, "button :text('Revert')")
+        self.environment = DynamicPageElement(self.page, "//a/div[@role='button']//span[text()='{name}']")
+        self.revert_button = PageElement(self.page, "//button//span[text()='Revert']")
         self.revert_changes_button = PageElement(self.page,
-                                                 "button :text('Revert changes')")
+                                                 "//button//span[text()='Revert changes']")
         # ======== Rules =========
-        self.add_rule = PageElement(self.page, 'button :text-is("Add Rule")')
-        self.add_element = PageElement(self.page, "button :text-is('Add')")
+        self.add_rule = PageElement(self.page, "//button//span[text()='Add Rule']")
+        self.add_element = PageElement(self.page, "//button//span[text()='Add']")
         self.select_rule_element = DynamicSelectElement(
             self.page,
             "//div[not(@aria-hidden='true')]/div/ul[@role='menu']/*[@role='menuitem' and text()='{name}']")
@@ -127,10 +127,10 @@ class EnvironmentMixin:
         self.select_operator_name = DynamicSelectElement(
             self.page,
             "//div[@role='presentation' and not(@aria-hidden='true')]/div/ul[@role='menu']/li[text()='{name}']")
-        self.delete_rule_button = PageElement(self.page, "button :text('Delete Rule')")
+        self.delete_rule_button = PageElement(self.page, "//button//span[text()='Delete Rule']")
         self.add_feature_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Feature']")
-        self.deploy_changes = PageElement(self.page, "button :text('Deploy Changes')")
+        self.deploy_changes = PageElement(self.page, "//button//span[text()='Deploy Changes']")
 
         self.variable_input = PageElement(self.page,
                                           "//label[text()='Variable']/../div/input")
@@ -139,7 +139,7 @@ class EnvironmentMixin:
         self.operator_input = PageElement(self.page,
                                           "//label[text()='Operator']/../div/input")
         self.rule_checkbox = PageElement(self.page, "//label//input[@type='checkbox']")
-        self.code_input = PageElement(self.page, "input[name='feature.value.code']")
+        self.code_input = PageElement(self.page, "//input[@name='feature.value.code']")
         self.name_input = PageElement(
             self.page, "//label[contains(text(), 'Name')]/..//div[@role='textbox']")
         self.value_div = PageElement(
@@ -157,7 +157,7 @@ class EnvironmentMixin:
         self.add_condition_button = PageElement(
             self.page, "//button[@type='submit']/span[text()='Add Condition']")
         self.feature_input = PageElement(self.page,
-                                         "input[placeholder='Search Features...']")
+                                         "//input[@placeholder='Search Features...']")
         self.feature_select = DynamicSelectElement(
             self.page,
             "//ul[@role='listbox']/li/div[text()='{type}']/../ul/li[text()='{name}']")
@@ -165,11 +165,11 @@ class EnvironmentMixin:
             self.page,
             "//label[contains(text(), 'Header Name')]/..//div[@role='textbox']")
         self.response_headers = PageElement(
-            self.page, "input[name='remove_response_headers']")
+            self.page, "//input[@name='remove_response_headers']")
         self.origin_response_headers = PageElement(
             self.page, "//label[text()='Response Headers']/../div/input")
         self.match_style_input = PageElement(
-            self.page, "input[name='feature.value.0.syntax']")
+            self.page, "//input[@name='feature.value.0.syntax']")
         self.source_input = PageElement(
             self.page, "//label[contains(text(), 'Source')]/..//div[@role='textbox']")
         self.destination_input = PageElement(
@@ -179,7 +179,7 @@ class EnvironmentMixin:
         self.variable_value = PageElement(
             self.page, "//label[text()='Value']/..//div[@role='textbox']")
         self.number_input = PageElement(self.page,
-                                        "input[name='condition.ruleVariable.value']")
+                                        "//input[@name='condition.ruleVariable.value']")
         self.response_headers = PageElement(
             self.page,
             "//label[text()='Response Headers']/../div/input")
@@ -190,14 +190,14 @@ class EnvironmentMixin:
         self.response_body = PageElement(
             self.page, "//label[text()='Response Body']/..//textarea")
         self.kbytes_per_second = PageElement(
-            self.page, "input[name='feature.value.kbytes_per_sec']")
+            self.page, "//input[@name='feature.value.kbytes_per_sec']")
         self.prebuf_seconds = PageElement(
-            self.page, "input[name='feature.value.prebuf_seconds']")
+            self.page, "//input[@name='feature.value.prebuf_seconds']")
         self.header_treatment_input = PageElement(
             self.page, "//label[text()='Cache Control Header Treatment']/../div/input")
-        self.option_input = PageElement(self.page, "input[name='cache-key-query-string']")
-        self.include_input = PageElement(self.page, "input[name='include']")
-        self.exclude_input = PageElement(self.page, "input[name='exclude']")
+        self.option_input = PageElement(self.page, "//input[@name='cache-key-query-string']")
+        self.include_input = PageElement(self.page, "//input[@name='include']")
+        self.exclude_input = PageElement(self.page, "//input[@name='exclude']")
         self.cacheable_request_body_size = PageElement(
             self.page, "//label[text()='Cacheable Request Body Size']/../div/input")
         self.compress_content_types_input = PageElement(
@@ -210,35 +210,35 @@ class EnvironmentMixin:
         self.expires_header_treatment_input = PageElement(
             self.page, "//label[text()='Expires Header Treatment']/../div/input")
         self.duration_value = PageElement(
-            self.page, "input[name='feature.value'][type='number']")
+            self.page, "//input[@name='feature.value' and @type='number']")
         self.duration_unit = PageElement(self.page,
-                                         "input[name='feature.value'][type='text']")
+                                         "//input[@name='feature.value' and @type='text']")
         self.response_status_code = PageElement(
-            self.page, "input[name='feature.value.0.key']")
+            self.page, "//input[@name='feature.value.0.key']")
         self.max_age_value = PageElement(self.page,
-                                         "input[name='feature.value.0.value'][type='number']")
+                                         "//input[@name='feature.value.0.value' and @type='number']")
         self.max_age_unit = PageElement(self.page,
-                                        "input[name='feature.value.0.value'][type='text']")
+                                        "//input[name='feature.value.0.value' and @type='text']")
         self.service_worker_max_age_value = PageElement(
-            self.page, "input[name='feature.value'][type='number']")
+            self.page, "//input[@name='feature.value' and @type='number']")
         self.service_worker_max_age_unit = PageElement(
-            self.page, "input[name='feature.value'][type='text']")
+            self.page, "//input[@name='feature.value' and @type='text']")
         self.ignore_origin_no_cache = PageElement(self.page,
                 "//label[text()='Ignore no-cache headers when the origin returns one of these status codes:']/../div/input")
         self.cacheable_status_codes = PageElement(
             self.page, "//label[text()='Cacheable Status Codes']/../div/input")
         self.feature_value_input = PageElement(
-            self.page, "input[name='feature.value']")
+            self.page, "//input[@name='feature.value']")
         self.proxy_special_headers_input = PageElement(
             self.page, "//label[text()='Proxy Special Headers']/../div/input")
         self.set_origin_input = PageElement(self.page,
                                             "//label[text()='Origin Name']/../div/input")
         # AI Rules
         self.add_rule_using_ai = PageElement(self.page,
-                                             "button :text('Add Rule Using AI')")
+                                             "//button//span[text()='Add Rule Using AI']")
         self.add_rule_using_ai_input = PageElement(
             self.page, "//input[@data-qa='add-rule-using-ai-text']")
-        self.generate_rule = PageElement(self.page, "button :text('Generate Rule')")
+        self.generate_rule = PageElement(self.page, "//button//span[text()='Generate Rule']")
         self.created_rule = CreatedRuleElement(
             self.page,
             "((//div[@data-qa='rule-conditions'])[{rule_num}]//div[@data-qa='rule-condition'])[{{num}}]",
@@ -255,12 +255,12 @@ class EnvironmentMixin:
 
         # ====== Cache =====
 
-        self.purge_the_cache = PageElement(self.page, "button :text('Purge the Cache')")
-        self.purge_cache = PageElement(self.page, "button :text('Purge Cache')")
-        self.purge = PageElement(self.page, "button :text-is('Purge')")
-        self.purge_all_entries = PageElement(self.page, "input[value='all_entries']")
-        self.purge_by_path = PageElement(self.page, "input[value='path']")
-        self.purge_by_key = PageElement(self.page, "input[value='surrogate_key']")
+        self.purge_the_cache = PageElement(self.page, "//button//span[text()=Purge the Cache']")
+        self.purge_cache = PageElement(self.page, "//button//span[text()='Purge Cache']")
+        self.purge = PageElement(self.page, "//button//span[text()='Purge']")
+        self.purge_all_entries = PageElement(self.page, "//input[@value='all_entries']")
+        self.purge_by_path = PageElement(self.page, "//input[@value='path']")
+        self.purge_by_key = PageElement(self.page, "//input[@value='surrogate_key']")
 
 
 class ActivityMixin:
@@ -282,74 +282,75 @@ class DeploymentsMixin:
 class SecurityMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
-        self.event_logs = PageElement(self.page, "div :text('Logs')")
+        self.event_logs = PageElement(self.page, "//span[text()='Logs']")
         self.security_application = PageElement(self.page,
-                                                "div :text('Security Apps')")
-        self.dashboard = PageElement(self.page, "div :text('Dashboard')")
-        self.rules_manager = PageElement(self.page, "div :text('Rules Manager')")
-        self.access_rules = PageElement(self.page, "div :text('Access Rules')")
-        self.rate_rules = PageElement(self.page, "div :text('Rate Rules')")
-        self.bot_rules = PageElement(self.page, "div :text('Bot Rules')")
-        self.custom_rules = PageElement(self.page, "div :text('Custom Rules')")
-        self.managed_rules = PageElement(self.page, "div :text('Managed Rules')")
+                                                "//span[text()='Security Apps']")
+        self.dashboard = PageElement(self.page, "//span[text()='Dashboard']")
+        self.rules_manager = PageElement(self.page, "//span[text()='Rules Manager']")
+        self.access_rules = PageElement(self.page, "//span[text()='Access Rules']")
+        self.rate_rules = PageElement(self.page, "//span[text()='Rate Rules']")
+        self.bot_rules = PageElement(self.page, "//span[text()='Bot Rules']")
+        self.custom_rules = PageElement(self.page, "//span[text()='Custom Rules']")
+        self.managed_rules = PageElement(self.page, "//span[text()='Managed Rules']")
 
-        self.add_rule = PageElement(self.page, "button :text('Add Rule')")
-        self.no_data_to_display = PageElement(self.page, "div :text('No data to display')")
+        self.add_rule = PageElement(self.page, "//button//span[text()='Add Rule']")
+        self.no_data_to_display = PageElement(self.page, "//span[text()='No data to display']")
 
         # ========= Rate Rules ======
 
-        self.input_num = PageElement(self.page, 'input#num')
-        self.add_rate_rule = PageElement(self.page, "button :text('New Rate Ruleset')")
-        self.rate_new_condition_group = PageElement(self.page, "button :text-is('New Condition Group')")
-        self.rate_new_condition = PageElement(self.page, 'button :text-is("New Condition")')
-        self.rate_condition_value_input = PageElement(self.page, 'input[placeholder="Add..."]')
+        self.input_num = PageElement(self.page, "//input[@id='num']")
+        self.add_rate_rule = PageElement(self.page, "//button//span[text()='New Rate Ruleset']")
+        self.rate_new_condition_group = PageElement(
+            self.page,"//button//span[text()='New Condition Group']")
+        self.rate_new_condition = PageElement(self.page, "//button//span[text()= 'New Condition']")
+        self.rate_condition_value_input = PageElement(self.page, "//input[@placeholder='Add...']")
         self.rate_conditions = DynamicRateConditions(
             self.page,
             "//button[@data-rbd-draggable-context-id='{group}' and @title='Condition {condition}']"
             )
         self.rate_condition_match_by = DynamicPageElement(
             self.page,
-            "input[name='conditionGroups[{group}].conditions[{condition}].target.type']")
+            "//input[@name='conditionGroups[{group}].conditions[{condition}].target.type']")
         self.rate_condition_values = ListElement(
             self.page,
             "//label[text()='Values']/..//div[@role='button']")
-        self.match_req_header_input = PageElement(self.page, 'input[placeholder="Type or select header name"]')
+        self.match_req_header_input = PageElement(self.page, '//input[@placeholder="Type or select header name"]')
 
         # ======== Managed Rules ==========
 
-        self.add_managed_rule = PageElement(self.page, "button :text('New Managed Ruleset')")
+        self.add_managed_rule = PageElement(self.page, "//button//span[text()='New Managed Ruleset']")
 
         # Ignore list
         self.header_name_input = PageElement(
-            self.page, "input[name='generalSettings.responseHeaderName']")
+            self.page, "//input[@name='generalSettings.responseHeaderName']")
         self.ignore_cookies_input = PageElement(
-            self.page, "input[name='generalSettings.ignoreCookie']")
+            self.page, "//input[@name='generalSettings.ignoreCookie']")
         self.ignore_cookies_buttons = ListElement(
             self.page,
             "//input[@name='generalSettings.ignoreCookie']/..//div[@role='button']")
         self.ignore_header_input = PageElement(
-            self.page, "input[name='generalSettings.ignoreHeader']")
+            self.page, "//input[@name='generalSettings.ignoreHeader']")
         self.ignore_header_buttons = ListElement(
             self.page,
             "//input[@name='generalSettings.ignoreHeader']/..//div[@role='button']")
         self.ignore_query_args_input = PageElement(
-            self.page, "input[name='generalSettings.ignoreQueryArgs']")
+            self.page, "//input[@name='generalSettings.ignoreQueryArgs']")
         self.ignore_query_args_buttons = ListElement(
             self.page,
             "//input[@name='generalSettings.ignoreQueryArgs']/../div[@role='button']")
 
         # More Details
-        self.more_details = PageElement(self.page, "span:has-text('More Details')")
+        self.more_details = PageElement(self.page, "//span[text()='More Details']")
         self.max_args_reqs_input = PageElement(self.page,
-                                               "input[name='generalSettings.maxNumArgs']")
+                                               "//input[@name='generalSettings.maxNumArgs']")
         self.single_arg_length_input = PageElement(
-            self.page, "input[name='generalSettings.argLength']")
+            self.page, "//input[@name='generalSettings.argLength']")
         self.arg_name_length_input = PageElement(
-            self.page, "input[name='generalSettings.argNameLength']")
+            self.page, "//input[@name='generalSettings.argNameLength']")
         self.total_arg_length_input = PageElement(
-            self.page, "input[name='generalSettings.totalArgLength']")
+            self.page, "//input[@name='generalSettings.totalArgLength']")
         self.json_parser_input = PageElement(
-            self.page, "input[name='generalSettings.jsonParser']")
+            self.page, "//input[@name='generalSettings.jsonParser']")
 
         # Policies
         self.policies = PageElement(self.page, "button :text('Policies')")
