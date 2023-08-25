@@ -14,12 +14,12 @@ from ltf2.console_app.magic.elements import PageElement, UlElement, MembersTable
 class LoginMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
-        self.login_button = PageElement(self.page, "button :text('Login')")
-        self.username = PageElement(self.page, '#username')
-        self.password = PageElement(self.page, '#password')
-        self.next_button = PageElement(self.page, "button :text('Next')")
-        self.submit = PageElement(self.page, 'button[type=submit]')
-        self.error_message = PageElement(self.page, 'p.Mui-error')
+        self.login_button = PageElement(self.page, "//button[contains(span, 'Login')]")
+        self.username = PageElement(self.page, "//input[@id='username']")
+        self.password = PageElement(self.page, "//input[@id='password']")
+        self.next_button = PageElement(self.page, "//button[contains(span, 'Next')]")
+        self.submit = PageElement(self.page, "//button[@type='submit']")
+        self.error_message = PageElement(self.page, "//p[contains(@class, 'Mui-error')]")
         self.invalid_email_or_password_message = PageElement(
             self.page,
             '//*[contains(@class, "Login-errorWhite")]/*[text()]')
@@ -32,75 +32,71 @@ class CommonMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
         # General
-        self.input_name = PageElement(self.page, 'input#name')
-        self.client_snackbar = PageElement(self.page, '#client-snackbar')
-        self.save = PageElement(self.page, "button :text('Save')")
-        self.create = PageElement(self.page, "button :text('Create')")
-        self.close = PageElement(self.page, "button :text('Close')").nth(1)
-        self.select = UlElement(self.page, "ul[role='listbox']")
+        self.input_name = PageElement(self.page, "//input[@id='name']")
+        self.client_snackbar = PageElement(self.page, "//.[@id='client-snackbar']")
+        self.save = PageElement(self.page, "//button[contains(span, 'Save')]")
+        self.create = PageElement(self.page, "//button[contains(span, 'Create')]")
+        self.close = PageElement(self.page, "//button[contains(span, 'Close')]").nth(1)
+        self.select = UlElement(self.page, "//ul[@role='listbox']")
         self.select_by_name = DynamicSelectElement(
             self.page, "//ul[@role='listbox']/li[text()='{name}']")
         # self.select_by_name = DynamicPageElement(self.page, "//ul[@role='listbox']/li[text()='{name}']")
-        self.table = TableElement(self.page, "table")
-        self.submit_button = PageElement(self.page, "button :text('Submit')")
-        self.delete_button = PageElement(self.page, "button :text('Delete')")
-        self.confirm_button = PageElement(self.page, "button :text('Confirm')")
+        self.table = TableElement(self.page, "//table")
+        self.submit_button = PageElement(self.page, "//button[contains(span, 'Submit')]")
+        self.delete_button = PageElement(self.page, "//button[contains(span, 'Delete')]")
+        self.confirm_button = PageElement(self.page, "//button[contains(span, 'Confirm')]")
 
         self.create_org_button = PageElement(self.page, "//span[text()='Create an Organization']")
 
-        self.docs = PageElement(self.page, "li :text('Docs')")
-        self.forums = PageElement(self.page, "li :text('Forums')")
-        self.status = PageElement(self.page, "li :text('Status')")
-        self.support = PageElement(self.page, "li :text('Support')")
+        self.docs = PageElement(self.page, "//li[text()='Docs']")
+        self.forums = PageElement(self.page, "//li[text()='Forums']")
+        self.status = PageElement(self.page, "//li[text()='Status']")
+        self.support = PageElement(self.page, "//li[text()='Support']")
 
-        self.overview = PageElement(self.page, "div :text('Overview')")
-        self.activity = PageElement(self.page, "div :text('Activity')")
-        self.members = PageElement(self.page, "div :text-is('Members')")
-        self.settings = PageElement(self.page, "div :text('Settings')")
-        self.security = PageElement(self.page, "div :text-is('Security')")
-
-        self.website_url = PageElement(self.page, '#url')
-        self.launch_site = PageElement(self.page, "button :text('Launch my site')")
+        self.overview = PageElement(self.page, "//span[text()='Overview']")
+        self.activity = PageElement(self.page, "//span[text()='Activity']")
+        self.members = PageElement(self.page, "//span[text()='Members']")
+        self.settings = PageElement(self.page, "//span[text()='Settings']")
+        self.security = PageElement(self.page, "//span[text()='Security']")
 
         # Create organization dialog
         self.button_create_org_dialog = PageElement(
             self.page,
             '//div[@role="dialog"]//span[text()="Create an Organization"]')
 
-        self.org_switcher_button = PageElement(self.page, '//button[@id="organization-switcher"]')
-        self.org_switcher_list = UlElement(self.page, 'div:not([id="user-menu"]) div ul')
+        self.org_switcher_button = PageElement(self.page, "//button[@id='organization-switcher']")
+        self.org_switcher_list = UlElement(self.page, "//ul[@role='menu']")
         self.delete_org_checkbox = PageElement(
             self.page,
-            'div.MuiCardContent-root input[type="checkbox"]')
+            "//span[text()='Confirm that I want to delete this organization.']/../..//input[@type='checkbox']")
         self.delete_org_button = PageElement(self.page, "//span[text()='Delete Organization']")
 
         self.visible_page_content = PageElement(self.page,
-                                                '#__next:not([aria-hidden="true"])')
-        self.status_iframe = PageElement(self.page, "iframe[title='Layer0 Status']")
+                                                "//div[@id='__next' and not(@aria-hidden='true')]")
+        self.status_iframe = PageElement(self.page, "//iframe[@title='Layer0 Status']")
         self.status_iframe_close_button = IframeElement(self.status_iframe,
-                                                        'div .frame-close button')
+                                                        "//div[contains(@class, 'frame-close')]//button")
 
 
 class OrgMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
-        self.add_member_button = PageElement(self.page, "button :text('Add Members')")
+        self.add_member_button = PageElement(self.page, "//button[contains(span, 'Add Members')]")
         self.invite_member_button = PageElement(self.page,
-                                                "button :text('Invite Members')")
-        self.email = PageElement(self.page, '#email')
-        self.plus_button = PageElement(self.page, "button[title='Add']")
+                                                "//button[contains(span, 'Invite Members')]")
+        self.email = PageElement(self.page, "//input[@id='email']")
+        self.plus_button = PageElement(self.page, "//button[@title='Add']")
         self.role_select_input = PageElement(
-            self.page,
-            'div[role="dialog"] input[name="role-select"]')
-        self.role_select = UlElement(self.page, '#role-select-popup')
+            self.page, "//div[@role='dialog']//input[@id='role-select']")
+        self.role_select = UlElement(self.page, "//ul[@id='role-select-popup']")
 
-        self.members_table = MembersTableElement(self.page, "table")
+        self.members_table = MembersTableElement(self.page, "//table")
         # Create property
-        self.new_property_button = PageElement(self.page, "div :text('New Property')")
+        self.new_property_button = PageElement(self.page, "//div[text()='New Property']")
         self.origin_hostname_input = PageElement(
-            self.page, "input[name='origins.0.hosts.0.hostname']")
+            self.page, "//input[@name='origins.0.hosts.0.hostname']")
         self.create_property_button = PageElement(self.page,
-                                                  "div :text('Create Property')")
+                                                  "//div[text()='Create Property']")
 
 
 class EnvironmentMixin:
