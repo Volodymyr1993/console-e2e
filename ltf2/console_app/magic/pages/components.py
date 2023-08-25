@@ -283,7 +283,6 @@ class DeploymentsMixin:
             "//button[@data-qa='resume-logs']")
 
 
-
 class SecurityMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
@@ -384,7 +383,12 @@ class SecurityMixin:
 
         # ============= Security application manager ============
 
-        self.security_application
+        self.secapp_by_name = DynamicPageElement(
+            self.page,
+            "//div[@data-rbd-droppable-id='droppable']//span[text()='{name}']/ancestor::div[2]")
+        self.save_secapp = PageElement(
+            self.page,
+            "//span[text()='You have unsaved changes.']/../..//span[text()='Save']")
         self.create_new = PageElement(self.page, "button :text('Create New')")
         self.host_input = PageElement(self.page, "input[name='host.type']")
         self.host_values_input = PageElement(self.page, "input[name='host.values']")
@@ -398,8 +402,6 @@ class SecurityMixin:
             self.page, "input[name='host.isNegated']")
         self.path_negative_match_checkbox = PageElement(
             self.page, "input[name='path.isNegated']")
-        self.accept_all_changes = PageElement(self.page,
-                                              "button :text('Accept All Changes')")
         # Access Rules
         self.config_access_rules = PageElement(
             self.page,

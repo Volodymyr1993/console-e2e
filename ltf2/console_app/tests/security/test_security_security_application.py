@@ -1,11 +1,9 @@
 import time
 
-from ltf2.console_app.magic.helpers import random_str, open_rule_editor
+from playwright._impl._api_types import TimeoutError
+
+from ltf2.console_app.magic.helpers import random_str
 from ltf2.console_app.magic.pages.pages import SecurityPage
-
-
-open_sec_app = lambda page, rule: open_rule_editor(page, 'application',
-                                                   rule, name_index=1)
 
 
 def create_app_name(page: SecurityPage) -> str:
@@ -14,6 +12,13 @@ def create_app_name(page: SecurityPage) -> str:
     page.create_new.click()
     page.input_name.fill(name)
     return name
+
+
+def open_secapp_editor(page: SecurityPage, rule_name: str) -> None:
+    page.goto()
+    page.security.click()
+    page.security_application.click()
+    page.secapp_by_name(name=rule_name).click()
 
 
 def test_security_application_add_rule(security_app_page: SecurityPage, delete_sec_app: list):
@@ -68,11 +73,12 @@ def test_security_application_add_rule(security_app_page: SecurityPage, delete_s
     # Save Rule
     delete_sec_app.append((security_app_page, rule_name))
     security_app_page.save.click()
+    security_app_page.save_secapp.click()
     assert security_app_page.client_snackbar.text_content() == \
            "Security application updated"
 
     # Find created app
-    open_sec_app(security_app_page, rule_name)
+    open_secapp_editor(security_app_page, rule_name)
 
     # Check host
     assert security_app_page.host_input.input_value() == host_match, \
@@ -129,12 +135,12 @@ def test_security_application_edit_rule(security_app_page: SecurityPage,
     # Save Rule
     delete_sec_app.append((security_app_page, rule_name))
     security_app_page.save.click()
-    security_app_page.accept_all_changes.click()
+    security_app_page.save_secapp.click()
     assert security_app_page.client_snackbar.text_content() == \
            "Security application updated"
 
     # Find created app
-    open_sec_app(security_app_page, rule_name)
+    open_secapp_editor(security_app_page, rule_name)
 
     # Edit
     # Select last hostname
@@ -166,12 +172,12 @@ def test_security_application_edit_rule(security_app_page: SecurityPage,
 
     # Save Rule
     security_app_page.save.click()
-    security_app_page.accept_all_changes.click()
+    security_app_page.save_secapp.click()
     assert security_app_page.client_snackbar.text_content() == \
            "Security application updated"
 
     # Find created app
-    open_sec_app(security_app_page, rule_name)
+    open_secapp_editor(security_app_page, rule_name)
 
     # Check host
     assert security_app_page.host_input.input_value() == host_match, \
@@ -220,23 +226,24 @@ def test_security_application_delete_rule(security_app_page: SecurityPage, delet
     rule_name = create_app_name(security_app_page)
 
     security_app_page.save.click()
-    security_app_page.accept_all_changes.click()
+    security_app_page.save_secapp.click()
     delete_sec_app.append((security_app_page, rule_name))
     assert security_app_page.client_snackbar.text_content() == 'Security application updated'
 
     # Find created app
-    open_sec_app(security_app_page, rule_name)
+    open_secapp_editor(security_app_page, rule_name)
 
     security_app_page.delete_button.click()
     security_app_page.confirm_button.click()
-    security_app_page.accept_all_changes.click()
+    security_app_page.save_secapp.click()
     # Wait message on snackbar to change
     assert security_app_page.client_snackbar.text_content() == 'Security application updated'
 
-    for row in security_app_page.table.tbody.tr:
-        if row[1].text_content() == rule_name:
-            raise AssertionError(f'Rule {rule_name} was not deleted')
-    delete_sec_app.pop()
+    try:
+        security_app_page.secapp_by_name(name=rule_name).wait_for(timeout=3000)
+        raise AssertionError(f'Rule {rule_name} was not deleted')
+    except TimeoutError:
+        delete_sec_app.pop()
 
 
 def test_security_application_rules_limit(security_logged):
@@ -285,7 +292,7 @@ def test_security_application_rules_limit(security_logged):
         match={'variables': {'path': '/scopes'}},
         body_json=mock_data)
     security_logged.security_application.click()
-    security_logged.table.wait_for(timeout=5000)
+    security_logged.create_new.wait_for(timeout=3000)
     time.sleep(1)
     assert security_logged.create_new.is_disabled(), \
         "'Add New' button should be disabled"
