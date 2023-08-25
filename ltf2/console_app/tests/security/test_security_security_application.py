@@ -11,7 +11,7 @@ open_sec_app = lambda page, rule: open_rule_editor(page, 'application',
 def create_app_name(page: SecurityPage) -> str:
     name = f'ltf-{random_str(10)}'
     # Add rule
-    page.add_new.click()
+    page.create_new.click()
     page.input_name.fill(name)
     return name
 
@@ -68,7 +68,6 @@ def test_security_application_add_rule(security_app_page: SecurityPage, delete_s
     # Save Rule
     delete_sec_app.append((security_app_page, rule_name))
     security_app_page.save.click()
-    security_app_page.accept_all_changes.click()
     assert security_app_page.client_snackbar.text_content() == \
            "Security application updated"
 
@@ -288,7 +287,7 @@ def test_security_application_rules_limit(security_logged):
     security_logged.security_application.click()
     security_logged.table.wait_for(timeout=5000)
     time.sleep(1)
-    assert security_logged.add_new.is_disabled(), \
+    assert security_logged.create_new.is_disabled(), \
         "'Add New' button should be disabled"
     expected_msg = "You can only add up to 99 security applications"
     assert security_logged.get_by_title(expected_msg).is_visible(), \

@@ -384,7 +384,8 @@ class SecurityMixin:
 
         # ============= Security application manager ============
 
-        self.add_new = PageElement(self.page, "button :text('New Security App')")
+        self.security_application
+        self.create_new = PageElement(self.page, "button :text('Create New')")
         self.host_input = PageElement(self.page, "input[name='host.type']")
         self.host_values_input = PageElement(self.page, "input[name='host.values']")
         self.host_values_buttons = PageElement(
