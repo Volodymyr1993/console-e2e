@@ -46,7 +46,7 @@ class CommonMixin:
         self.delete_button = PageElement(self.page, "button :text('Delete')")
         self.confirm_button = PageElement(self.page, "button :text('Confirm')")
 
-        self.create_team_button = PageElement(self.page, "button :text('Create a team')")
+        self.create_org_button = PageElement(self.page, "//span[text()='Create an Organization']")
 
         self.docs = PageElement(self.page, "li :text('Docs')")
         self.forums = PageElement(self.page, "li :text('Forums')")
@@ -62,17 +62,17 @@ class CommonMixin:
         self.website_url = PageElement(self.page, '#url')
         self.launch_site = PageElement(self.page, "button :text('Launch my site')")
 
-        # Create team dialog
-        self.button_create_team_dialog = PageElement(
+        # Create organization dialog
+        self.button_create_org_dialog = PageElement(
             self.page,
-            'div[role="dialog"] button:has-text("Create a Team")')
+            '//div[@role="dialog"]//span[text()="Create an Organization"]')
 
-        self.team_switcher_button = PageElement(self.page, '//button[@id="team-switcher"]')
-        self.team_switcher_list = UlElement(self.page, 'div:not([id="user-menu"]) div ul')
-        self.delete_team_checkbox = PageElement(
+        self.org_switcher_button = PageElement(self.page, '//button[@id="organization-switcher"]')
+        self.org_switcher_list = UlElement(self.page, 'div:not([id="user-menu"]) div ul')
+        self.delete_org_checkbox = PageElement(
             self.page,
             'div.MuiCardContent-root input[type="checkbox"]')
-        self.delete_team_button = PageElement(self.page, "button :text('Delete Team')")
+        self.delete_org_button = PageElement(self.page, "//span[text()='Delete Organization']")
 
         self.visible_page_content = PageElement(self.page,
                                                 '#__next:not([aria-hidden="true"])')
@@ -81,7 +81,7 @@ class CommonMixin:
                                                         'div .frame-close button')
 
 
-class TeamMixin:
+class OrgMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
         self.add_member_button = PageElement(self.page, "button :text('Add Members')")
