@@ -12,9 +12,9 @@ from playwright.sync_api import Page, Browser
 from requests.structures import CaseInsensitiveDict
 from playwright._impl._api_types import TimeoutError
 
-from ltf2.console_app.magic.helpers import delete_teams
+from ltf2.console_app.magic.helpers import delete_orgs
 from ltf2.console_app.magic.constants import PAGE_TIMEOUT
-from ltf2.console_app.magic.pages.pages import LoginPage, TeamPage
+from ltf2.console_app.magic.pages.pages import LoginPage, OrgPage
 
 # Explicitly import to avoid using the `context` fixture from ltf2.utils
 from pytest_playwright.pytest_playwright import context
@@ -112,52 +112,52 @@ def use_login_state(browser_context_args: dict, saved_login: dict) -> dict:
 
 
 @pytest.fixture
-def create_team(team_page) -> Generator[str, None, None]:
-    teams = []
-    team_name = f'testname-{time.time()}'
-    team_page.team_switcher_button.click()
-    team_page.team_switcher_list.li[-1].click()
-    team_page.input_name.fill(team_name)
-    team_page.button_create_team_dialog.click()
-    # Team name is a current team
-    team_page.locator('p', has_text=team_name).wait_for(timeout=8000)
-    teams.append((team_page, team_name))
+def create_org(org_page) -> Generator[str, None, None]:
+    orgs = []
+    org_name = f'testname-{time.time()}'
+    org_page.org_switcher_button.click()
+    org_page.org_switcher_list.li[-1].click()
+    org_page.input_name.fill(org_name)
+    org_page.button_create_org_dialog.click()
+    # Organization name is a current org
+    org_page.locator('p', has_text=org_name).wait_for(timeout=8000)
+    orgs.append((org_page, org_name))
 
-    yield team_name
+    yield org_name
 
-    # Delete team
-    delete_teams(teams)
+    # Delete org
+    delete_orgs(orgs)
 
 
 @pytest.fixture
-def teams_to_delete() -> Generator[list, None, None]:
-    """ Delete teams at test tear down
+def orgs_to_delete() -> Generator[list, None, None]:
+    """ Delete orgs at test tear down
 
-    teams = [(page, team_name), ...]
+    orgs = [(page, org_name), ...]
     """
-    teams = []
+    orgs = []
 
-    yield teams
+    yield orgs
 
     # Remove all mock schedules
-    for page, _ in teams:
+    for page, _ in orgs:
         page.mock.clear()
 
-    delete_teams(teams)
+    delete_orgs(orgs)
 
 
 # ========= Pages =============
 
 
 @pytest.fixture
-def team_page(use_login_state: dict,
+def org_page(use_login_state: dict,
               page: Page,
               base_url: str) -> Generator[Page, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
-    team_page = TeamPage(page, base_url)
-    team_page.goto()
-    yield team_page
+    org_page = OrgPage(page, base_url)
+    org_page.goto()
+    yield org_page
 
 
 @pytest.fixture
