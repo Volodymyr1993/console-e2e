@@ -7,7 +7,7 @@ and BasePage class. Please note that the position of the mixins and BasePage is 
 """
 from playwright.sync_api import Page
 
-from ltf2.console_app.magic.pages.components import (LoginMixin, TeamMixin, CommonMixin,
+from ltf2.console_app.magic.pages.components import (LoginMixin, OrgMixin, CommonMixin,
                                                      SecurityMixin, EnvironmentMixin,
                                                      DeploymentsMixin)
 from ltf2.console_app.magic.pages.base_page import BasePage
@@ -19,7 +19,7 @@ class LoginPage(CommonMixin, LoginMixin, BasePage):
     pass
 
 
-class TeamPage(CommonMixin, TeamMixin, BasePage):
+class OrgPage(CommonMixin, OrgMixin, BasePage):
     pass
 
 
