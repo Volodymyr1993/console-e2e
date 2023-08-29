@@ -488,3 +488,15 @@ class RuleCondition:
             for v in value:
                 self.page.match_value_input.click()
                 self.page.select_by_name(name=v).click()
+
+    def add_continent(self,
+                      operator: str = '',
+                      value: Optional[str, List[str]] = None):
+        with self.prepare_condition('Continent'):
+            self.page.operator_input.click()
+            self.page.select_by_name(name=operator).click()
+            if isinstance(value, str):
+                value = [value]
+            for v in value:
+                self.page.match_value_input.click()
+                self.page.select_by_name(name=v).click()
