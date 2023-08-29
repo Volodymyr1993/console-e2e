@@ -19,15 +19,15 @@ def random_int(n: int) -> str:
     return ''.join([str(randint(1, 9))] + [str(randint(0, 9)) for _ in range(n - 1)])
 
 
-def delete_teams(teams: list[(Page, str)]) -> None:
-    for page, team_name, in teams:
-        # To make sure that team_switcher_button will be available
+def delete_orgs(orgs: list[(Page, str)]) -> None:
+    for page, org_name, in orgs:
+        # To make sure that org_switcher_button will be available
         page.goto()
-        page.team_switcher_button.click()
-        page.team_switcher_list.get_by_text(team_name).click()
+        page.org_switcher_button.click()
+        page.org_switcher_list.get_by_text(org_name).click()
         page.settings.click()
-        page.delete_team_checkbox.click()
-        page.delete_team_button.click()
+        page.delete_org_checkbox.click()
+        page.delete_org_button.click()
 
 
 def delete_rules(rules: list[(Page, str)], url_section: str) -> None:

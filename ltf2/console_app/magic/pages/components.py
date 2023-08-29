@@ -23,6 +23,8 @@ class LoginMixin:
         self.invalid_email_or_password_message = PageElement(
             self.page,
             '//*[contains(@class, "Login-errorWhite")]/*[text()]')
+        self.skip_this_step = PageElement(self.page,
+                                          "//label[text()='Skip This Step']")
 
 
 class CommonMixin:
@@ -44,7 +46,7 @@ class CommonMixin:
         self.delete_button = PageElement(self.page, "button :text('Delete')")
         self.confirm_button = PageElement(self.page, "button :text('Confirm')")
 
-        self.create_team_button = PageElement(self.page, "button :text('Create a team')")
+        self.create_org_button = PageElement(self.page, "//span[text()='Create an Organization']")
 
         self.docs = PageElement(self.page, "li :text('Docs')")
         self.forums = PageElement(self.page, "li :text('Forums')")
@@ -60,17 +62,17 @@ class CommonMixin:
         self.website_url = PageElement(self.page, '#url')
         self.launch_site = PageElement(self.page, "button :text('Launch my site')")
 
-        # Create team dialog
-        self.button_create_team_dialog = PageElement(
+        # Create organization dialog
+        self.button_create_org_dialog = PageElement(
             self.page,
-            'div[role="dialog"] button:has-text("Create a Team")')
+            '//div[@role="dialog"]//span[text()="Create an Organization"]')
 
-        self.team_switcher_button = PageElement(self.page, '//button[@id="team-switcher"]')
-        self.team_switcher_list = UlElement(self.page, 'div:not([id="user-menu"]) div ul')
-        self.delete_team_checkbox = PageElement(
+        self.org_switcher_button = PageElement(self.page, '//button[@id="organization-switcher"]')
+        self.org_switcher_list = UlElement(self.page, 'div:not([id="user-menu"]) div ul')
+        self.delete_org_checkbox = PageElement(
             self.page,
             'div.MuiCardContent-root input[type="checkbox"]')
-        self.delete_team_button = PageElement(self.page, "button :text('Delete Team')")
+        self.delete_org_button = PageElement(self.page, "//span[text()='Delete Organization']")
 
         self.visible_page_content = PageElement(self.page,
                                                 '#__next:not([aria-hidden="true"])')
@@ -79,7 +81,7 @@ class CommonMixin:
                                                         'div .frame-close button')
 
 
-class TeamMixin:
+class OrgMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
         self.add_member_button = PageElement(self.page, "button :text('Add Members')")
@@ -281,7 +283,6 @@ class DeploymentsMixin:
             "//button[@data-qa='resume-logs']")
 
 
-
 class SecurityMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
@@ -382,7 +383,13 @@ class SecurityMixin:
 
         # ============= Security application manager ============
 
-        self.add_new = PageElement(self.page, "button :text('New Security App')")
+        self.secapp_by_name = DynamicPageElement(
+            self.page,
+            "//div[@data-rbd-droppable-id='droppable']//span[text()='{name}']/ancestor::div[2]")
+        self.save_secapp = PageElement(
+            self.page,
+            "//span[text()='You have unsaved changes.']/../..//span[text()='Save']")
+        self.create_new = PageElement(self.page, "button :text('Create New')")
         self.host_input = PageElement(self.page, "input[name='host.type']")
         self.host_values_input = PageElement(self.page, "input[name='host.values']")
         self.host_values_buttons = PageElement(
@@ -395,8 +402,6 @@ class SecurityMixin:
             self.page, "input[name='host.isNegated']")
         self.path_negative_match_checkbox = PageElement(
             self.page, "input[name='path.isNegated']")
-        self.accept_all_changes = PageElement(self.page,
-                                              "button :text('Accept All Changes')")
         # Access Rules
         self.config_access_rules = PageElement(
             self.page,

@@ -4,58 +4,59 @@ from collections import namedtuple
 import pytest
 
 from ltf2.console_app.magic.helpers import random_str
-from ltf2.console_app.magic.pages.pages import TeamPage
+from ltf2.console_app.magic.pages.pages import OrgPage
 
 
-def test_create_team(team_page: TeamPage, teams_to_delete: list):
-    """ Team - Create team
+def test_create_org(org_page: OrgPage, orgs_to_delete: list):
+    """ Organization - Create organization
 
     Precondition:
     -------------
-    1. Navigate to Team switcher
+    1. Navigate to Organization switcher
 
     Steps:
     ------
-    1. Click 'Create a Team'
-    2. Fill in new team name
-    3. Click 'Create a Team'
+
+    1. Click 'Create an Organization'
+    2. Fill in new org name
+    3. Click 'Create an Organization'
 
     Expected Results:
     -----------------
-    3. New team should be available in team switcher
+    3. New org should be available in organization switcher
     """
-    team_name = f'testname-{time.time()}'
-    team_page.team_switcher_button.click()
-    assert team_page.team_switcher_list.li[-1].text_content() == 'Create a Team'
-    # Create new team
-    team_page.team_switcher_list.li[-1].click()
-    team_page.input_name.fill(team_name)
-    team_page.button_create_team_dialog.click()
-    teams_to_delete.append((team_page, team_name))
-    # Team name is a current team
-    team_page.locator('p', has_text=team_name).wait_for(timeout=5000)
-    # Get text of team_switcher_list elements
-    team_page.team_switcher_button.click()
-    texts = team_page.team_switcher_list.li.all_text_contents()
-    # Team name is in team switcher list
-    assert team_name in texts
-    # last element is `Create a team`
-    assert texts[-1] == 'Create a Team'
+    org_name = f'testname-{time.time()}'
+    org_page.org_switcher_button.click()
+    assert org_page.org_switcher_list.li[-1].text_content() == 'Create an Organization'
+    # Create new org
+    org_page.org_switcher_list.li[-1].click()
+    org_page.input_name.fill(org_name)
+    org_page.button_create_org_dialog.click()
+    orgs_to_delete.append((org_page, org_name))
+    # Org name is a current organization
+    org_page.locator('p', has_text=org_name).wait_for(timeout=5000)
+    # Get text of org_switcher_list elements
+    org_page.org_switcher_button.click()
+    texts = org_page.org_switcher_list.li.all_text_contents()
+    # Organization name is in org switcher list
+    assert org_name in texts
+    # last element is `Create an Organization`
+    assert texts[-1] == 'Create an Organization'
 
 
 @pytest.mark.parametrize("role",
                          ['Read only', 'Purger', 'Member', 'Admin', 'Super Admin'])
-def test_team_add_nonexistent_user_(team_page: TeamPage, create_team: str, role: str):
-    """ Team - Add team member - User is not exist
+def test_org_add_nonexistent_user_(org_page: OrgPage, create_org: str, role: str):
+    """ Organization - Add organization member - User is not exist
 
     Precondition:
     -------------
-    1. Create new Team
-    2. Make sure new team is selected
+    1. Create new Organization
+    2. Make sure new organization is selected
 
     Steps:
     ------
-    1. Click 'Team Members'
+    1. Click 'Organization Members'
     2. Click 'Add Members'
     3. Fill in random email that is not registered in the system
     4. Choose {role} role from dropdown list
@@ -72,22 +73,22 @@ def test_team_add_nonexistent_user_(team_page: TeamPage, create_team: str, role:
     """
     name = f'{random_str(9)}-{time.time()}'
     email = f'{name}@{random_str(5)}.com'
-    team_page.members.click()
-    team_page.add_member_button.click()
+    org_page.members.click()
+    org_page.add_member_button.click()
     # Enter user email
-    team_page.email.fill(email)
+    org_page.email.fill(email)
     # Choose Role
-    team_page.role_select_input.click()
-    for item in team_page.role_select.li:
+    org_page.role_select_input.click()
+    for item in org_page.role_select.li:
         if item.text_content() == role:
             item.click()
             break
-    team_page.invite_member_button.click()
+    org_page.invite_member_button.click()
     # Wait dialog to disappear
-    team_page.visible_page_content.wait_for(timeout=5000)
+    org_page.visible_page_content.wait_for(timeout=5000)
     # Find row in the table with new member
     row = None
-    for tr in team_page.members_table.tbody.tr:
+    for tr in org_page.members_table.tbody.tr:
         if tr.username.text_content() == name:
             row = tr
             break
@@ -103,20 +104,20 @@ def test_team_add_nonexistent_user_(team_page: TeamPage, create_team: str, role:
 
 @pytest.mark.parametrize("role",
                         ['Read only', 'Purger', 'Member', 'Admin', 'Super Admin'])
-def test_add_existent_user_(team_page: TeamPage,
-                            create_team: str,
+def test_add_existent_user_(org_page: OrgPage,
+                            create_org: str,
                             credentials: namedtuple,
                             role: str):
-    """ Team - Add team member - User exists
+    """ Organization - Add organization member - User exists
 
     Precondition:
     -------------
-    1. Create new Team
-    2. Make sure new team is selected
+    1. Create new Organization
+    2. Make sure new organization is selected
 
     Steps:
     ------
-    1. Click 'Team Members'
+    1. Click 'Organization Members'
     2. Click 'Add Members'
     3. Fill in email of existed user
     4. Choose {role} role from dropdown list
@@ -137,22 +138,22 @@ def test_add_existent_user_(team_page: TeamPage,
         raise AssertionError("At least two users should be specified in .ltfrc")
 
     name = email.split('@')[0]
-    team_page.members.click()
-    team_page.add_member_button.click()
+    org_page.members.click()
+    org_page.add_member_button.click()
     # Enter user email
-    team_page.email.fill(email)
+    org_page.email.fill(email)
     # Choose Role
-    team_page.role_select_input.click()
-    for item in team_page.role_select.li:
+    org_page.role_select_input.click()
+    for item in org_page.role_select.li:
         if item.text_content() == role:
             item.click()
             break
-    team_page.invite_member_button.click()
+    org_page.invite_member_button.click()
     # Wait dialog to disappear
-    team_page.visible_page_content.wait_for(timeout=5000)
+    org_page.visible_page_content.wait_for(timeout=5000)
     # Find row in the table with new member
     row = None
-    for tr in team_page.members_table.tbody.tr:
+    for tr in org_page.members_table.tbody.tr:
         if tr.username.text_content() == name:
             row = tr
             break
