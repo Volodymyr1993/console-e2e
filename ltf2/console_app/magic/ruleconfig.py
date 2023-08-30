@@ -12,13 +12,15 @@ CONDITIONS_MAP = {
     'brand_name': 'Brand Name',
     'city': 'City',
     'client_ip': 'Client IP',
-  #  'continent': 'Continent',
+    # 'continent': 'Continent',
     'cookie': 'Cookie',
-    'country': 'Country',
+    # 'country': 'Country',
+    'directory': 'Directory',
     'dma_code': 'DMA Code',
     'dual_orientation': 'Dual Orientation',
+    'extension': 'Extension',
     'filename': 'Filename',
- #   'html_preferred_dtd': 'HTML Preferred DTD',
+    'html_preferred_dtd': 'HTML Preferred DTD',
     'image_inlining': 'Image Inlining',
     'is_android': 'Is Android',
     'is_app': 'Is App',
@@ -34,11 +36,12 @@ CONDITIONS_MAP = {
     'is_touchscreen': 'Is Touchscreen',
     'is_windows_phone': 'Is Windows Phone',
     'is_wireless_device': 'Is Wireless Device',
-    'is_wml_preferred': 'Is WML Preferred',
+    # 'is_wml_preferred': 'Is WML Preferred',
     'latitude': 'Latitude',
     'longitude': 'Longitude',
     'marketing_name': 'Marketing Name',
-    'method': 'Method',
+    # 'method': 'Method',
+    'metro_code': 'Metro Code',
     'mobile_browser': 'Mobile Browser',
     'model_name': 'Model Name',
     'origin_path': 'Origin Path',
@@ -58,7 +61,8 @@ CONDITIONS_MAP = {
     'request_header': 'Request Header',
     'resolution_height': 'Resolution Height',
     'resolution_width': 'Resolution Width',
-    'scheme': 'Scheme',
+    'response_status_code': 'Response Status Code',
+    # 'scheme': 'Scheme',
  #   'ux_full_desktop': 'UX Full Desktop',
  #   'xhtml_support_level': 'XHTML Support Level',
 }
@@ -477,6 +481,18 @@ class RuleCondition:
                     operator: str = '',
                     value: Optional[str, List[str]] = None):
         with self.prepare_condition('Country'):
+            self.page.operator_input.click()
+            self.page.select_by_name(name=operator).click()
+            if isinstance(value, str):
+                value = [value]
+            for v in value:
+                self.page.match_value_input.click()
+                self.page.select_by_name(name=v).click()
+
+    def add_continent(self,
+                      operator: str = '',
+                      value: Optional[str, List[str]] = None):
+        with self.prepare_condition('Continent'):
             self.page.operator_input.click()
             self.page.select_by_name(name=operator).click()
             if isinstance(value, str):
