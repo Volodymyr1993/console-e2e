@@ -113,7 +113,7 @@ class EnvironmentMixin:
         self.environment = DynamicPageElement(self.page, "//a/div[@role='button']//span[text()='{name}']")
         self.revert_button = PageElement(self.page, "//button//span[text()='Revert']")
         self.revert_changes_button = PageElement(self.page,
-                                                 "//button//span[text()='Revert changes']")
+                                                 "//button//span[text()='Revert Changes']")
         # ======== Rules =========
         self.add_rule = PageElement(self.page, "//button//span[text()='Add Rule']")
         self.add_element = PageElement(self.page, "//button//span[text()='Add']")
@@ -218,7 +218,7 @@ class EnvironmentMixin:
         self.max_age_value = PageElement(self.page,
                                          "//input[@name='feature.value.0.value' and @type='number']")
         self.max_age_unit = PageElement(self.page,
-                                        "//input[name='feature.value.0.value' and @type='text']")
+                                        "//input[@name='feature.value.0.value' and @type='text']")
         self.service_worker_max_age_value = PageElement(
             self.page, "//input[@name='feature.value' and @type='number']")
         self.service_worker_max_age_unit = PageElement(
@@ -499,7 +499,7 @@ class SecurityMixin:
         self.extension_blacklist_clear = ListElement(
             self.page,
             "//label[text()='Extension Blacklist']/..//button[@title='Clear']")
-        self.header_blacklist = PageElement(self.page, "input[name='disallowedHeaders']")
+        self.header_blacklist = PageElement(self.page, "input[@name='disallowedHeaders']")
         self.header_blacklist_buttons = ListElement(
             self.page,
             "//label[text()='Header Blacklist']/..//div[@role='button']")
@@ -511,28 +511,28 @@ class SecurityMixin:
 
         self.add_bot_rule = PageElement(self.page, "button :text('Add Bot Rule')")
         self.rule_type_input = DynamicPageElement(
-            self.page, 'input[name="directive[{directive}].include"]')
+            self.page, '//input[@name="directive[{directive}].include"]')
         self.bot_rule_name_input = DynamicPageElement(
-            self.page, 'input[name="directive[{directive}].name"]')
+            self.page, '//input[@name="directive[{directive}].name"]')
         self.bot_rule_msg = DynamicPageElement(
-            self.page, 'input[name="directive[{directive}].actionMsg"]')
+            self.page, '//input[@name="directive[{directive}].actionMsg"]')
 
         self.bot_condition_variable = DynamicPageElement(
             self.page,
-            'input[name="directive[{directive}].conditions[{condition}].variable[0].type"]')
+            '//input[@name="directive[{directive}].conditions[{condition}].variable[0].type"]')
         self.bot_condition_count = DynamicPageElement(
             self.page,
-            'input[name="directive[{directive}].conditions[{condition}].variable[0].isCount"]')
+            '//input[@name="directive[{directive}].conditions[{condition}].variable[0].isCount"]')
         self.bot_condition_operator = DynamicPageElement(
             self.page,
-            'input[name="directive[{directive}].conditions[{condition}].operatorType"]')
-        self.add_match = PageElement(self.page, "button :text('Add Match')")
+            '//input[@name="directive[{directive}].conditions[{condition}].operatorType"]')
+        self.add_match = PageElement(self.page, "//button//span[text()='Add Match']")
         self.bot_condition_match = DynamicPageElement(
             self.page,
-            'input[name="directive[{directive}].conditions[{condition}].operatorValue"]')
+            '//input[@name="directive[{directive}].conditions[{condition}].operatorValue"]')
         self.bot_condition_match_name = DynamicPageElement(
             self.page,
-            'input[name="directive[{directive}].conditions[{condition}].variable[0].match[{match}].value"]')
+            '//input[@name="directive[{directive}].conditions[{condition}].variable[0].match[{match}].value"]')
 
         # =========== Custom Rules =============
 
