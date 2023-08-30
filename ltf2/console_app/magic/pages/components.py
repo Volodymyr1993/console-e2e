@@ -235,7 +235,7 @@ class EnvironmentMixin:
                                             "//label[text()='Origin Name']/../div/input")
         # AI Rules
         self.add_rule_using_ai = PageElement(self.page,
-                                             "//button//span[text()='Add Rule Using AI']")
+                                             "//button//span[text()='Add Rule Using AI...']")
         self.add_rule_using_ai_input = PageElement(
             self.page, "//input[@data-qa='add-rule-using-ai-text']")
         self.generate_rule = PageElement(self.page, "//button//span[text()='Generate Rule']")
@@ -294,7 +294,7 @@ class SecurityMixin:
         self.managed_rules = PageElement(self.page, "//span[text()='Managed Rules']")
 
         self.add_rule = PageElement(self.page, "//button//span[text()='Add Rule']")
-        self.no_data_to_display = PageElement(self.page, "//span[text()='No data to display']")
+        self.no_data_to_display = PageElement(self.page, "//div[text()='No data to display']")
 
         # ========= Rate Rules ======
 
