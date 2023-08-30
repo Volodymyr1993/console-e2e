@@ -272,7 +272,7 @@ class ActivityMixin:
 class DeploymentsMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
-        self.serverless = PageElement(self.page, '#server-logs')
+        self.serverless = PageElement(self.page, "//button[@id='server-logs']")
         # Change it when data-qa attr is ready
         self.resume_logs = PageElement(
             self.page,
@@ -353,24 +353,24 @@ class SecurityMixin:
             self.page, "//input[@name='generalSettings.jsonParser']")
 
         # Policies
-        self.policies = PageElement(self.page, "button :text('Policies')")
-        self.ruleset_input = PageElement(self.page, "input[name='rulesetVersion']")
-        self.ruleset_select = UlElement(self.page, "ul[role='listbox'] ul")
+        self.policies = PageElement(self.page, "//button//span[text()='Inbound Policies']")
+        self.ruleset_input = PageElement(self.page, "//input[@name='rulesetVersion']")
+        self.ruleset_select = UlElement(self.page, "//ul[@role='listbox']//ul")
         self.threshold_input = PageElement(self.page,
-                                           "input[name='generalSettings.anomalyThreshold']")
+                                           "//input[@name='generalSettings.anomalyThreshold']")
         self.paranoia_level_input = PageElement(
-            self.page, "input[name='generalSettings.paranoiaLevel']")
-        self.ruleset_switch = PageElement(self.page, "input[name='rulesetswitch']")
+            self.page, "//input[@name='generalSettings.paranoiaLevel']")
+        self.ruleset_switch = PageElement(self.page, "//input[@name='rulesetswitch']")
         # Exceptions
-        self.exceptions = PageElement(self.page, "button :text('Exceptions')")
-        self.add_condition = PageElement(self.page, "button :text('Add New Condition')")
+        self.exceptions = PageElement(self.page, "//button//span[text()='Exceptions']")
+        self.add_condition = PageElement(self.page, "//button//span[text()='Add New Condition']")
         self.rule_ids = PageElement(self.page,
-                                    "input[name='ruleTargetUpdates[0].ruleIds']")
+                                    "//input[@name='ruleTargetUpdates[0].ruleIds']")
         self.parameter_input = PageElement(self.page,
-                                               "input[name='ruleTargetUpdates[0].target']")
+                                               "//input[@name='ruleTargetUpdates[0].target']")
         self.condition_name = PageElement(self.page,
-                                          "input[name='ruleTargetUpdates[0].targetMatch']")
-        self.regex_switch = PageElement(self.page, "input[name='regexSwitch']")
+                                          "//input[@name='ruleTargetUpdates[0].targetMatch']")
+        self.regex_switch = PageElement(self.page, "//input[@name='regexSwitch']")
         self.rule_ids_buttons = ListElement(
             self.page,
             "//input[@name='ruleTargetUpdates[0].ruleIds']/..//div[@role='button']")
@@ -386,69 +386,69 @@ class SecurityMixin:
         self.save_secapp = PageElement(
             self.page,
             "//span[text()='You have unsaved changes.']/../..//span[text()='Save']")
-        self.create_new = PageElement(self.page, "button :text('Create New')")
-        self.host_input = PageElement(self.page, "input[name='host.type']")
-        self.host_values_input = PageElement(self.page, "input[name='host.values']")
+        self.create_new = PageElement(self.page, "//button//span[text()='Create New']")
+        self.host_input = PageElement(self.page, "//input[@name='host.type']")
+        self.host_values_input = PageElement(self.page, "//input[@name='host.values']")
         self.host_values_buttons = PageElement(
             self.page, "//input[@name='host.values']/..//div[@role='button']")
-        self.url_path_input = PageElement(self.page, "input[name='path.type']")
-        self.url_values_input = PageElement(self.page, "input[name='path.values']")
+        self.url_path_input = PageElement(self.page, "//input[@name='path.type']")
+        self.url_values_input = PageElement(self.page, "//input[@name='path.values']")
         self.url_values_buttons = PageElement(
             self.page, "//input[@name='path.values']/..//div[@role='button']")
         self.host_negative_match_checkbox = PageElement(
-            self.page, "input[name='host.isNegated']")
+            self.page, "//input[@name='host.isNegated']")
         self.path_negative_match_checkbox = PageElement(
-            self.page, "input[name='path.isNegated']")
+            self.page, "//input[@name='path.isNegated']")
         # Access Rules
         self.config_access_rules = PageElement(
             self.page,
-            "button[id='vertical-tab-0']")
-        self.prod_access_rule_input = PageElement(self.page, "input[name='aclProdId']")
-        self.action_access_rule_input = PageElement(self.page, "input[name='aclProdAction.enfType']")
-        self.audit_access_rule_input = PageElement(self.page, "input[name='aclAuditId']")
+            "//button[@id='vertical-tab-0']")
+        self.prod_access_rule_input = PageElement(self.page, "//input[@name='aclProdId']")
+        self.action_access_rule_input = PageElement(self.page, "//input[@name='aclProdAction.enfType']")
+        self.audit_access_rule_input = PageElement(self.page, "//input[@name='aclAuditId']")
 
         # Rate rules
         self.config_rate_rules = PageElement(
             self.page,
-            "div[aria-label='Managed rule exceptions'] button:has-text('Rate Rules')")
+            "//div[@aria-label='Managed rule exceptions']//button[text()='Rate Rules']")
         self.prod_rate_rule_input = PageElement(self.page,
-                                                "input[placeholder='Add Rate Rule']")
+                                                "//input[@placeholder='Add Rate Rule']")
         # Custom Rules
         self.config_custom_rules = PageElement(
             self.page,
-            "div[aria-label='Managed rule exceptions'] button:has-text('Custom Rule')")
-        self.prod_custom_rule_input = PageElement(self.page, "input[name='rulesProdId']")
+            "//div[@aria-label='Managed rule exceptions']//button[text()='Custom Rule']")
+        self.prod_custom_rule_input = PageElement(self.page, "//input[@name='rulesProdId']")
         self.action_custom_rule_input = PageElement(self.page,
-                                                    "input[name='rulesProdAction.enfType']")
-        self.audit_custom_rule_input = PageElement(self.page, "input[name='rulesAuditId']")
+                                                    "//input[@name='rulesProdAction.enfType']")
+        self.audit_custom_rule_input = PageElement(self.page, "//input[@name='rulesAuditId']")
         # Managed Rules
         self.config_managed_rules = PageElement(
             self.page,
-            "div[aria-label='Managed rule exceptions'] button:has-text('Managed Rule')")
-        self.prod_managed_rule_input = PageElement(self.page, "input[name='rulesProdId']")
-        self.action_managed_rule_input = PageElement(self.page, "input[name='rulesProdAction.enfType']")
-        self.audit_managed_rule_input = PageElement(self.page, "input[name='rulesAuditId']")
+            "//div[@aria-label='Managed rule exceptions']//button[text()='Managed Rule']")
+        self.prod_managed_rule_input = PageElement(self.page, "//input[@name='rulesProdId']")
+        self.action_managed_rule_input = PageElement(self.page, "//input[@name='rulesProdAction.enfType']")
+        self.audit_managed_rule_input = PageElement(self.page, "//input[@name='rulesAuditId']")
         # Bot Rules
         self.config_bot_rules = PageElement(
             self.page,
-            "div[aria-label='Managed rule exceptions'] button:has-text('Bot Rule')")
-        self.prod_bot_rule_input = PageElement(self.page, "input[name='botsProdId']")
+            "//div[@aria-label='Managed rule exceptions']//button[text()='Bot Rule']")
+        self.prod_bot_rule_input = PageElement(self.page, "//input[@name='botsProdId']")
         self.action_bot_rule_input = PageElement(self.page,
-                                                 "input[name='botsProdAction.enfType']")
+                                                 "//input[@name='botsProdAction.enfType']")
         self.status_bot_rule_input = PageElement(self.page,
-                                                 "input[name='botsProdAction.status']")
+                                                 "//input[@name='botsProdAction.status']")
         self.valid_bot_rule_input = PageElement(self.page,
-                                                "input[name='botsProdAction.validForSec']")
+                                                "//input[@name='botsProdAction.validForSec']")
 
         # ================= Access Rules ==========
 
-        self.add_access_rule = PageElement(self.page, "button :text('New Access Ruleset')")
+        self.add_access_rule = PageElement(self.page, "//button//span[text()='New Access Ruleset']")
         # Access Control
         self.access_control_input = PageElement(self.page,
-                                                "input[name='access-control-dropdown']")
-        self.whitelist = PageElement(self.page, "button :text('whitelist')")
-        self.blacklist = PageElement(self.page, "button :text('blacklist')")
-        self.accesslist = PageElement(self.page, "button :text('accesslist')")
+                                                "//input[@name='access-control-dropdown']")
+        self.whitelist = PageElement(self.page, "//button//span[text()='whitelist']")
+        self.blacklist = PageElement(self.page, "//button//span[text()='blacklist']")
+        self.accesslist = PageElement(self.page, "//button//span[text()='accesslist']")
         # Create Access Control inputs for dropdown list
         for type_title, list_ in product(ACCESS_CONTROL_TYPE,
                                    ('whitelist', 'blacklist', 'accesslist')):
@@ -456,7 +456,7 @@ class SecurityMixin:
             # Inputs
             setattr(self,
                     f'{type_id.lower()}_{list_}_input',
-                    PageElement(self.page, f"input[name='{type_id}.{list_}']"))
+                    PageElement(self.page, f"//input[@name='{type_id}.{list_}']"))
             # Buttons
             setattr(self,
                     f'{type_id.lower()}_{list_}',
@@ -470,21 +470,19 @@ class SecurityMixin:
         for method in HTTP_METHODS:
             setattr(self,
                     f'method_{method.lower()}',
-                    PageElement(self.page, f"input[value='{method}']"))
+                    PageElement(self.page, f"//input[@value='{method}']"))
 
-        self.other_methods = PageElement(self.page, "input[name='other http methods']")
+        self.other_methods = PageElement(self.page, "//input[@name='other http methods']")
         self.other_methods_buttons = ListElement(
-            self.page, 'div[placeholder="Add..."] div[role="button"]')
+            self.page, '//div[@placeholder="Add..."]//div[@role="button"]')
 
         self.response_header_name = PageElement(self.page,
-                                                "input[name='responseHeaderName']")
-        # TODO fix 2 same selectors
-        self.single_file_upload_limit = PageElement(self.page, "input[name='maxFileSize']")
-        self.multiple_file_upload_limit = PageElement(
-            self.page, "input[name='maxFileSize']")
+                                                "//input[@name='responseHeaderName']")
+        self.file_upload_limit = PageElement(
+            self.page, "//input[@name='maxFileSize']")
 
         self.request_content_type = PageElement(self.page,
-                                                "input[name='allowedRequestContentTypes']")
+                                                "//input[@name='allowedRequestContentTypes']")
         self.request_content_type_buttons = ListElement(
             self.page,
             "//label[text()='Allowed Request Content Types']/..//div[@role='button']")
@@ -495,7 +493,7 @@ class SecurityMixin:
             self.page,
             "//label[text()='Allowed Request Content Types']/..//button[@title='Clear']")
         self.extension_blacklist = PageElement(self.page,
-                                               "input[name='disallowedExtensions']")
+                                               "//input[@name='disallowedExtensions']")
         self.extension_blacklist_buttons = ListElement(
             self.page, "//label[text()='Extension Blacklist']/..//div[@role='button']")
         self.extension_blacklist_clear = ListElement(
@@ -538,47 +536,47 @@ class SecurityMixin:
 
         # =========== Custom Rules =============
 
-        self.add_custom_rule = PageElement(self.page, "button :text('Add Custom Rule')")
+        self.add_custom_rule = PageElement(self.page, "//button[text()='Add Custom Rule']")
 
         self.custom_rule_name = DynamicPageElement(
-            self.page, 'input[name="directive[{directive}].name"]')
+            self.page, '//input[@name="directive[{directive}].name"]')
         self.custom_rule_id = DynamicPageElement(
-            self.page, 'input[name="directive[{directive}].actionId"]')
+            self.page, '//input[@name="directive[{directive}].actionId"]')
         self.custom_rule_msg = DynamicPageElement(
-            self.page, 'input[name="directive[{directive}].actionMsg"]')
+            self.page, '//input[@name="directive[{directive}].actionMsg"]')
         self.custom_variable_count = DynamicPageElement(
             self.page,
-            'input[name="directive[{directive}].conditions[{condition}].variable[{variable}].isCount"]')
+            '//input[@name="directive[{directive}].conditions[{condition}].variable[{variable}].isCount"]')
         self.custom_variable = DynamicPageElement(
             self.page,
-            'input[name="directive[{directive}].conditions[{condition}].variable[{variable}].type"]')
+            '//input[@name="directive[{directive}].conditions[{condition}].variable[{variable}].type"]')
         self.custom_condition_operator = DynamicPageElement(
             self.page,
-            'input[name="directive[{directive}].conditions[{condition}].operatorType"]')
+            '//input[@name="directive[{directive}].conditions[{condition}].operatorType"]')
         self.custom_condition_operator_value = DynamicPageElement(
             self.page,
-            'input[name="directive[{directive}].conditions[{condition}].operatorValue"]')
+            '//input[@name="directive[{directive}].conditions[{condition}].operatorValue"]')
 
         # ==================== Dashboard & Event Logs ==============
 
         self.dashboard_time_frame_input = PageElement(
-            self.page, "input[name='time']").nth(0)
+            self.page, "//input[@name='time']").nth(0)
         self.event_log_time_frame_input = PageElement(
-            self.page, "input[name='time']").nth(1)
-        self.view_input = PageElement(self.page, "input[name='view']")
-        self.refresh_input = PageElement(self.page, "input[name='refresh']")
+            self.page, "//input[@name='time']").nth(1)
+        self.view_input = PageElement(self.page, "//input[@name='view']")
+        self.refresh_input = PageElement(self.page, "//input[@name='refresh']")
 
-        self.threats_button = PageElement(self.page, "button :text('Threats')")
+        self.threats_button = PageElement(self.page, "//button//span[text()='Threats']")
         self.browser_challenges_button = PageElement(self.page,
-                                                     "button :text('Browser Challenges')")
-        self.rates_button = PageElement(self.page, "button :text('Rates')")
+                                                     "//button//span[text()='Browser Challenges']")
+        self.rates_button = PageElement(self.page, "//button//span[text()='Rates']")
         self.rate_enforcement_button = PageElement(self.page,
-                                                   "button :text('Rate Enforcement')")
+                                                   "//button//span[text()='Rate Enforcement']")
         # Advanced filters
-        self.field_input = PageElement(self.page, "input[name='field']")
-        self.value_input = PageElement(self.page, "input[name='value']")
+        self.field_input = PageElement(self.page, "//input[@name='field']")
+        self.value_input = PageElement(self.page, "//input[@name='value']")
 
-        self.apply_filters = PageElement(self.page, "button :text('Apply Filters')")
+        self.apply_filters = PageElement(self.page, "//button//span[text()='Apply Filters']")
         self.filter_names = ListElement(self.page,
                                         "//div[p[contains(., 'Filters:')]]//div//p")
         self.filter_remove = ListElement(self.page,
