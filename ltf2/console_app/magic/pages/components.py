@@ -385,11 +385,11 @@ class SecurityMixin:
 
         self.secapp_by_name = DynamicPageElement(
             self.page,
-            "//div[@data-rbd-droppable-id='droppable']//span[text()='{name}']/ancestor::div[2]")
+            "//div[@data-rbd-droppable-id='droppable']//h4[text()='{name}']/ancestor::div[2]")
         self.save_secapp = PageElement(
             self.page,
-            "//span[text()='You have unsaved changes.']/../..//span[text()='Save']")
-        self.create_new = PageElement(self.page, "button :text('Create New')")
+            "//div[text()='You have unsaved changes.']/../..//span[text()='Save']")
+        self.new_seccurity_application = PageElement(self.page, "button :text('New Security Application')")
         self.host_input = PageElement(self.page, "input[name='host.type']")
         self.host_values_input = PageElement(self.page, "input[name='host.values']")
         self.host_values_buttons = PageElement(
