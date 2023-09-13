@@ -204,7 +204,6 @@ def test_rate_rules_add_rule_with_empty_condition_value(rate_rules_page: Page,
     # Refresh page
     rate_rules_page.goto()
     rate_rules_page.security.click()
-    rate_rules_page.rules_manager.click()
     rate_rules_page.rate_rules.click()
 
     for row in rate_rules_page.table.tbody.tr:
