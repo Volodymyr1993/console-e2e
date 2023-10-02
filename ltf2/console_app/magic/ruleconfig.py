@@ -127,6 +127,24 @@ class RuleFeature:
             self.page.header_treatment_input.click()
             self.page.select_by_name(name=header_treatment).click()
 
+    def add_cache_key(self, parameters_option: str = '', parameters_value: str = '',
+                    headers: str = '', cookies: str = '', expression: str = ''):
+        with self.prepare_feature('Cache Key'):
+            self.page.cache_key_option_input.click()
+            self.page.select_by_name(name=parameters_option).click()
+            if parameters_option == 'Include':
+                self.page.include_input.fill(parameters_value)
+                self.page.include_input.press('Enter')
+            elif parameters_option == 'Include All Except':
+                self.page.exclude_input.fill(parameters_value)
+                self.page.exclude_input.press('Enter')
+            self.page.headers_input.fill(headers)
+            self.page.cookies_input.fill(cookies)
+            self.page.cookies_input.press('Enter')
+            self.page.add_expression_button.click()
+            self.page.expression_input.fill(expression)
+            self.page.expression_input.press('Enter')
+
     def add_bypass_client_cache(self, enable: bool = True):
         with self.prepare_feature('Bypass Client Cache'):
             self.page.rule_checkbox.set_checked(enable)
