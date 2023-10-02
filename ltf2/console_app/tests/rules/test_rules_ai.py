@@ -342,7 +342,7 @@ def test_rules_ia_bypass_cache_with_matched_regex(property_page):
     property_page.created_rule(num=-1).condition(num=0).click()
     assert property_page.variable_input.input_value() == 'Path', 'Wrong Variable'
     assert property_page.operator_input.input_value() == 'matches regular expression', 'Wrong Operator'
-    assert property_page.match_value_regex.inner_text() == '\/highsec\/', 'Wrong Value'
+    assert property_page.match_value_regex.inner_text() == r'\/highsec\/', 'Wrong Value'
     property_page.close.click()
     # Validate Feature
     property_page.created_rule(num=-1).feature(num=0).click()

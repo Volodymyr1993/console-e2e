@@ -9,7 +9,7 @@ from ltf2.console_app.magic.pages.pages import SecurityPage
 def create_app_name(page: SecurityPage) -> str:
     name = f'ltf-{random_str(10)}'
     # Add rule
-    page.create_new.click()
+    page.new_seccurity_application.click()
     page.input_name.fill(name)
     return name
 
@@ -292,9 +292,9 @@ def test_security_application_rules_limit(security_logged):
         match={'variables': {'path': '/scopes'}},
         body_json=mock_data)
     security_logged.security_application.click()
-    security_logged.create_new.wait_for(timeout=3000)
+    security_logged.new_seccurity_application.wait_for(timeout=3000)
     time.sleep(1)
-    assert security_logged.create_new.is_disabled(), \
+    assert security_logged.new_seccurity_application.is_disabled(), \
         "'Add New' button should be disabled"
     expected_msg = "You can only add up to 99 security applications"
     assert security_logged.get_by_title(expected_msg).is_visible(), \

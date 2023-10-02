@@ -86,21 +86,18 @@ def dashboard_page(security_logged) -> Generator[SecurityPage, None, None]:
 
 @pytest.fixture
 def managed_rules_page(security_logged) -> Generator[SecurityPage, None, None]:
-    security_logged.rules_manager.click()
     security_logged.managed_rules.click()
     yield security_logged
 
 
 @pytest.fixture
 def access_rules_page(security_logged) -> Generator[SecurityPage, None, None]:
-    security_logged.rules_manager.click()
     security_logged.access_rules.click()
     yield security_logged
 
 
 @pytest.fixture
 def rate_rules_page(security_logged) -> Generator[SecurityPage, None, None]:
-    security_logged.rules_manager.click()
     security_logged.rate_rules.click()
     yield security_logged
 
