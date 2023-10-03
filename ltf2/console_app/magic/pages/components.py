@@ -261,7 +261,8 @@ class EnvironmentMixin:
 
         # ====== Cache =====
 
-        self.purge_the_cache = PageElement(self.page, "//button//span[text()='Purge the Cache']")
+        self.purge_the_cache = PageElement(self.page,
+                                           "//button//span[text()='Purge the Cache...']")
         self.purge_cache = PageElement(self.page, "//button//span[text()='Purge Cache']")
         self.purge = PageElement(self.page, "//button//span[text()='Purge']")
         self.purge_all_entries = PageElement(self.page, "//input[@value='all_entries']")
