@@ -199,9 +199,15 @@ class EnvironmentMixin:
             self.page, "input[name='feature.value.prebuf_seconds']")
         self.header_treatment_input = PageElement(
             self.page, "//label[text()='Cache Control Header Treatment']/../div/input")
-        self.option_input = PageElement(self.page, "input[name='cache-key-query-string']")
-        self.include_input = PageElement(self.page, "input[name='include']")
-        self.exclude_input = PageElement(self.page, "input[name='exclude']")
+        self.cache_key_option_input = PageElement(self.page, "//input[@name='cache-key']")
+        self.headers_input = PageElement(self.page, "//input[@name='headers']")
+        self.cookies_input = PageElement(self.page, "//input[@name='cookies']")
+        self.add_expression_button = PageElement(self.page,
+                                                 "//button//span[text()='Add an Expression']")
+        self.expression_input = PageElement(self.page, "//div[@role='textbox']/div")
+        self.option_input = PageElement(self.page, "//input[@name='cache-key-query-string']")
+        self.include_input = PageElement(self.page, "//input[@name='include']")
+        self.exclude_input = PageElement(self.page, "//input[@name='exclude']")
         self.cacheable_request_body_size = PageElement(
             self.page, "//label[text()='Cacheable Request Body Size']/../div/input")
         self.compress_content_types_input = PageElement(
@@ -385,11 +391,11 @@ class SecurityMixin:
 
         self.secapp_by_name = DynamicPageElement(
             self.page,
-            "//div[@data-rbd-droppable-id='droppable']//span[text()='{name}']/ancestor::div[2]")
+            "//div[@data-rbd-droppable-id='droppable']//h4[text()='{name}']/ancestor::div[2]")
         self.save_secapp = PageElement(
             self.page,
-            "//span[text()='You have unsaved changes.']/../..//span[text()='Save']")
-        self.create_new = PageElement(self.page, "button :text('Create New')")
+            "//div[text()='You have unsaved changes.']/../..//span[text()='Save']")
+        self.new_seccurity_application = PageElement(self.page, "button :text('New Security Application')")
         self.host_input = PageElement(self.page, "input[name='host.type']")
         self.host_values_input = PageElement(self.page, "input[name='host.values']")
         self.host_values_buttons = PageElement(
