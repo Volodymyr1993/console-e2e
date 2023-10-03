@@ -195,6 +195,11 @@ class EnvironmentMixin:
             self.page, "//input[@name='feature.value.prebuf_seconds']")
         self.header_treatment_input = PageElement(
             self.page, "//label[text()='Cache Control Header Treatment']/../div/input")
+        self.cache_key_option_input = PageElement(self.page, "//input[@name='cache-key']")
+        self.headers_input = PageElement(self.page, "//input[@name='headers']")
+        self.cookies_input = PageElement(self.page, "//input[@name='cookies']")
+        self.add_expression_button = PageElement(self.page, "//button[text()='Add an Expression']")
+        self.expression_input = PageElement(self.page, "//div[@role='textbox']/div")
         self.option_input = PageElement(self.page, "//input[@name='cache-key-query-string']")
         self.include_input = PageElement(self.page, "//input[@name='include']")
         self.exclude_input = PageElement(self.page, "//input[@name='exclude']")
