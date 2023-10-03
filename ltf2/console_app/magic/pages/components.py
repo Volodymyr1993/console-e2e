@@ -500,7 +500,7 @@ class SecurityMixin:
         self.extension_blacklist_clear = ListElement(
             self.page,
             "//label[text()='Extension Blacklist']/..//button[@title='Clear']")
-        self.header_blacklist = PageElement(self.page, "input[@name='disallowedHeaders']")
+        self.header_blacklist = PageElement(self.page, "//input[@name='disallowedHeaders']")
         self.header_blacklist_buttons = ListElement(
             self.page,
             "//label[text()='Header Blacklist']/..//div[@role='button']")
