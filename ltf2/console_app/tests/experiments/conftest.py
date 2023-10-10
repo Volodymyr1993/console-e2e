@@ -14,10 +14,9 @@ def experiment_page(use_login_state: dict,
                          base_url: str) -> Generator[Page, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
-    # TODO: change property to production
     try:
         property_path = (f"{ltfrc_console_app['team']}/{ltfrc_console_app['property']}"
-                         "/env/zaplatkin/configuration/experiments")
+                         "/env/production/configuration/experiments")
     except KeyError:
         raise ValueError(f'team and property variables are missed in .ltfrc')
 
