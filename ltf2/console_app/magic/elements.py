@@ -130,7 +130,7 @@ class ListElement(PageElement):
 class UlElement(PageElement):
     def __init__(self, page: Page, selector: str):
         super().__init__(page, selector)
-        self.li = ListElement(page, f'{selector} > li')
+        self.li = ListElement(page, f'{selector}/li')
 
 
 # ============= Table ============================
@@ -151,7 +151,7 @@ class TrElements(ListElement):
 
     def __getitem__(self, index: int):
         return self.td_type(self.page,
-                            f'{self.selector}:nth-child({index + 1}) > td')
+                            f'{self.selector}[{index + 1}]/td')
 
 
 class TbodyElement(PageElement):
@@ -162,22 +162,22 @@ class TbodyElement(PageElement):
                  tr_type: PageElement,
                  td_type: PageElement):
         super().__init__(page, selector)
-        self.tr = tr_type(td_type, page, f'{selector} > tr')
+        self.tr = tr_type(td_type, page, f'{selector}/tr')
 
 
 class TheadElement(PageElement):
     """ Class for describing table headers elements. """
     def __init__(self, page: Page, selector: str):
         super().__init__(page, selector)
-        self.th = ListElement(page, f'{selector} tr > th')
+        self.th = ListElement(page, f'{selector}/tr/th')
 
 
 class TableElement(PageElement):
     """ Class for describing HTML table """
     def __init__(self, page: Page, selector: str):
         super().__init__(page, selector)
-        self.thead = TheadElement(page, f'{selector} thead')
-        self.tbody = TbodyElement(page, f'{selector} tbody', TrElements, TdElements)
+        self.thead = TheadElement(page, f'{selector}/thead')
+        self.tbody = TbodyElement(page, f'{selector}/tbody', TrElements, TdElements)
 
 
 class MembersTableElement(PageElement):
@@ -192,8 +192,8 @@ class MembersTableElement(PageElement):
 
     def __init__(self, page: Page, selector: str):
         super().__init__(page, selector)
-        self.thead = TheadElement(page, f'{selector} thead')
-        self.tbody = TbodyElement(page, f'{selector} tbody',
+        self.thead = TheadElement(page, f'{selector}/thead')
+        self.tbody = TbodyElement(page, f'{selector}/tbody',
                                   TrElements, MembersTableElement.TdMembersElement)
 
 

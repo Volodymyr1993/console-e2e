@@ -162,7 +162,7 @@ def test_access_rule_advanced_settings_input_fields(access_rules_page: SecurityP
     # Response Header Name
     access_rules_page.response_header_name.fill(response_header)
     # Single File Upload Limit
-    access_rules_page.single_file_upload_limit.fill(upload_limit)
+    access_rules_page.file_upload_limit.fill(upload_limit)
     # Allowed Request Content Types
     access_rules_page.request_content_type.hover()
     access_rules_page.request_content_type_clear.click()
@@ -191,7 +191,7 @@ def test_access_rule_advanced_settings_input_fields(access_rules_page: SecurityP
     assert access_rules_page.response_header_name.input_value() == response_header, \
         "Wrong Response Header Name "
     # Single File Upload Limit
-    assert access_rules_page.single_file_upload_limit.input_value() == upload_limit, \
+    assert access_rules_page.file_upload_limit.input_value() == upload_limit, \
         "Wrong Single File Upload Limit"
     # Allowed Request Content Types
     assert access_rules_page.request_content_type_buttons[0].text_content() == string_value1, \
@@ -249,9 +249,9 @@ def test_access_rule_edit_rule(access_rules_page: SecurityPage,
     access_rules_page.response_header_name.fill(response_header)
     # Multiple File Upload Limit
     #TODO
-    access_rules_page.multiple_file_upload_limit.fill(upload_limit)
+    access_rules_page.file_upload_limit.fill(upload_limit)
     # Single File Upload Limit
-    access_rules_page.single_file_upload_limit.fill(upload_limit)
+    access_rules_page.file_upload_limit.fill(upload_limit)
     # Header Blacklist
     access_rules_page.header_blacklist.fill(string_value1)
 
@@ -271,7 +271,7 @@ def test_access_rule_edit_rule(access_rules_page: SecurityPage,
     assert access_rules_page.response_header_name.input_value() == response_header, \
         "Wrong Response Header Name "
     # Single File Upload Limit
-    assert access_rules_page.single_file_upload_limit.input_value() == upload_limit, \
+    assert access_rules_page.file_upload_limit.input_value() == upload_limit, \
         "Wrong Single File Upload Limit"
     # Header Blacklist
     assert access_rules_page.header_blacklist_buttons[0].text_content() == string_value1, \
