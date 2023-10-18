@@ -9,7 +9,7 @@ from playwright.sync_api import Page
 
 from ltf2.console_app.magic.pages.components import (LoginMixin, TeamMixin, CommonMixin,
                                                      SecurityMixin, EnvironmentMixin,
-                                                     DeploymentsMixin)
+                                                     DeploymentsMixin, TrafficMixin)
 from ltf2.console_app.magic.pages.base_page import BasePage
 from ltf2.console_app.magic.ruleconfig import RuleFeature, RuleCondition
 from ltf2.console_app.magic.nested_rules import NestedRules
@@ -54,3 +54,7 @@ class DeploymentsPage(CommonMixin, DeploymentsMixin, BasePage):
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
         self.last_deployed = self.table.tbody.tr[0][1]
+
+
+class TrafficPage(CommonMixin, TrafficMixin, BasePage):
+    pass
