@@ -97,7 +97,6 @@ def test_positive_login(login_page: LoginPage, credentials: namedtuple):
     login_page.submit.click()
     login_page.password.fill(credentials.password)
     login_page.submit.click()
-    login_page.submit.wait_for(timeout=8 * 1000)
 
     login_page.overview.wait_for()
     assert not login_page.submit.is_visible()
