@@ -7,11 +7,13 @@ and BasePage class. Please note that the position of the mixins and BasePage is 
 """
 from playwright.sync_api import Page
 
-from ltf2.console_app.magic.pages.components import (LoginMixin, TeamMixin, CommonMixin,
+from ltf2.console_app.magic.pages.components import (LoginMixin, OrgMixin, CommonMixin,
                                                      SecurityMixin, EnvironmentMixin,
-                                                     DeploymentsMixin, TrafficMixin)
+                                                     DeploymentsMixin, ExperimentsMixin,
+                                                     TrafficMixin)
+
 from ltf2.console_app.magic.pages.base_page import BasePage
-from ltf2.console_app.magic.ruleconfig import RuleFeature, RuleCondition
+from ltf2.console_app.magic.ruleconfig import RuleFeature, RuleCondition, ExperimentCondition, ExperimentFeature
 from ltf2.console_app.magic.nested_rules import NestedRules
 
 
@@ -19,8 +21,40 @@ class LoginPage(CommonMixin, LoginMixin, BasePage):
     pass
 
 
-class TeamPage(CommonMixin, TeamMixin, BasePage):
+class OrgPage(CommonMixin, OrgMixin, BasePage):
     pass
+
+
+class ExperimentsPage(CommonMixin, ExperimentsMixin, BasePage):
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+        self.condition = ExperimentCondition(self, self.add_criteria_button)
+        self.feature = ExperimentFeature(self, self.add_action_button)
+
+    def delete_all_experiments(self):
+        for _ in range(self.delete_experiment_list.count()):
+            self.delete_experiment_list.first.click()
+            self.delete_experiment_confirm_button.click()
+
+    def add_experiment(self, name: str, variants: list):
+        self.add_experiment_button.click()
+        for id, variant in enumerate(variants):
+            self.variant_name_input(exp_id=0, var_id=id).fill(variant)
+            self.variant_name_input(exp_id=0, var_id=id).press("Enter")
+        self.experiment_name_input(id=0).fill(name)
+        self.experiment_name_input(id=0).press("Enter")
+        deploy_button = self.deploy_changes_button
+        deploy_button.wait_for(timeout=10000)
+
+    def deploy_changes(self):
+        self.deploy_changes_button.click()
+        self.wait_for_timeout(timeout=1000)
+        self.deploy_changes_button.last.click()
+        # wait for success message
+        message = self.client_snackbar.get_by_text(
+            'Changes deployed successfully')
+        message.first.wait_for(timeout=30000)
+        return message.first
 
 
 class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):

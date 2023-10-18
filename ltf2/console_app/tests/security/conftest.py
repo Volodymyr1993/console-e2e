@@ -49,16 +49,11 @@ def delete_sec_app():
     for page, rule in rules:
         page.mock.clear()
         page.goto(f"{page.url.strip('/')}/security/application")
-        page.table.wait_for()
-        for row in page.table.tbody.tr:
-            if row[1].text_content() == rule:
-                row[1].click()
-                page.delete_button.click()
-                page.confirm_button.click()
-                page.accept_all_changes.click()
-                # Wait message on snackbar to change
-                page.client_snackbar.get_by_text('Security application updated').wait_for()
-                break
+        page.secapp_by_name(name=rule).click()
+        page.delete_button.click()
+        page.confirm_button.click()
+        page.save_secapp.click()
+        page.client_snackbar.get_by_text('Security application updated').wait_for()
 
 
 # =============== Pages ======================
@@ -91,21 +86,18 @@ def dashboard_page(security_logged) -> Generator[SecurityPage, None, None]:
 
 @pytest.fixture
 def managed_rules_page(security_logged) -> Generator[SecurityPage, None, None]:
-    security_logged.rules_manager.click()
     security_logged.managed_rules.click()
     yield security_logged
 
 
 @pytest.fixture
 def access_rules_page(security_logged) -> Generator[SecurityPage, None, None]:
-    security_logged.rules_manager.click()
     security_logged.access_rules.click()
     yield security_logged
 
 
 @pytest.fixture
 def rate_rules_page(security_logged) -> Generator[SecurityPage, None, None]:
-    security_logged.rules_manager.click()
     security_logged.rate_rules.click()
     yield security_logged
 
