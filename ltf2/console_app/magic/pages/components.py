@@ -275,6 +275,63 @@ class ActivityMixin:
         super().__init__(page, url)
         # TODO
 
+class TrafficMixin:
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+
+        # Range Picker
+        self.traffic_24_hours = PageElement(self.page,
+            "//div//p[contains(text(), '24 hours')]")
+        self.traffic_7_days = PageElement(self.page,
+            "//div//a[contains(text(), '7 days')]")
+        self.traffic_28_days = PageElement(self.page,
+            "//div//a[contains(text(), '28 days')]")
+
+        # Traffic Overview elements
+        self.traffic_header = PageElement(self.page, "//h2/span[text()='Traffic']")
+        self.traffic_overview_tab_button = PageElement(self.page,
+            "//button[@role='tab']/..//span[text()='Overview']")
+        self.traffic_metric_selector = PageElement(self.page,
+            '//input[@data-qa="data-usage-metricsSelector"]')
+        self.traffic_requests_grid_summary = PageElement(self.page,
+            '//span[@data-qa="requests-summary"]')
+        self.traffic_errors_grid_summary = PageElement(self.page,
+            '//span[@data-qa="errors-summary"]')
+        self.traffic_rules_grid_summary = PageElement(self.page,
+            '//div[@class="MuiCardHeader-content"]//span[text()="Rules"]')
+        self.traffic_rules_metric_selector = PageElement(self.page,
+            '//input[@data-qa="rules-metricsSelector"]')
+        self.traffic_rules_percentile_selector = PageElement(self.page,
+            '//input[@data-qa="rules-percentilesSelector"]')
+        self.traffic_origin_latency_over_time_summary = PageElement(self.page,
+            '//div[@data-qa="urls-chart"]//span[text()="Origin Latency Over Time"]')
+        self.show_request_count_button = PageElement(self.page,
+            '//div[@data-qa="rules-percentageToggle"]//button[@value="count"]')
+        self.show_as_percentage_of_total_requests_button = PageElement(self.page,
+            '//div[@data-qa="rules-percentageToggle"]//button[@value="percent"]')
+        self.chart_filter_button = ListElement(self.page, '//button[@data-qa="chart-settings"]')
+        self.chart_filter_button_full_cache_flushes = ListElement(self.page,
+            '//div[@data-qa="settings-show-cacheFlushes"]//input[@type="checkbox"]')
+        self.chart_filter_button_deployments = ListElement(self.page,
+            '//div[@data-qa="settings-show-deployments"]//input[@type="checkbox"]')
+        self.traffic_origin_latency_drop_down_filter = PageElement(self.page,
+            "//input[@data-qa='originLatency-breakdownSelector']")
+        self.traffic_origin_latency_metrics_selector = PageElement(self.page,
+            "//input[@data-qa='originLatency-metricsSelector']")
+        self.traffic_origin_latency_percentile_selector = PageElement(self.page,
+            "//input[@data-qa='originLatency-percentilesSelector']")
+        self.traffic_main_chart_summary = PageElement(self.page, "//span[@data-qa='data-usage-summary']")
+        self.traffic_rules_coulumn_with_metrics_data = PageElement(self.page,
+            '//table//tr//th[10]//span[@aria-disabled]')
+        # By Country tab elements
+        self.country_tab = PageElement(self.page, "//div[@role='tablist']//span[contains(text(), 'By Country')]")
+        self.country_map = PageElement(self.page, "//div[@data-qa='geo-map']")
+        self.country_metric_selector = PageElement(self.page,
+            '//input[@data-qa="geo-metricsSelector"]')
+        self.country_percentile_selector = PageElement(self.page,
+            '//input[@data-qa="geo-percentilesSelector"]')
+        self.country_tab_origin_latency_by_country_grid = PageElement(self.page,
+            "//div[@data-qa='geo-table']//span[text()='Origin Latency by Country']")
 
 class DeploymentsMixin:
     def __init__(self, page: Page, url: str):
