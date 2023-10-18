@@ -7,16 +7,20 @@ from ltf2.console_app.magic.constants import PAGE_TIMEOUT
 from ltf2.console_app.magic.pages.pages import ExperimentsPage
 
 
+EXPERIMENTS_URL_PATH = "env/production/configuration/experiments"
+
+
 @pytest.fixture
 def experiment_page(use_login_state: dict,
-                         page: Page,
-                         ltfrc_console_app: dict,
-                         base_url: str) -> Generator[Page, None, None]:
+                    page: Page,
+                    ltfrc_console_app: dict,
+                    base_url: str) -> Generator[Page, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
     try:
-        property_path = (f"{ltfrc_console_app['team']}/{ltfrc_console_app['property']}"
-                         "/env/production/configuration/experiments")
+        property_path = (f"{ltfrc_console_app['team']}/"
+                         f"{ltfrc_console_app['property']}/"
+                         f"{EXPERIMENTS_URL_PATH}")
     except KeyError:
         raise ValueError(f'team and property variables are missed in .ltfrc')
 

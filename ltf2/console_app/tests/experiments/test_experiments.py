@@ -53,8 +53,8 @@ def test_experiment_delete(experiment_page):
     """
     # add experiment
     exp_name = f"test{int(time.time())}"
-    experiment_page.add_experiment(name=exp_name, variants=[
-                                   "variant1", "variant2"])
+    experiment_page.add_experiment(name=exp_name,
+                                   variants=["variant1", "variant2"])
     # wait for deploy button
     deploy_button = experiment_page.deploy_changes_button
     deploy_button.wait_for(timeout=10000)
@@ -90,8 +90,8 @@ def test_experiment_edit(experiment_page):
     new_exp_name = f"test{int(time.time())}new"
     # add experiment
     exp_name = f"test{int(time.time())}"
-    experiment_page.add_experiment(name=exp_name, variants=[
-                                   "variant1", "variant2"])
+    experiment_page.add_experiment(name=exp_name,
+                                   variants=["variant1", "variant2"])
     # wait for deploy button
     deploy_button = experiment_page.deploy_changes_button
     deploy_button.wait_for(timeout=10000)
@@ -125,8 +125,8 @@ def test_experiment_add_variants(experiment_page):
     """
     # add experiment
     exp_name = f"test{int(time.time())}"
-    experiment_page.add_experiment(name=exp_name, variants=[
-                                   "variant1", "variant2"])
+    experiment_page.add_experiment(name=exp_name,
+                                   variants=["variant1", "variant2"])
     # wait for deploy button
     deploy_button = experiment_page.deploy_changes_button
     deploy_button.wait_for(timeout=10000)
@@ -164,8 +164,8 @@ def test_experiment_modify_traffic_distribution(experiment_page):
     """
     # add experiment
     exp_name = f"test{int(time.time())}"
-    experiment_page.add_experiment(name=exp_name, variants=[
-                                   "variant1", "variant2"])
+    experiment_page.add_experiment(name=exp_name,
+                                   variants=["variant1", "variant2"])
     # modify traffic distribution
     experiment_page.variant_percentage_input(exp_id=0, var_id=0).fill("50")
     experiment_page.variant_percentage_input(exp_id=0, var_id=0).press("Enter")
@@ -196,8 +196,8 @@ def test_experiment_disabling(experiment_page):
     """
     # add experiment
     exp_name = f"test{int(time.time())}"
-    experiment_page.add_experiment(name=exp_name, variants=[
-                                   "variant1", "variant2"])
+    experiment_page.add_experiment(name=exp_name,
+                                   variants=["variant1", "variant2"])
     # deploy changes
     experiment_page.deploy_changes()
     # disable experiment
@@ -229,17 +229,19 @@ def test_experiment_conditions_batch1(experiment_page):
     """
     # add experiment
     exp_name = f"test{int(time.time())}"
-    experiment_page.add_experiment(name=exp_name, variants=[
-                                   "variant1", "variant2"])
+    experiment_page.add_experiment(name=exp_name,
+                                   variants=["variant1", "variant2"])
     # add conditionts
     experiment_page.condition.add_asn(operator='equals', value='12345')
-    experiment_page.condition.add_brand_name(operator='does not match regular expression', value='qwerty',
+    experiment_page.condition.add_brand_name(operator='does not match regular expression',
+                                             value='qwerty',
                                              ignore_case=True)
 
     experiment_page.condition.add_city(operator='is one of',
                                        value=['Lviv', 'Kyiv'],
                                        ignore_case=True)
-    experiment_page.condition.add_cookie(operator='matches regular expression', name='ororo',
+    experiment_page.condition.add_cookie(operator='matches regular expression',
+                                         name='ororo',
                                          value='qwerty')
     experiment_page.condition.add_client_ip(operator='equals', value='1.2.3.4')
     experiment_page.condition.add_continent(operator='is one of', value=['Europe',
@@ -249,7 +251,8 @@ def test_experiment_conditions_batch1(experiment_page):
     experiment_page.condition.add_directory(operator='equals', value='qwerty')
     experiment_page.condition.add_dma_code(operator='equals', value='123',
                                            ignore_case=True)
-    experiment_page.condition.add_filename(operator='matches regular expression', value='qwerty',
+    experiment_page.condition.add_filename(operator='matches regular expression',
+                                           value='qwerty',
                                            ignore_case=True)
     experiment_page.condition.add_html_preferred_dtd(
         operator='equals', value='qwerty')
@@ -270,13 +273,15 @@ def test_experiment_conditions_batch1(experiment_page):
         operator='greater than or equal', value='100')
     experiment_page.condition.add_longitude(
         operator='greater than or equal', value='100')
-    experiment_page.condition.add_marketing_name(operator='matches regular expression', value='qwerty',
+    experiment_page.condition.add_marketing_name(operator='matches regular expression',
+                                                 value='qwerty',
                                                  ignore_case=True)
     experiment_page.condition.add_method(operator='equals', value='GET')
     experiment_page.condition.add_metro_code(operator='equals', value='123')
     experiment_page.condition.add_mobile_browser(
         operator='equals', value='qwerty')
-    experiment_page.condition.add_model_name(operator='matches regular expression', value='qwerty',
+    experiment_page.condition.add_model_name(operator='matches regular expression',
+                                             value='qwerty',
                                              ignore_case=True)
     experiment_page.condition.add_origin_path(
         operator='matches regular expression', value='qwerty')
@@ -305,23 +310,28 @@ def test_experiment_conditions_batch2(experiment_page):
     """
     # add experiment
     exp_name = f"test{int(time.time())}"
-    experiment_page.add_experiment(name=exp_name, variants=[
-                                   "variant1", "variant2"])
+    experiment_page.add_experiment(name=exp_name,
+                                   variants=["variant1", "variant2"])
     # add conditionts
-    experiment_page.condition.add_pop_code(operator='matches regular expression', value='aga',
+    experiment_page.condition.add_pop_code(operator='matches regular expression',
+                                           value='aga',
                                            ignore_case=True)
-    experiment_page.condition.add_postal_code(operator='matches regular expression', value='2323',
+    experiment_page.condition.add_postal_code(operator='matches regular expression',
+                                              value='2323',
                                               ignore_case=True)
     experiment_page.condition.add_progressive_download(value='yes')
     experiment_page.condition.add_query(
         operator='matches regular expression', value='qwerty')
     experiment_page.condition.add_query_parameter(
         operator='matches regular expression', name='ororo', value='qwerty')
-    experiment_page.condition.add_query_string(operator='matches regular expression', value='qwerty',
+    experiment_page.condition.add_query_string(operator='matches regular expression',
+                                               value='qwerty',
                                                ignore_case=True)
-    experiment_page.condition.add_referring_domain(operator='matches regular expression', value='qwerty',
+    experiment_page.condition.add_referring_domain(operator='matches regular expression',
+                                                   value='qwerty',
                                                    ignore_case=True)
-    experiment_page.condition.add_region_code(operator='matches regular expression', value='435',
+    experiment_page.condition.add_region_code(operator='matches regular expression',
+                                              value='435',
                                               ignore_case=True)
     experiment_page.condition.add_release_date(
         operator='equals', value='qwerty')
@@ -357,8 +367,8 @@ def test_experiment_features_batch(experiment_page):
     """
     # add experiment
     exp_name = f"test{int(time.time())}"
-    experiment_page.add_experiment(name=exp_name, variants=[
-                                   "variant1", "variant2"])
+    experiment_page.add_experiment(name=exp_name,
+                                   variants=["variant1", "variant2"])
     # wait for deploy button
     deploy_button = experiment_page.deploy_changes_button
     deploy_button.wait_for(timeout=10000)
@@ -383,7 +393,7 @@ def test_experiment_features_batch(experiment_page):
         value=2, unit='hours')
     experiment_page.feature.add_set_client_ip_custom_header(
         header_name='Header')
-    experiment_page.feature.add_set_origin(value='origin')
+    experiment_page.feature.add_set_origin(value='web')
     experiment_page.feature.add_token_auth_ignore_url_case(enable=False)
     # headers
     experiment_page.feature.add_add_response_headers(
