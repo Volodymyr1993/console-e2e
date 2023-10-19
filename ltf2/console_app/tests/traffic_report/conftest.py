@@ -20,8 +20,8 @@ def traffic_page(use_login_state: dict,
 
     try:
         traffic_path = (f"{ltfrc_console_app['team']}/"
-                         f"{ltfrc_console_app['property']}/"
-                         f"{TRAFFIC_URL_PATH}")
+                        f"{ltfrc_console_app['property']}/"
+                        f"{TRAFFIC_URL_PATH}")
     except KeyError:
         raise ValueError(f'team and property variables are missed in .ltfrc')
     traffic = TrafficPage(page, url=urljoin(base_url, traffic_path))
