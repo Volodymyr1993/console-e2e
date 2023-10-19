@@ -1,3 +1,6 @@
+from ltf2.console_app.magic.constants import TRAFFIC_ROUTES, ORIGINS_OVERTIME
+
+
 def test_metric_selector_main_chart(traffic_page):
     """Traffic - Overview, verifying all filter options are clickable, summary is correct, all buttons are clickable
 
@@ -39,6 +42,7 @@ def test_metric_selector_main_chart(traffic_page):
     assert traffic_page.chart_filter_button_deployments[0].is_checked() is True
     assert traffic_page.chart_filter_button_full_cache_flushes[0].is_checked() is True
 
+
 def test_rules_grid_buttons_check(traffic_page):
     """Traffic - Overview, Rules grig filters, buttons
 
@@ -64,10 +68,10 @@ def test_rules_grid_buttons_check(traffic_page):
         5. response status code is 200 after clicking buttons
 
         """
-    rules_metricsSelector = ['TTFB', 'Response Time']
+    rules_metrics_selector = ['TTFB', 'Response Time']
     traffic_page.traffic_rules_metric_selector.click()
-    for value in rules_metricsSelector:
-        with traffic_page.expect_response("**/api/bff/traffic/routes") as response_info:
+    for value in rules_metrics_selector:
+        with traffic_page.expect_response(TRAFFIC_ROUTES) as response_info:
             traffic_page.select_by_name(name=value).click()
         response = response_info.value
         assert response.status == 200
@@ -77,10 +81,10 @@ def test_rules_grid_buttons_check(traffic_page):
     # Default selected percentile is p75
     assert traffic_page.traffic_rules_percentile_selector.get_attribute('value') == 'p75'
 
-    rules_percentilesSelector = ['p95', 'p99']
+    rules_percentiles_selector = ['p95', 'p99']
     traffic_page.traffic_rules_percentile_selector.click()
-    for value in rules_percentilesSelector:
-        with traffic_page.expect_response("**/api/bff/traffic/routes") as response_percentile:
+    for value in rules_percentiles_selector:
+        with traffic_page.expect_response(TRAFFIC_ROUTES) as response_percentile:
             traffic_page.select_by_name(name=value).click()
         response = response_percentile.value
         assert response.status == 200
@@ -89,6 +93,7 @@ def test_rules_grid_buttons_check(traffic_page):
 
     traffic_page.show_as_percentage_of_total_requests_button.click()
     traffic_page.show_request_count_button.click()
+
 
 def test_origin_latency_over_tyme_grid_buttons_check(traffic_page):
     """Traffic - Overview, Rules grig filters, buttons
@@ -115,24 +120,17 @@ def test_origin_latency_over_tyme_grid_buttons_check(traffic_page):
         5. response status code is 200 after clicking buttons
 
         """
-
-    rules_filter_by_selector = ['Show Origin Hostname', 'Show Origin Name']
-    traffic_page.traffic_origin_latency_drop_down_filter.click()
-    for value in rules_filter_by_selector:
-        with traffic_page.expect_response("**/api/bff/traffic/origins-overtime") as response_info:
-            traffic_page.select_by_name(name=value).click()
-        response = response_info.value
-        assert response.status == 200
-        assert traffic_page.traffic_origin_latency_drop_down_filter.get_attribute('value') == value
-        traffic_page.traffic_origin_latency_drop_down_filter.click()
-
     # default percentile is 75
     assert traffic_page.traffic_origin_latency_percentile_selector.get_attribute('value') == 'p75'
+    # Verify that response is 200 while first entering hte page
+    with traffic_page.expect_response(ORIGINS_OVERTIME) as response_info_origin:
+        response = response_info_origin.value
+        assert response.status == 200
 
-    rules_percentilesSelector = ['p95', 'p99']
+    rules_percentiles_selector = ['p95', 'p99']
     traffic_page.traffic_origin_latency_percentile_selector.click()
-    for value in rules_percentilesSelector:
-        with traffic_page.expect_response("**/api/bff/traffic/origins-overtime") as response_percentile:
+    for value in rules_percentiles_selector:
+        with traffic_page.expect_response(ORIGINS_OVERTIME) as response_percentile:
             traffic_page.select_by_name(name=value).click()
         response = response_percentile.value
         assert response.status == 200
@@ -145,9 +143,19 @@ def test_origin_latency_over_tyme_grid_buttons_check(traffic_page):
     rules_metrics_selector = ['Response Time']
     traffic_page.traffic_origin_latency_metrics_selector.click()
     for value in rules_metrics_selector:
-        with traffic_page.expect_response("**/api/bff/traffic/origins-overtime") as response_metric:
+        with traffic_page.expect_response(ORIGINS_OVERTIME) as response_metric:
             traffic_page.select_by_name(name=value).click()
         response = response_metric.value
         assert response.status == 200
         assert traffic_page.traffic_origin_latency_metrics_selector.get_attribute('value') == value
         traffic_page.traffic_origin_latency_metrics_selector.click()
+
+    rules_filter_by_selector = ['Show Origin Hostname']
+    traffic_page.traffic_origin_latency_drop_down_filter.click()
+    for value in rules_filter_by_selector:
+        with traffic_page.expect_response(ORIGINS_OVERTIME) as response_info:
+            traffic_page.select_by_name(name=value).click()
+        response = response_info.value
+        assert response.status == 200
+        assert traffic_page.traffic_origin_latency_drop_down_filter.get_attribute('value') == value
+        traffic_page.traffic_origin_latency_drop_down_filter.click()
