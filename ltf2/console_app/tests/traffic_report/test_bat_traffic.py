@@ -58,6 +58,7 @@ def test_bat_traffic_overview(traffic_page):
     assert traffic_page.show_as_percentage_of_total_requests_button.is_visible(), 'button is not visible'
     assert traffic_page.traffic_origin_latency_over_time_summary.is_visible(), 'Summary is not visible'
 
+
 def test_bat_traffic_by_country(traffic_page):
     """Traffic - Geography BAT, verifying elements are visible
 

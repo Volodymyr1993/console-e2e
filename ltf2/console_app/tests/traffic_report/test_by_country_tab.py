@@ -1,3 +1,6 @@
+from ltf2.console_app.magic.constants import ORIGINS_COUNTRIES
+
+
 def test_metric_selector_main_chart(traffic_page):
     """Traffic - By Country, verifying all drop-downs options are clickable, summary is correct
 
@@ -29,7 +32,7 @@ def test_metric_selector_main_chart(traffic_page):
 
     traffic_page.country_tab.click()
 
-    with traffic_page.expect_response("**/api/bff/traffic/origins-countries") as response_value:
+    with traffic_page.expect_response(ORIGINS_COUNTRIES) as response_value:
         response = response_value.value
         assert response.status == 200
 

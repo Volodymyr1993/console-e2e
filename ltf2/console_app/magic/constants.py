@@ -15,3 +15,8 @@ ACCESS_CONTROL_TYPE = {
     'URL': 'url',
     'User-Agent': 'userAgent'
 }
+
+
+ORIGINS_OVERTIME = "**/api/bff/traffic/origins-overtime"
+TRAFFIC_ROUTES = "**/api/bff/traffic/routes"
+ORIGINS_COUNTRIES = "**/api/bff/traffic/origins-countries"
