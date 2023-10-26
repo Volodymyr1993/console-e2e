@@ -27,8 +27,8 @@ def test_metric_selector_main_chart(traffic_page):
         'Data Transferred In' : 'Total:',
         'Throughput Out': 'Average:',
         'Throughput In': 'Average:',
-        'Requests Rate Out': 'Average:',
-        'Requests Rate In': 'Average:'
+        'Requests Rate Edge': 'Average:',
+        'Requests Rate Origin': 'Average:'
 
     }
 
