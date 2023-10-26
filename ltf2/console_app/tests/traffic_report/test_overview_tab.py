@@ -23,10 +23,10 @@ def test_metric_selector_main_chart(traffic_page):
 
         """
     metric_selector_values = {
-        'Data Transferred Out': 'Total:',
-        'Data Transferred In' : 'Total:',
-        'Throughput Out': 'Average:',
-        'Throughput In': 'Average:',
+        'Data Transferred Edge': 'Total:',
+        'Data Transferred Origin' : 'Total:',
+        'Throughput Edge': 'Average:',
+        'Throughput Origin': 'Average:',
         'Requests Rate Edge': 'Average:',
         'Requests Rate Origin': 'Average:'
 
