@@ -150,7 +150,8 @@ def test_rules_ai_deny_all_sanctioned_countries(property_page):
         'Syrian Arab Republic',
         'Korea, Democratic People’s Republic of',
         'Cuba',
-        'Sudan'
+        'Sudan',
+        'Somalia'
     ]
 
     property_page.add_rule_using_ai.click()
