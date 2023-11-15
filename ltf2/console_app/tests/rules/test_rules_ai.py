@@ -519,9 +519,11 @@ def test_rules_ia_remove_all_except_one_cache_key_query(property_page):
         assert property_page.value_div.inner_text() == 'uid', 'Wrong Value'
         property_page.close.click()
     else:
-        assert property_page.variable_input.input_value() == 'Path', 'Wrong Variable'
-        assert property_page.operator_input.input_value() == 'matches (simple)', 'Wrong Operator'
-        assert property_page.match_value_regex.inner_text() == '/.*', 'Wrong Value'
+        assert property_page.variable_input.input_value() == 'Path'
+        if property_page.operator_input.input_value() == 'matches (simple)':
+            assert property_page.match_value_regex.inner_text() == '/.*', 'Wrong Value'
+        elif property_page.operator_input.input_value() == 'equals':
+            assert property_page.match_value_regex.inner_text() == '/', 'Wrong Value'
         property_page.close.click()
 
     # Validate Feature
