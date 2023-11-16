@@ -201,11 +201,14 @@ def test_experiment_disabling(experiment_page):
     # deploy changes
     experiment_page.deploy_changes()
     # disable experiment
-    experiment_page.is_active_checkbox_list.first.click()
+    is_active = experiment_page.is_active_checkbox_list.first
+    is_active.wait_for(timeout=25000)
+    is_active.click()
     # deploy changes
     experiment_page.deploy_changes()
     # enable experiment
-    experiment_page.is_active_checkbox_list.first.click()
+    is_active.wait_for(timeout=25000)
+    is_active.click()
     # deploy changes
     experiment_page.deploy_changes()
     assert not experiment_page.deploy_changes_button.is_visible()

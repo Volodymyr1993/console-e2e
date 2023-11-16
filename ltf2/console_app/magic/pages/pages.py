@@ -47,13 +47,13 @@ class ExperimentsPage(CommonMixin, ExperimentsMixin, BasePage):
         deploy_button.wait_for(timeout=10000)
 
     def deploy_changes(self):
-        self.deploy_changes_button.click()
+        self.deploy_changes_button.last.click()
         self.wait_for_timeout(timeout=1000)
         self.deploy_changes_button.last.click()
         # wait for success message
         message = self.client_snackbar.get_by_text(
             'Changes deployed successfully')
-        message.first.wait_for(timeout=30000)
+        message.first.wait_for(timeout=40000)
         return message.first
 
 
