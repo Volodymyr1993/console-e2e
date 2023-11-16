@@ -201,13 +201,13 @@ def test_experiment_disabling(experiment_page):
     # deploy changes
     experiment_page.deploy_changes()
     # disable experiment
+    experiment_page.wait_for_timeout(timeout=500)
     is_active = experiment_page.is_active_checkbox_list.first
-    is_active.wait_for(timeout=25000)
     is_active.click()
     # deploy changes
     experiment_page.deploy_changes()
     # enable experiment
-    is_active.wait_for(timeout=25000)
+    experiment_page.wait_for_timeout(timeout=500)
     is_active.click()
     # deploy changes
     experiment_page.deploy_changes()
