@@ -524,6 +524,9 @@ def test_rules_ia_remove_all_except_one_cache_key_query(property_page):
             assert property_page.match_value_regex.inner_text() == '/.*', 'Wrong Value'
         elif property_page.operator_input.input_value() == 'equals':
             assert property_page.match_value_regex.inner_text() == '/', 'Wrong Value'
+        else:
+            raise AssertionError(
+                f'Got unexpected operator {property_page.operator_input.input_value()}')
         property_page.close.click()
 
     # Validate Feature
