@@ -18,6 +18,7 @@ def fill_in_rule_name(page: SecurityPage) -> str:
     return name
 
 
+@pytest.mark.regression
 def test_managed_rules_add(managed_rules_page: SecurityPage,
                            delete_managed_rules: list):
     """ Managed Rules - Add and delete Managed rule
@@ -47,6 +48,7 @@ def test_managed_rules_add(managed_rules_page: SecurityPage,
     assert managed_rules_page.input_name.input_value() == name
 
 
+@pytest.mark.regression
 def test_managed_rules_add_rule_with_header_and_ignore_list(managed_rules_page: SecurityPage,
                                                             delete_managed_rules: list):
     """ Managed Rules - Add rule - Optional fields
@@ -96,6 +98,7 @@ def test_managed_rules_add_rule_with_header_and_ignore_list(managed_rules_page: 
     assert managed_rules_page.ignore_query_args_buttons[0].text_content() == query_args
 
 
+@pytest.mark.regression
 def test_managed_rules_add_rule_more_details(managed_rules_page: SecurityPage,
                                              delete_managed_rules: list):
     """ Managed Rules - Add rule - More Details
@@ -151,6 +154,7 @@ def test_managed_rules_add_rule_more_details(managed_rules_page: SecurityPage,
     assert not managed_rules_page.json_parser_input.is_checked()
 
 
+@pytest.mark.regression
 def test_managed_rules_add_rule_with_more_details_negative_value(
         managed_rules_page: SecurityPage):
     """ Managed Rules - Add rule - Negative - More Details - Negative values
@@ -192,6 +196,7 @@ def test_managed_rules_add_rule_with_more_details_negative_value(
             f'{item.selector} should contain error'
 
 
+@pytest.mark.regression
 def test_managed_rules_add_rule_with_more_details_empty_value(
         managed_rules_page: SecurityPage):
     """ Managed Rules - Add rule - Negative - More Details - Empty values
@@ -233,6 +238,7 @@ def test_managed_rules_add_rule_with_more_details_empty_value(
             f'{item.selector} should contain error'
 
 
+@pytest.mark.regression
 def test_managed_rules_add_rule_with_policies(
         managed_rules_page: SecurityPage, delete_managed_rules: list):
     """ Managed Rules - Add rule - Policies
@@ -288,6 +294,7 @@ def test_managed_rules_add_rule_with_policies(
     assert managed_rules_page.ruleset_switch.is_checked()
 
 
+@pytest.mark.regression
 @pytest.mark.parametrize('parameter', ['Argument', 'Headers', 'Cookies'])
 def test_managed_rules_add_rule_with_exception(
         managed_rules_page: SecurityPage, delete_managed_rules: list, parameter: str):
@@ -346,6 +353,7 @@ def test_managed_rules_add_rule_with_exception(
 
 
 # Error cases
+@pytest.mark.regression
 def test_managed_rules_graphql_plaintext_error(managed_rules_page: SecurityPage,
                                                delete_managed_rules: list):
     """ Managed Rules - Plain text error
@@ -392,6 +400,7 @@ def test_managed_rules_graphql_plaintext_error(managed_rules_page: SecurityPage,
     managed_rules_page.client_snackbar.get_by_text('Error from mock').wait_for()
 
 
+@pytest.mark.regression
 def test_managed_rules_add_delete_graphql_jsonasstring_error(
         managed_rules_page: SecurityPage,
         delete_managed_rules: list):
@@ -439,6 +448,7 @@ def test_managed_rules_add_delete_graphql_jsonasstring_error(
     managed_rules_page.client_snackbar.get_by_text('Message inside JSON').wait_for()
 
 
+@pytest.mark.regression
 def test_managed_rules_request_limit(security_logged):
     """ Managed Rules - Max Rules count
 

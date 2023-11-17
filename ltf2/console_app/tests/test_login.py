@@ -1,8 +1,8 @@
 from collections import namedtuple
-
+import pytest
 from ltf2.console_app.magic.pages.pages import LoginPage
 
-
+@pytest.mark.regression
 def test_negative_wrong_email_format(login_page: LoginPage, credentials: namedtuple):
     """ Login - Negative - Wrong email format
 
@@ -24,6 +24,7 @@ def test_negative_wrong_email_format(login_page: LoginPage, credentials: namedtu
     assert login_page.invalid_email_or_password_message.text_content() == 'Invalid username'
 
 
+@pytest.mark.regression
 def test_negative_empty_email_password(login_page: LoginPage, credentials: namedtuple):
     """ Login - Negative - Empty email or password
 
@@ -54,6 +55,7 @@ def test_negative_empty_email_password(login_page: LoginPage, credentials: named
     assert login_page.error_message.text_content() == 'Required'
 
 
+@pytest.mark.regression
 def test_negative_wrong_password(login_page: LoginPage, credentials: namedtuple):
     """ Login - Negative - Wrong password
 
@@ -78,6 +80,7 @@ def test_negative_wrong_password(login_page: LoginPage, credentials: namedtuple)
            'Invalid username or password'
 
 
+@pytest.mark.regression
 def test_positive_login(login_page: LoginPage, credentials: namedtuple):
     """ Login - Positive login
 
@@ -97,7 +100,6 @@ def test_positive_login(login_page: LoginPage, credentials: namedtuple):
     login_page.submit.click()
     login_page.password.fill(credentials.password)
     login_page.submit.click()
-    login_page.submit.wait_for(timeout=8 * 1000)
 
     login_page.overview.wait_for()
     assert not login_page.submit.is_visible()

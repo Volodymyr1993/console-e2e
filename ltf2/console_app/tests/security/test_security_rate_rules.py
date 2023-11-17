@@ -20,6 +20,7 @@ def fill_in_rule_name(page: Page) -> str:
     return name
 
 
+@pytest.mark.regression
 def test_rate_rules_add_rule_without_condition_group(rate_rules_page: Page,
                                                      delete_rate_rules: list):
     """ Rate Rules - Add and delete Managed rule
@@ -56,6 +57,7 @@ def test_rate_rules_add_rule_without_condition_group(rate_rules_page: Page,
     assert rate_rules_page.input_num.input_value() == rate
 
 
+@pytest.mark.regression
 @pytest.mark.parametrize('param',
                          ['ASN','Country', 'File_extension', 'IP_address',
                           'Request_header', 'Request_method', 'Request_URL_path'])
@@ -115,7 +117,7 @@ def test_rate_rules_add_rule_with_condition_group(rate_rules_page: Page,
     assert rate_rules_page.rate_condition_values.text_content() == value[match_param]
 
 
-
+@pytest.mark.regression
 def test_rate_rules_add_rule_with_five_conditions(rate_rules_page: Page,
                                                          delete_rate_rules: list):
     """ Rate Rules - Add WAF rate rule with 5 conditions
@@ -165,6 +167,7 @@ def test_rate_rules_add_rule_with_five_conditions(rate_rules_page: Page,
         assert rate_rules_page.rate_condition_values.text_content() == f'10.10.10.{i}'
 
 
+@pytest.mark.regression
 def test_rate_rules_add_rule_with_empty_condition_value(rate_rules_page: Page,
                                                         delete_rate_rules: list):
     """ Rate Rules - Add Security rate rule with empty condition value
@@ -214,6 +217,7 @@ def test_rate_rules_add_rule_with_empty_condition_value(rate_rules_page: Page,
     delete_rate_rules.pop()
 
 
+@pytest.mark.regression
 def test_rate_rules_request_limit(security_logged):
     """ Rate Rules - Max Rules count
 

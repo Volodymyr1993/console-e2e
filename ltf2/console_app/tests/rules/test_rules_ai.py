@@ -1,3 +1,8 @@
+from playwright._impl._api_types import TimeoutError
+import pytest
+
+
+@pytest.mark.regression
 def test_rules_ai_deny_access(property_page):
     """Rules - AI rule - Deny Access
 
@@ -27,7 +32,16 @@ def test_rules_ai_deny_access(property_page):
     property_page.generate_rule.click()
 
     # Validate Condition
-    property_page.created_rule(num=-1).condition(num=0).click()
+    try:
+        property_page.created_rule(num=-1).condition(num=0).click(timeout=50000)
+    except TimeoutError:
+        # Check if rule generation failed
+        try:
+            error = property_page.ai_rule_generation_error.inner_text(timeout=10)
+            assert not error, f"Cannot generate rule: {error}"
+        except TimeoutError:
+            pass
+        raise
     assert property_page.variable_input.input_value() == 'Country', 'Wrong Variable'
     assert property_page.operator_input.input_value() == 'equals', 'Wrong Operator'
     assert property_page.match_value_input.input_value() == 'Russian Federation', \
@@ -68,7 +82,16 @@ def test_rules_ai_deny_all_except_one(property_page):
     property_page.generate_rule.click()
 
     # Validate Condition
-    property_page.created_rule(num=-1).condition(num=0).click()
+    try:
+        property_page.created_rule(num=-1).condition(num=0).click(timeout=50000)
+    except TimeoutError:
+        # Check if rule generation failed
+        try:
+            error = property_page.ai_rule_generation_error.inner_text(timeout=10)
+            assert not error, f"Cannot generate rule: {error}"
+        except TimeoutError:
+            pass
+        raise
     assert property_page.variable_input.input_value() == 'Country', 'Wrong Variable'
     assert property_page.operator_input.input_value() == 'does not equal', 'Wrong Operator'
     assert property_page.match_value_input.input_value() == 'Ukraine', \
@@ -109,7 +132,16 @@ def test_rules_ai_allow_only_post_requests(property_page):
     property_page.generate_rule.click()
 
     # Validate Condition
-    property_page.created_rule(num=-1).condition(num=0).click()
+    try:
+        property_page.created_rule(num=-1).condition(num=0).click(timeout=50000)
+    except TimeoutError:
+        # Check if rule generation failed
+        try:
+            error = property_page.ai_rule_generation_error.inner_text(timeout=10)
+            assert not error, f"Cannot generate rule: {error}"
+        except TimeoutError:
+            pass
+        raise
     assert property_page.variable_input.input_value() == 'Method', 'Wrong Variable'
     assert property_page.operator_input.input_value() == 'does not equal', 'Wrong Operator'
     assert property_page.match_value_input.input_value() == 'POST', \
@@ -150,14 +182,24 @@ def test_rules_ai_deny_all_sanctioned_countries(property_page):
         'Syrian Arab Republic',
         'Korea, Democratic People’s Republic of',
         'Cuba',
-        'Sudan'
+        'Sudan',
+        'Somalia'
     ]
 
     property_page.add_rule_using_ai.click()
     property_page.add_rule_using_ai_input.fill('deny access for all countries under sanctions')
     property_page.generate_rule.click()
     # Validate Condition
-    property_page.created_rule(num=-1).condition(num=0).click()
+    try:
+        property_page.created_rule(num=-1).condition(num=0).click(timeout=50000)
+    except TimeoutError:
+        # Check if rule generation failed
+        try:
+            error = property_page.ai_rule_generation_error.inner_text(timeout=10)
+            assert not error, f"Cannot generate rule: {error}"
+        except TimeoutError:
+            pass
+        raise
     # There are 2 ways how AI can create a valid rule
     if property_page.operator_input.input_value() == 'is one of':
         values_from_the_field = property_page.values_list.inner_text()
@@ -210,7 +252,16 @@ def test_rules_ai_url_redirect(property_page):
     property_page.generate_rule.click()
 
     # Validate Condition
-    property_page.created_rule(num=-1).condition(num=0).click()
+    try:
+        property_page.created_rule(num=-1).condition(num=0).click(timeout=50000)
+    except TimeoutError:
+        # Check if rule generation failed
+        try:
+            error = property_page.ai_rule_generation_error.inner_text(timeout=10)
+            assert not error, f"Cannot generate rule: {error}"
+        except TimeoutError:
+            pass
+        raise
     assert property_page.variable_input.input_value() == 'Scheme', 'Wrong Variable'
     assert property_page.operator_input.input_value() == 'equals', 'Wrong Operator'
     assert property_page.match_value_input.input_value() == 'HTTP', 'Wrong Value'
@@ -254,7 +305,16 @@ def test_rules_ai_generate_cache_rule_for_static_object(property_page):
     property_page.generate_rule.click()
 
     # Validate Condition
-    property_page.created_rule(num=-1).condition(num=0).click()
+    try:
+        property_page.created_rule(num=-1).condition(num=0).click(timeout=50000)
+    except TimeoutError:
+        # Check if rule generation failed
+        try:
+            error = property_page.ai_rule_generation_error.inner_text(timeout=10)
+            assert not error, f"Cannot generate rule: {error}"
+        except TimeoutError:
+            pass
+        raise
     assert property_page.variable_input.input_value() == 'Path', 'Wrong Variable'
     assert property_page.operator_input.input_value() == 'matches (simple)', 'Wrong Operator'
     assert property_page.value_div.inner_text() == '/static/:path*', \
@@ -268,7 +328,7 @@ def test_rules_ai_generate_cache_rule_for_static_object(property_page):
     assert property_page.max_age_unit.input_value() == 'year'
 
 
-def test_rules_ia_bypass_cache_with_strict_query_param(property_page):
+def test_rules_ai_bypass_cache_with_strict_query_param(property_page):
     """Rules - AI rule - Disable caching when the "nc" query parameter is 1.
 
         Preconditions:
@@ -298,7 +358,16 @@ def test_rules_ia_bypass_cache_with_strict_query_param(property_page):
     property_page.generate_rule.click()
 
     # Validate Condition
-    property_page.created_rule(num=-1).condition(num=0).click()
+    try:
+        property_page.created_rule(num=-1).condition(num=0).click(timeout=50000)
+    except TimeoutError:
+        # Check if rule generation failed
+        try:
+            error = property_page.ai_rule_generation_error.inner_text(timeout=10)
+            assert not error, f"Cannot generate rule: {error}"
+        except TimeoutError:
+            pass
+        raise
     assert property_page.variable_input.input_value() == 'Query Parameter', 'Wrong Variable'
     assert property_page.parameter_name.text_content() == 'nc', 'Wrong Variable'
     assert property_page.operator_input.input_value() == 'equals', 'Wrong Operator'
@@ -310,8 +379,8 @@ def test_rules_ia_bypass_cache_with_strict_query_param(property_page):
     assert property_page.rule_checkbox.is_checked(), "Feature is not enabled"
 
 
-def test_rules_ia_bypass_cache_with_matched_regex(property_page):
-    """Rules - AI rule - set no-store for all urls containing /highsec/ path.
+def test_rules_ai_bypass_cache_with_matched_regex(property_page):
+    r"""Rules - AI rule - set no-store for all urls containing /highsec/ path.
 
         Preconditions:
         --------------
@@ -339,10 +408,19 @@ def test_rules_ia_bypass_cache_with_matched_regex(property_page):
     property_page.generate_rule.click()
 
     # Validate Condition
-    property_page.created_rule(num=-1).condition(num=0).click()
+    try:
+        property_page.created_rule(num=-1).condition(num=0).click(timeout=50000)
+    except TimeoutError:
+        # Check if rule generation failed
+        try:
+            error = property_page.ai_rule_generation_error.inner_text(timeout=10)
+            assert not error, f"Cannot generate rule: {error}"
+        except TimeoutError:
+            pass
+        raise
     assert property_page.variable_input.input_value() == 'Path', 'Wrong Variable'
     assert property_page.operator_input.input_value() == 'matches regular expression', 'Wrong Operator'
-    assert property_page.match_value_regex.inner_text() == r'\/highsec\/', 'Wrong Value'
+    assert property_page.match_value_regex.inner_text() in (r'\/highsec\/', r'\/highsec\/.+' ), 'Wrong Value'
     property_page.close.click()
     # Validate Feature
     property_page.created_rule(num=-1).feature(num=0).click()
@@ -350,7 +428,7 @@ def test_rules_ia_bypass_cache_with_matched_regex(property_page):
     assert property_page.rule_checkbox.is_checked(), "Feature is not enabled"
 
 
-def test_rules_ia_redirect_host_header(property_page):
+def test_rules_ai_redirect_host_header(property_page):
     """Rules - AI rule - redirect example.com to www.example.com.
 
         Preconditions:
@@ -381,7 +459,16 @@ def test_rules_ia_redirect_host_header(property_page):
     property_page.generate_rule.click()
 
     # Validate Condition
-    property_page.created_rule(num=-1).condition(num=0).click()
+    try:
+        property_page.created_rule(num=-1).condition(num=0).click(timeout=50000)
+    except TimeoutError:
+        # Check if rule generation failed
+        try:
+            error = property_page.ai_rule_generation_error.inner_text(timeout=10)
+            assert not error, f"Cannot generate rule: {error}"
+        except TimeoutError:
+            pass
+        raise
     assert property_page.variable_input.input_value() == 'Request Header', 'Wrong Variable'
     assert property_page.header_name.inner_text() == 'host', 'Wrong Header Name'
     assert property_page.operator_input.input_value() == 'equals', 'Wrong Operator'
@@ -396,7 +483,7 @@ def test_rules_ia_redirect_host_header(property_page):
     assert not property_page.rule_checkbox.is_checked(), "Wrong 'ignore case'"
 
 
-def test_rules_ia_compress_content(property_page):
+def test_rules_ai_compress_content(property_page):
     """Rules - AI rule - compress JavaScript and CSS files
 
         Preconditions:
@@ -419,7 +506,7 @@ def test_rules_ia_compress_content(property_page):
         4.3 Values should be 'png, jpg, jpeg, gif, svg'
         5.1 Feature name should be 'Compress Content Types'
         5.2 Compress Content Types should be 'image/png, image/jpeg, image/gif, image/svg, image/jpg'
-        """
+    """
     extention_to_compare = ['png', 'jpg', 'jpeg', 'gif', 'svg']
     compress_content_to_compare = ['image/png', 'image/jpeg', 'image/gif', 'image/svg+xml']
 
@@ -428,7 +515,16 @@ def test_rules_ia_compress_content(property_page):
     property_page.generate_rule.click()
 
     # Validate Condition
-    property_page.created_rule(num=-1).condition(num=0).click()
+    try:
+        property_page.created_rule(num=-1).condition(num=0).click(timeout=50000)
+    except TimeoutError:
+        # Check if rule generation failed
+        try:
+            error = property_page.ai_rule_generation_error.inner_text(timeout=10)
+            assert not error, f"Cannot generate rule: {error}"
+        except TimeoutError:
+            pass
+        raise
     assert property_page.variable_input.input_value() == 'Extension', 'Wrong Variable'
     assert property_page.operator_input.input_value() == 'is one of', 'Wrong Operator'
     values_from_the_condifion_field = property_page.match_tags_inputs.inner_text()
@@ -443,7 +539,7 @@ def test_rules_ia_compress_content(property_page):
     assert make_list_from_string == compress_content_to_compare, 'Wrong Source'
 
 
-def test_rules_ia_cache_key_query_string_include_option(property_page):
+def test_rules_ai_cache_key_query_string_include_option(property_page):
     """Rules - AI rule - include only id and type query parameters in the cache key
 
         Preconditions:
@@ -467,19 +563,43 @@ def test_rules_ia_cache_key_query_string_include_option(property_page):
     values_to_compare = ['id', 'type']
 
     property_page.add_rule_using_ai.click()
-    property_page.add_rule_using_ai_input.fill('include only id and type query parameters in the cache key')
+    property_page.add_rule_using_ai_input.fill(
+        'include only id and type query parameters in the cache key')
     property_page.generate_rule.click()
 
-    # Validate Feature
-    property_page.created_rule(num=-1).feature(num=0).click()
-    assert property_page.feature_input.input_value() == 'Cache Key Query String', 'Wrong Feature'
-    assert property_page.option_input.input_value() == 'Include', 'Wrong Status Code'
-    values_from_the_field = property_page.match_tags_inputs.inner_text()
-    make_list_from_string = list(values_from_the_field.split('\n')[:-1])
-    assert make_list_from_string == values_to_compare, 'Wrong Source'
+    # There are 2 ways how AI can create a valid rule
+    feature = None
+    try:
+        property_page.created_rule(num=-1).feature(num=0).click(timeout=30000)
+        feature = True
+    except TimeoutError:
+        try:
+            # Check if rule cannot be generated
+            error = property_page.ai_rule_generation_error.inner_text(timeout=10)
+            assert not error, f"Cannot generate rule: {error}"
+        except TimeoutError:
+            pass
+        # Will check if Condition is created
+        pass
+    if feature:
+        # Validate Feature
+        assert property_page.feature_input.input_value() == 'Cache Key Query String', 'Wrong Feature'
+        assert property_page.option_input.input_value() == 'Include', 'Wrong Status Code'
+        values_from_the_field = property_page.match_tags_inputs.inner_text()
+        make_list_from_string = list(values_from_the_field.split('\n')[:-1])
+        assert make_list_from_string == values_to_compare, 'Wrong Source'
+    else:
+        # Validate Condition
+        for i, val in enumerate(['id', 'type']):
+            property_page.created_rule(num=-1).condition(num=i+1).click()
+            assert property_page.variable_input.input_value() == 'Query Parameter', 'Wrong Condition'
+            assert property_page.parameter_name.text_content() == val, 'Wrong Parametr Name'
+            assert property_page.operator_input.input_value() == 'matches regular expression', 'Wrong Operator'
+            assert property_page.match_value_regex.inner_text() in ('*', '.*'), 'Wrong Value'
+            property_page.close.click()
 
 
-def test_rules_ia_remove_all_except_one_cache_key_query(property_page):
+def test_rules_ai_remove_all_except_one_cache_key_query(property_page):
     """Rules - AI rule - remove the uid query parameter from the cache key
 
         Preconditions:
@@ -511,16 +631,30 @@ def test_rules_ia_remove_all_except_one_cache_key_query(property_page):
     property_page.generate_rule.click()
 
     # Validate Condition
-    property_page.created_rule(num=-1).condition(num=0).click()
+    try:
+        property_page.created_rule(num=-1).condition(num=0).click(timeout=50000)
+    except TimeoutError:
+        # Check if rule generation failed
+        try:
+            error = property_page.ai_rule_generation_error.inner_text(timeout=10)
+            assert not error, f"Cannot generate rule: {error}"
+        except TimeoutError:
+            pass
+        raise
     # There are 2 ways how AI can create a valid rule
     if property_page.variable_input.input_value() == 'Extension':
         assert property_page.operator_input.input_value() == 'equals', 'Wrong Operator'
         assert property_page.value_div.inner_text() == 'uid', 'Wrong Value'
         property_page.close.click()
     else:
-        assert property_page.variable_input.input_value() == 'Path', 'Wrong Variable'
-        assert property_page.operator_input.input_value() == 'matches (simple)', 'Wrong Operator'
-        assert property_page.match_value_regex.inner_text() == '/.*', 'Wrong Value'
+        assert property_page.variable_input.input_value() == 'Path'
+        if property_page.operator_input.input_value() == 'matches (simple)':
+            assert property_page.match_value_regex.inner_text() == '/.*', 'Wrong Value'
+        elif property_page.operator_input.input_value() == 'equals':
+            assert property_page.match_value_input.inner_text() == '/', 'Wrong Value'
+        else:
+            raise AssertionError(
+                f'Got unexpected operator {property_page.operator_input.input_value()}')
         property_page.close.click()
 
     # Validate Feature

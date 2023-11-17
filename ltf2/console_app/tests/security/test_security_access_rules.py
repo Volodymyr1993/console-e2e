@@ -21,6 +21,7 @@ def fill_in_rule_name(page: SecurityPage) -> str:
     return name
 
 
+@pytest.mark.regression
 @pytest.mark.parametrize('parameter',
                          ('ASN', 'Cookie', 'Country', 'Country Subdivision (ISO3166-2)',
                           'IP', 'Referrer', 'URL', 'User-Agent'),
@@ -88,6 +89,7 @@ def test_access_rule_access_control(access_rules_page: SecurityPage,
             f'Wrong value for {parameter} {list_name}'
 
 
+@pytest.mark.regression
 def test_access_rule_advanced_settings_http_methods(access_rules_page: SecurityPage,
                                                     delete_access_rules: list):
     """ Access Rules - Add rule - Advanced Settings - HTTP methods
@@ -128,6 +130,7 @@ def test_access_rule_advanced_settings_http_methods(access_rules_page: SecurityP
         assert expected[method] == checkbox.is_checked()
 
 
+@pytest.mark.regression
 def test_access_rule_advanced_settings_input_fields(access_rules_page: SecurityPage,
                                                     delete_access_rules: list):
     """ Access Rules - Add rule - Advanced Settings - Input fields
@@ -204,6 +207,7 @@ def test_access_rule_advanced_settings_input_fields(access_rules_page: SecurityP
         f"Cannot find `{string_value1}` in Header Blacklist"
 
 
+@pytest.mark.regression
 def test_access_rule_edit_rule(access_rules_page: SecurityPage,
                                delete_access_rules: list):
     """ Access Rules - Edit existent rule
@@ -278,6 +282,7 @@ def test_access_rule_edit_rule(access_rules_page: SecurityPage,
         f"Cannot find `{string_value1}` in Header Blacklist"
 
 
+@pytest.mark.regression
 def test_access_rule_delete_rule(access_rules_page: SecurityPage,
                                  delete_access_rules: list):
     """ Access Rules - Delete existent rule
@@ -328,6 +333,7 @@ def test_access_rule_delete_rule(access_rules_page: SecurityPage,
     delete_access_rules.pop()
 
 
+@pytest.mark.regression
 def test_access_rules_request_limit(security_logged):
     """ Access Rules - Max Rules count
 

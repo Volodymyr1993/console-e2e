@@ -75,8 +75,7 @@ def revert_rules(page: Page):
     try:
         # Click `Revert` button if available
         page.revert_button.click(timeout=4000)
-        page.revert_changes_button.click()
+        page.revert_changes_button.click(timeout=2000)
         page.wait_for_timeout(timeout=2000)
     except TimeoutError:
         pass
-

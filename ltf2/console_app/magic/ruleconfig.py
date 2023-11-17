@@ -62,7 +62,7 @@ CONDITIONS_MAP = {
     'resolution_height': 'Resolution Height',
     'resolution_width': 'Resolution Width',
     'response_status_code': 'Response Status Code',
-    # 'scheme': 'Scheme',
+    'scheme': 'Scheme',
  #   'ux_full_desktop': 'UX Full Desktop',
  #   'xhtml_support_level': 'XHTML Support Level',
 }
@@ -326,7 +326,7 @@ class RuleFeature:
         with self.prepare_feature('Max Keep-Alive Requests'):
             self.page.feature_value_input.fill(str(value))
 
-    def add_proxy_special_headers(self, value: Optional[list, str] = ''):
+    def add_proxy_special_headers(self, value: Optional[Union[list, str]] = ''):
         with self.prepare_feature('Proxy Special Headers'):
             if isinstance(value, list):
                 for v in value:
@@ -432,7 +432,7 @@ class RuleCondition:
     def set_condition(self,
                       method: str = '',
                       operator: str = '',
-                      value: Optional[str, float, List[str]] = None,
+                      value: Optional[Union[str, float, List[str]]] = None,
                       ignore_case: bool = False,
                       name: Optional[str] = None,
                       number: Optional[int] = None):
@@ -468,7 +468,7 @@ class RuleCondition:
     # TODO refactor the following methods
     def add_scheme(self,
                    operator: str = '',
-                   value: Optional[str, float] = None,
+                   value: Optional[Union[str, float]] = None,
                    ignore_case: bool = False):
         with self.prepare_condition('Scheme'):
             self.page.operator_input.click()
@@ -483,7 +483,7 @@ class RuleCondition:
 
     def add_method(self,
                    operator: str = '',
-                   value: Optional[str, float] = None,
+                   value: Optional[Union[str, float]] = None,
                    ignore_case: bool = False):
         with self.prepare_condition('Method'):
             self.page.operator_input.click()
@@ -497,7 +497,7 @@ class RuleCondition:
 
     def add_country(self,
                     operator: str = '',
-                    value: Optional[str, List[str]] = None):
+                    value: Optional[Union[str, List[str]]] = None):
         with self.prepare_condition('Country'):
             self.page.operator_input.click()
             self.page.select_by_name(name=operator).click()
@@ -509,7 +509,7 @@ class RuleCondition:
 
     def add_continent(self,
                       operator: str = '',
-                      value: Optional[str, List[str]] = None):
+                      value: Optional[Union[str, List[str]]] = None):
         with self.prepare_condition('Continent'):
             self.page.operator_input.click()
             self.page.select_by_name(name=operator).click()
@@ -518,3 +518,31 @@ class RuleCondition:
             for v in value:
                 self.page.match_value_input.click()
                 self.page.select_by_name(name=v).click()
+
+
+class ExperimentFeature(RuleFeature):
+    @contextmanager
+    def prepare_feature(self, feature: str):
+      self.add_feature_button.click()
+      self.page.feature_input.click()
+      self.page.get_by_text(feature, exact=True).last.click()
+      try:
+        yield
+      except Exception:
+        raise
+      else:
+        self.page.add_feature_confirm_button.click()
+
+
+class ExperimentCondition(RuleCondition):
+    @contextmanager
+    def prepare_condition(self, condition: str):
+      self.add_condition_button.click()
+      self.page.variable_input.click()
+      self.page.variable_select(name=condition).click()
+      try:
+        yield
+      except Exception:
+        raise
+      else:
+        self.page.add_condition_button.click()

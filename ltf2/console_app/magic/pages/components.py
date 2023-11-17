@@ -258,7 +258,8 @@ class EnvironmentMixin:
         self.rule_add_element_button = DynamicIndexElement(
             self.page,
             "(//form/div/div/div[@data-rbd-draggable-id][{num}]//button[span='Add'])[last()]")
-
+        self.ai_rule_generation_error = PageElement(self.page,
+                                                    "//p[contains(@class, 'MuiTypography-colorError')]")
         # ====== Cache =====
 
         self.purge_the_cache = PageElement(self.page,
@@ -274,6 +275,65 @@ class ActivityMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
         # TODO
+
+
+class TrafficMixin:
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+
+        # Range Picker
+        self.traffic_24_hours = PageElement(self.page,
+            "//div//p[contains(text(), '24 hours')]")
+        self.traffic_7_days = PageElement(self.page,
+            "//div//a[contains(text(), '7 days')]")
+        self.traffic_28_days = PageElement(self.page,
+            "//div//a[contains(text(), '28 days')]")
+
+        # Traffic Overview elements
+        self.traffic_header = PageElement(self.page, "//h2/span[text()='Traffic']")
+        self.traffic_overview_tab_button = PageElement(self.page,
+            "//button[@role='tab']/..//span[text()='Overview']")
+        self.traffic_metric_selector = PageElement(self.page,
+            '//input[@data-qa="data-usage-metricsSelector"]')
+        self.traffic_requests_grid_summary = PageElement(self.page,
+            '//span[@data-qa="requests-summary"]')
+        self.traffic_errors_grid_summary = PageElement(self.page,
+            '//span[@data-qa="errors-summary"]')
+        self.traffic_rules_grid_summary = PageElement(self.page,
+            '//div[@class="MuiCardHeader-content"]//span[text()="Rules"]')
+        self.traffic_rules_metric_selector = PageElement(self.page,
+            '//input[@data-qa="rules-metricsSelector"]')
+        self.traffic_rules_percentile_selector = PageElement(self.page,
+            '//input[@data-qa="rules-percentilesSelector"]')
+        self.traffic_origin_latency_over_time_summary = PageElement(self.page,
+            '//div[@data-qa="urls-chart"]//span[text()="Origin Latency Over Time"]')
+        self.show_request_count_button = PageElement(self.page,
+            '//div[@data-qa="rules-percentageToggle"]//button[@value="count"]')
+        self.show_as_percentage_of_total_requests_button = PageElement(self.page,
+            '//div[@data-qa="rules-percentageToggle"]//button[@value="percent"]')
+        self.chart_filter_button = ListElement(self.page, '//button[@data-qa="chart-settings"]')
+        self.chart_filter_button_full_cache_flushes = ListElement(self.page,
+            '//div[@data-qa="settings-show-cacheFlushes"]//input[@type="checkbox"]')
+        self.chart_filter_button_deployments = ListElement(self.page,
+            '//div[@data-qa="settings-show-deployments"]//input[@type="checkbox"]')
+        self.traffic_origin_latency_drop_down_filter = PageElement(self.page,
+            "//input[@data-qa='originLatency-breakdownSelector']")
+        self.traffic_origin_latency_metrics_selector = PageElement(self.page,
+            "//input[@data-qa='originLatency-metricsSelector']")
+        self.traffic_origin_latency_percentile_selector = PageElement(self.page,
+            "//input[@data-qa='originLatency-percentilesSelector']")
+        self.traffic_main_chart_summary = PageElement(self.page, "//span[@data-qa='data-usage-summary']")
+        self.traffic_rules_coulumn_with_metrics_data = PageElement(self.page,
+            '//table//tr//th[10]//span[@aria-disabled]')
+        # By Country tab elements
+        self.country_tab = PageElement(self.page, "//div[@role='tablist']//span[contains(text(), 'By Country')]")
+        self.country_map = PageElement(self.page, "//div[@data-qa='geo-map']")
+        self.country_metric_selector = PageElement(self.page,
+            '//input[@data-qa="geo-metricsSelector"]')
+        self.country_percentile_selector = PageElement(self.page,
+            '//input[@data-qa="geo-percentilesSelector"]')
+        self.country_tab_origin_latency_by_country_grid = PageElement(self.page,
+            "//div[@data-qa='geo-table']//span[text()='Origin Latency by Country']")
 
 
 class DeploymentsMixin:
@@ -593,3 +653,139 @@ class SecurityMixin:
             self.page, "//h6/span[text()='Current Time Range']/../../h3/span").nth(0)
         self.event_log_current_time = PageElement(
             self.page, "//h6/span[text()='Current Time Range']/../../h3/span").nth(1)
+
+
+class ExperimentsMixin:
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+        self.experiments_title = PageElement(self.page, "//h2/*[text()='Experimentation']")
+        self.add_experiment_button = PageElement(self.page,
+                                                 "//button//*[text()='Add Experiment']")
+        self.deploy_changes_button = PageElement(self.page, "//button//*[text()='Deploy Changes']")
+        self.revert_button = PageElement(self.page, "//button[./*[text()='Revert']]")
+        self.revert_confirm_button = PageElement(self.page,
+                                                 "//button[./*[text()='Revert Changes']]")
+        # === Experiment parameters ===
+        self.experiment_name = DynamicPageElement(self.page, "//*[text()='Experiment: ']/..//b[text()='{name}']")
+        self.experiment_name_input = DynamicPageElement(self.page, "//input[@id='experiments.{id}.name']")
+        self.variant_name_input = DynamicPageElement(self.page, "//input[@id='experiments.{exp_id}.variants.{var_id}.name']")
+        self.variant_percentage_input = DynamicPageElement(self.page, "//input[@id='experiments.{exp_id}.variants.{var_id}.weight']")
+        self.add_variant_button = PageElement(self.page, "//button[./*[text()='Add Variant']]")
+        self.delete_experiment_button = PageElement(self.page, "(//button[@data-qa='delete-button'])[1]")
+        self.delete_experiment_list = ListElement(self.page,
+                                            "//button[@data-qa='delete-button']")
+        self.is_active_checkbox_list = ListElement(self.page, "//form//input[@type='checkbox']")
+        self.delete_experiment_confirm_button = PageElement(self.page, "//button//*[text()='Delete experiment']")
+        self.wrong_percentage_message = PageElement(self.page, "//*[text()='Percentage total have to be 100']")
+        # === Conditions ===
+        self.add_criteria_button = PageElement(self.page, "//button[.//text()='Add Criteria']")
+        self.add_condition_button = PageElement(self.page, "//button[./*[text()='Add Condition']]")
+        self.variable_input = PageElement(self.page, "//label[text()='Variable']/../div/input")
+        self.operator_input = PageElement(self.page, "//label[text()='Operator']/../div/input")
+        self.variable_select = DynamicPageElement(
+            self.page, "//div[text()='All Variables']/../ul/li//p[text()='{name}']")
+        self.code_input = PageElement(self.page, "input[name='feature.value.code']")
+        self.name_input = PageElement(self.page, "//label[contains(text(), 'Name')]/..//div[@role='textbox']")
+        self.value_div = PageElement(self.page, "//label[contains(text(), 'Value')]/..//div[@role='textbox']")
+        self.match_value_input = PageElement(self.page, "//label[contains(text(), 'Value')]/../div/input")
+        self.match_tags_inputs = PageElement(self.page, "//label[contains(text(), 'Value')]/../div")
+        self.match_compress_content_type_inputs = PageElement(
+            self.page, "//label[contains(text(), 'Compress Content Type')]/../div")
+        self.match_value_regex = PageElement(
+            self.page, "//label[contains(text(), 'Match Value')]/..//div[@role='textbox']")
+        self.values_list =  PageElement(self.page, "//label[contains(text(), 'Value(s')]/../div")
+        self.rule_checkbox = PageElement(self.page, "(//label//input[@type='checkbox'])[1]")
+        # === Features ===
+        self.add_feature_confirm_button = PageElement(self.page, "//button[./*[text()='Add Feature']]")
+        self.feature_input = PageElement(self.page,
+                                         "input[placeholder='Search Features...']")
+        self.feature_select = DynamicSelectElement(
+            self.page,
+            "//ul[@role='listbox']/li/div[text()='{type}']/../ul/li[text()='{name}']")
+        self.header_name = PageElement(
+            self.page,
+            "//label[contains(text(), 'Header Name')]/..//div[@role='textbox']")
+        self.add_action_button = PageElement(self.page, "(//button[./*[text()='Add Action']])[1]")
+        self.variable_input = PageElement(self.page,
+                                          "//label[text()='Variable']/../div/input")
+        self.variable_select = DynamicPageElement(
+            self.page, "//div[text()='All Variables']/../ul/li//p[text()='{name}']")
+        self.operator_input = PageElement(self.page,
+                                          "//label[text()='Operator']/../div/input")
+        self.rule_checkbox = PageElement(self.page, "(//label//input[@type='checkbox'])[1]")
+        self.code_input = PageElement(self.page, "input[name='feature.value.code']")
+        self.name_input = PageElement(
+            self.page, "//label[contains(text(), 'Name')]/..//div[@role='textbox']")
+        self.value_div = PageElement(
+            self.page, "//label[contains(text(), 'Value')]/..//div[@role='textbox']")
+        self.match_value_input = PageElement(
+            self.page, "//label[contains(text(), 'Value')]/../div/input")
+        self.match_tags_inputs = PageElement(
+            self.page, "//label[contains(text(), 'Value')]/../div")
+        self.origin_response_headers = PageElement(
+            self.page, "//label[text()='Response Headers']/../div/input")
+        self.match_style_input = PageElement(
+            self.page, "input[name='feature.value.0.syntax']")
+        self.source_input = PageElement(
+            self.page, "//label[contains(text(), 'Source')]/..//div[@role='textbox']")
+        self.destination_input = PageElement(
+            self.page, "//label[contains(text(), 'Destination')]/..//div[@role='textbox']")
+        self.variable_name = PageElement(
+            self.page, "//label[text()='Name']/..//div[@role='textbox']")
+        self.variable_value = PageElement(
+            self.page, "//label[text()='Value']/..//div[@role='textbox']")
+        self.number_input = PageElement(self.page,
+                                        "input[name='condition.ruleVariable.value']")
+        self.response_headers = PageElement(
+            self.page,
+            "//label[text()='Response Headers']/../div/input")
+        self.parameter_name = PageElement(self.page,
+                                          "//label[text()='Parameter Name']/..//div[@role='textbox']")
+        self.custom_log_field = PageElement(
+            self.page, "//label[text()='Custom Log Field']/../div/input")
+        self.response_body = PageElement(
+            self.page, "//label[text()='Response Body']/..//textarea")
+        self.kbytes_per_second = PageElement(
+            self.page, "input[name='feature.value.kbytes_per_sec']")
+        self.prebuf_seconds = PageElement(
+            self.page, "input[name='feature.value.prebuf_seconds']")
+        self.header_treatment_input = PageElement(
+            self.page, "//label[text()='Cache Control Header Treatment']/../div/input")
+        self.option_input = PageElement(self.page, "input[name='cache-key-query-string']")
+        self.include_input = PageElement(self.page, "input[name='include']")
+        self.exclude_input = PageElement(self.page, "input[name='exclude']")
+        self.cacheable_request_body_size = PageElement(
+            self.page, "//label[text()='Cacheable Request Body Size']/../div/input")
+        self.compress_content_types_input = PageElement(
+            self.page, "//label[text()='Compress Content Types']/../div/input")
+        self.post_input = PageElement(self.page, "//label[text()='POST']/..//input")
+        self.put_input = PageElement(self.page, "//label[text()='PUT']/..//input")
+        self.h264_support_input = PageElement(
+            self.page,
+            "//label[text()='Enable H264 encoding']/../div/input")
+        self.expires_header_treatment_input = PageElement(
+            self.page, "//label[text()='Expires Header Treatment']/../div/input")
+        self.duration_value = PageElement(
+            self.page, "input[name='feature.value'][type='number']")
+        self.duration_unit = PageElement(self.page,
+                                         "input[name='feature.value'][type='text']")
+        self.response_status_code = PageElement(
+            self.page, "input[name='feature.value.0.key']")
+        self.max_age_value = PageElement(self.page,
+                                         "input[name='feature.value.0.value'][type='number']")
+        self.max_age_unit = PageElement(self.page,
+                                        "input[name='feature.value.0.value'][type='text']")
+        self.service_worker_max_age_value = PageElement(
+            self.page, "input[name='feature.value'][type='number']")
+        self.service_worker_max_age_unit = PageElement(
+            self.page, "input[name='feature.value'][type='text']")
+        self.ignore_origin_no_cache = PageElement(self.page,
+                "//label[text()='Ignore no-cache headers when the origin returns one of these status codes:']/../div/input")
+        self.cacheable_status_codes = PageElement(
+            self.page, "//label[text()='Cacheable Status Codes']/../div/input")
+        self.feature_value_input = PageElement(
+            self.page, "input[name='feature.value']")
+        self.proxy_special_headers_input = PageElement(
+            self.page, "//label[text()='Proxy Special Headers']/../div/input")
+        self.set_origin_input = PageElement(self.page,
+                                            "//label[text()='Origin Name']/../div/input")

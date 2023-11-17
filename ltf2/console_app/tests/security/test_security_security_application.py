@@ -1,5 +1,6 @@
 import time
 
+import pytest
 from playwright._impl._api_types import TimeoutError
 
 from ltf2.console_app.magic.helpers import random_str
@@ -21,6 +22,7 @@ def open_secapp_editor(page: SecurityPage, rule_name: str) -> None:
     page.secapp_by_name(name=rule_name).click()
 
 
+@pytest.mark.regression
 def test_security_application_add_rule(security_app_page: SecurityPage, delete_sec_app: list):
     """ Security Application - Add rule
 
@@ -100,6 +102,7 @@ def test_security_application_add_rule(security_app_page: SecurityPage, delete_s
         'Wrong Audit Access Rule'
 
 
+@pytest.mark.regression
 def test_security_application_edit_rule(security_app_page: SecurityPage,
                                         delete_sec_app: list):
     """ Security Application - Edit rule
@@ -199,6 +202,7 @@ def test_security_application_edit_rule(security_app_page: SecurityPage,
         'Wrong Audit Access Rule'
 
 
+@pytest.mark.regression
 def test_security_application_delete_rule(security_app_page: SecurityPage, delete_sec_app: list):
     """ Security Application - Delete rule
 
@@ -246,6 +250,7 @@ def test_security_application_delete_rule(security_app_page: SecurityPage, delet
         delete_sec_app.pop()
 
 
+@pytest.mark.regression
 def test_security_application_rules_limit(security_logged):
     """ Security Application - Max Rules count
 
