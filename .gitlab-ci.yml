@@ -24,8 +24,8 @@ variables:
     value: "mbondarenko@edg.io"
     description: "Set the emails to send reports"
   REGRESSION:
-      value: ""
-      description: "set 'true' to run test cases with 'regression' mark"
+    value: ""
+    description: "set 'true' to run test cases with 'regression' mark"
 
 stages:
   - test
@@ -56,7 +56,7 @@ run_tests:
   script:
     - export EDGIO_USER=$EDGIO_USER
     - export EDGIO_PASSWORD=$EDGIO_PASSWORD
-  - |
+    - |
       if [[ "$REGRESSION" == "true" ]]; then
         pytest  -m regression ltf2/console_app/tests/ --junitxml=junit-report.xml --alluredir=$ALLURE_RESULTS_DIR/ --slowmo=200 --screenshot=only-on-failure --output=${CI_PROJECT_DIR}/screenshots
       else
