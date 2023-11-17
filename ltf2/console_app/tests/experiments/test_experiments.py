@@ -1,6 +1,8 @@
 import time
+import pytest
 
 
+@pytest.mark.regression
 def test_experiments_add(experiment_page):
     """Experimentation - Add experiment
 
@@ -33,6 +35,7 @@ def test_experiments_add(experiment_page):
     assert experiment_page.experiment_name(name=exp_name)
 
 
+@pytest.mark.regression
 def test_experiment_delete(experiment_page):
     """Experimentation - Delete experiment
 
@@ -67,6 +70,7 @@ def test_experiment_delete(experiment_page):
     assert not experiment_page.experiment_name(name=exp_name).is_visible()
 
 
+@pytest.mark.regression
 def test_experiment_edit(experiment_page):
     """Experimentation - Edit experiment
 
@@ -104,6 +108,7 @@ def test_experiment_edit(experiment_page):
     assert experiment_page.experiment_name(name=new_exp_name)
 
 
+@pytest.mark.regression
 def test_experiment_add_variants(experiment_page):
     """Experimentation - Add variants
 
@@ -144,6 +149,7 @@ def test_experiment_add_variants(experiment_page):
     assert not experiment_page.deploy_changes_button.is_visible()
 
 
+@pytest.mark.regression
 def test_experiment_modify_traffic_distribution(experiment_page):
     """Experimentation - Modify traffic distribution
 
@@ -176,6 +182,7 @@ def test_experiment_modify_traffic_distribution(experiment_page):
     assert not experiment_page.wrong_percentage_message.is_visible()
 
 
+@pytest.mark.regression
 def test_experiment_disabling(experiment_page):
     """Experimentation - Disabling experiment
 
@@ -214,6 +221,7 @@ def test_experiment_disabling(experiment_page):
     assert not experiment_page.deploy_changes_button.is_visible()
 
 
+@pytest.mark.regression
 def test_experiment_conditions_batch1(experiment_page):
     """Experimentation - Add criteria
 
@@ -295,6 +303,7 @@ def test_experiment_conditions_batch1(experiment_page):
     assert not experiment_page.deploy_changes_button.is_visible()
 
 
+@pytest.mark.regression
 def test_experiment_conditions_batch2(experiment_page):
     """Experimentation - Add criteria
 
@@ -352,6 +361,7 @@ def test_experiment_conditions_batch2(experiment_page):
     assert not experiment_page.deploy_changes_button.is_visible()
 
 
+@pytest.mark.regression
 def test_experiment_features_batch(experiment_page):
     """Experimentation - Add action
 

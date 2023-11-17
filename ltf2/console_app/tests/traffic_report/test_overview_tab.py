@@ -1,6 +1,8 @@
 from ltf2.console_app.magic.constants import TRAFFIC_ROUTES, ORIGINS_OVERTIME
+import pytest
 
 
+@pytest.mark.regression
 def test_metric_selector_main_chart(traffic_page):
     """Traffic - Overview, verifying all filter options are clickable, summary is correct, all buttons are clickable
 
@@ -43,6 +45,7 @@ def test_metric_selector_main_chart(traffic_page):
     assert traffic_page.chart_filter_button_full_cache_flushes[0].is_checked() is True
 
 
+@pytest.mark.regression
 def test_rules_grid_buttons_check(traffic_page):
     """Traffic - Overview, Rules grig filters, buttons
 
@@ -95,6 +98,7 @@ def test_rules_grid_buttons_check(traffic_page):
     traffic_page.show_request_count_button.click()
 
 
+@pytest.mark.regression
 def test_origin_latency_over_tyme_grid_buttons_check(traffic_page):
     """Traffic - Overview, Rules grig filters, buttons
 

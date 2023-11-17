@@ -1,6 +1,8 @@
 from datetime import datetime, timedelta
+import pytest
 
 
+@pytest.mark.regression
 def make_time_frame(time_range: str):
     """ Make expected time value with 1 minute difference (now - 1m, now, now + 1m)
 
@@ -24,6 +26,7 @@ def make_time_frame(time_range: str):
     return frames
 
 
+@pytest.mark.regression
 def test_dashboard_logs_current_time_range(dashboard_page):
     """ Dashboard - Current time range
 
@@ -53,6 +56,7 @@ def test_dashboard_logs_current_time_range(dashboard_page):
         dashboard_page.dashboard_time_frame_input.click()
 
 
+@pytest.mark.regression
 def test_dashboard_add_filter_and_change_tab(dashboard_page):
     """ Dashboard - Add Filter and change tab
 
@@ -90,6 +94,7 @@ def test_dashboard_add_filter_and_change_tab(dashboard_page):
         "Unexpected filter is applied for another tab"
 
 
+@pytest.mark.regression
 def test_event_logs_current_time_range(dashboard_page):
     """ Event Logs - Current time range
 
