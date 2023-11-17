@@ -1,6 +1,7 @@
 from ltf2.console_app.magic.constants import ORIGINS_COUNTRIES
+import pytest
 
-
+@pytest.mark.regression
 def test_metric_selector_main_chart(traffic_page):
     """Traffic - By Country, verifying all drop-downs options are clickable, summary is correct
 

@@ -7,6 +7,7 @@ from ltf2.console_app.magic.helpers import random_str
 from ltf2.console_app.magic.pages.pages import OrgPage
 
 
+@pytest.mark.regression
 def test_create_org(org_page: OrgPage, orgs_to_delete: list):
     """ Organization - Create organization
 
@@ -44,6 +45,7 @@ def test_create_org(org_page: OrgPage, orgs_to_delete: list):
     assert texts[-1] == 'Create an Organization'
 
 
+@pytest.mark.regression
 @pytest.mark.parametrize("role",
                          ['Read only', 'Purger', 'Member', 'Admin', 'Super Admin'])
 def test_org_add_nonexistent_user_(org_page: OrgPage, create_org: str, role: str):
@@ -102,6 +104,7 @@ def test_org_add_nonexistent_user_(org_page: OrgPage, create_org: str, role: str
     row.delete_member_button.wait_for(timeout=500)
 
 
+@pytest.mark.regression
 @pytest.mark.parametrize("role",
                         ['Read only', 'Purger', 'Member', 'Admin', 'Super Admin'])
 def test_add_existent_user_(org_page: OrgPage,

@@ -1,6 +1,8 @@
 from playwright._impl._api_types import TimeoutError
+import pytest
 
 
+@pytest.mark.regression
 def test_rules_ai_deny_access(property_page):
     """Rules - AI rule - Deny Access
 
