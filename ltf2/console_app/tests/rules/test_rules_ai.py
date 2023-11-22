@@ -1,4 +1,4 @@
-from playwright._impl._api_types import TimeoutError
+from playwright.sync_api import TimeoutError
 import pytest
 
 

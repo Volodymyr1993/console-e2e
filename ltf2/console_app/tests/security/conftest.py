@@ -4,7 +4,7 @@ from typing import Generator
 from urllib.parse import urljoin
 
 import pytest
-from playwright._impl._api_types import TimeoutError
+from playwright.sync_api import TimeoutError
 from playwright.sync_api import Page
 
 from ltf2.console_app.magic.constants import PAGE_TIMEOUT

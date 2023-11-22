@@ -2,7 +2,7 @@ import time
 from datetime import datetime, timezone
 
 import pytest
-from playwright._impl._api_types import TimeoutError
+from playwright.sync_api import TimeoutError
 
 from ltf2.console_app.magic.helpers import random_str, open_rule_editor
 from ltf2.console_app.magic.pages.pages import SecurityPage
