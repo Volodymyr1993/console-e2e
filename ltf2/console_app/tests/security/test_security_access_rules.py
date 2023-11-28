@@ -62,7 +62,6 @@ def test_access_rule_access_control(access_rules_page: SecurityPage,
         'URL': 'string',
         'User-Agent': 'string'
     }
-
     type_id = ACCESS_CONTROL_TYPE[parameter].lower()
 
     rule_name = fill_in_rule_name(access_rules_page)
@@ -75,17 +74,18 @@ def test_access_rule_access_control(access_rules_page: SecurityPage,
         # e.g. access_rules_page.asn_blacklist, access_rules_page.ip_blacklist
         button = getattr(access_rules_page, f'{type_id}_{list_name}')
         button.click()
-        input_field = getattr(access_rules_page, f'{type_id}_{list_name}_input')
-        input_field.fill(valid_input_values[parameter])
+        text_field = getattr(access_rules_page, f'{type_id}_{list_name}_input')
+        text_field.fill(valid_input_values[parameter])
     # Save rule
     access_rules_page.save.click()
     assert access_rules_page.client_snackbar.text_content() == "Access rule created"
     delete_access_rules.append((access_rules_page, rule_name))
 
     open_access_rule(access_rules_page, rule_name)
+    # Check created rule
     for list_name in LIST_NAMES:
-        values = getattr(access_rules_page, f'{type_id}_{list_name}_values')
-        assert valid_input_values[parameter] == values[0].text_content(), \
+        text_field = getattr(access_rules_page, f'{type_id}_{list_name}_input')
+        assert text_field.text_content() == valid_input_values[parameter], \
             f'Wrong value for {parameter} {list_name}'
 
 
