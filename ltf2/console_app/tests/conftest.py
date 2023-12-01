@@ -117,6 +117,8 @@ def use_login_state(browser_context_args: dict, saved_login: dict) -> dict:
     be specified before `page` fixture!
     """
     browser_context_args['storage_state'] = saved_login
+    yield
+    del browser_context_args['storage_state']
 
 
 @pytest.fixture
