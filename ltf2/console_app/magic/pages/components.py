@@ -530,15 +530,15 @@ class SecurityMixin:
             # Inputs
             setattr(self,
                     f'{type_id.lower()}_{list_}_input',
-                    PageElement(self.page, f"//input[@name='{type_id}.{list_}']"))
+                    PageElement(self.page, f"//textarea[@name='{type_id}.{list_}']"))
             # Buttons
             setattr(self,
                     f'{type_id.lower()}_{list_}',
                     PageElement(self.page, f"//p[span='{type_title}']/../../../..//p[span='{list_}']"))
-            # Saved input values
-            setattr(self,
-                    f'{type_id.lower()}_{list_}_values',
-                    ListElement(self.page, f"//p[span='{type_title}']/../../../..//div[@role='button']/span"))
+            # # Saved input values
+            # setattr(self,
+            #         f'{type_id.lower()}_{list_}_values',
+            #         ListElement(self.page, f"//p[span='{type_title}']/../../../..//div[@role='button']/span"))
 
         # Allowed HTTP Methods
         for method in HTTP_METHODS:
