@@ -12,14 +12,22 @@ from playwright.sync_api import Page, Browser
 from requests.structures import CaseInsensitiveDict
 from playwright.sync_api import TimeoutError
 
-from ltf2.console_app.magic.helpers import delete_orgs
+from ltf2.console_app.magic.helpers import delete_orgs, revert_rules
 from ltf2.console_app.magic.constants import PAGE_TIMEOUT
-from ltf2.console_app.magic.pages.pages import LoginPage, OrgPage
+from ltf2.console_app.magic.pages.pages import LoginPage, OrgPage, PropertyPage, \
+    ExperimentsPage, TrafficPage
 
 # Explicitly import to avoid using the `context` fixture from ltf2.utils
 from pytest_playwright.pytest_playwright import context
 
+
 Credentials = namedtuple('Credentials', 'users password')
+
+
+ENV_URL_PATH = "env/production/"
+TRAFFIC_URL_PATH = f"{ENV_URL_PATH}traffic"
+EXPERIMENTS_URL_PATH = f"{ENV_URL_PATH}configuration/experiments"
+PROPERTY_URL_PATH = f"{ENV_URL_PATH}configuration/rules"
 
 
 @pytest.fixture(scope='session')
@@ -109,6 +117,8 @@ def use_login_state(browser_context_args: dict, saved_login: dict) -> dict:
     be specified before `page` fixture!
     """
     browser_context_args['storage_state'] = saved_login
+    yield
+    del browser_context_args['storage_state']
 
 
 @pytest.fixture
@@ -151,8 +161,8 @@ def orgs_to_delete() -> Generator[list, None, None]:
 
 @pytest.fixture
 def org_page(use_login_state: dict,
-              page: Page,
-              base_url: str) -> Generator[Page, None, None]:
+             page: Page,
+             base_url: str) -> Generator[Page, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
     org_page = OrgPage(page, base_url)
@@ -169,3 +179,76 @@ def login_page(page: Page,
     login_page.goto()
     login_page.login_button.click()
     yield login_page
+
+
+@pytest.fixture
+def property_page(use_login_state: dict,
+                  page: Page,
+                  ltfrc_console_app: dict,
+                  base_url: str) -> Generator[Page, None, None]:
+    # Set global timeout
+    page.set_default_timeout(PAGE_TIMEOUT)
+
+    try:
+        property_path = (f"{ltfrc_console_app['team']}/"
+                         f"{ltfrc_console_app['property']}/"
+                         f"{PROPERTY_URL_PATH}")
+    except KeyError:
+        raise ValueError(f'team and property variables are missed in .ltfrc')
+    prop_page = PropertyPage(page, url=urljoin(base_url, property_path))
+    prop_page.mock.page.unroute("**/graphql")
+    prop_page.goto()
+    # Revert previously added rules
+    revert_rules(prop_page)
+    yield prop_page
+
+
+@pytest.fixture
+def experiment_page(use_login_state: dict,
+                    page: Page,
+                    ltfrc_console_app: dict,
+                    base_url: str) -> Generator[Page, None, None]:
+    # Set global timeout
+    page.set_default_timeout(PAGE_TIMEOUT)
+    try:
+        property_path = (f"{ltfrc_console_app['team']}/"
+                         f"{ltfrc_console_app['property']}/"
+                         f"{EXPERIMENTS_URL_PATH}")
+    except KeyError:
+        raise ValueError(f'team and property variables are missed in .ltfrc')
+
+    exp_page = ExperimentsPage(page, url=urljoin(base_url, property_path))
+    exp_page.goto()
+    exp_page.add_experiment_button.wait_for(timeout=30000)
+
+    # click revert button if present
+    if exp_page.revert_button.is_visible():
+        exp_page.revert_button.click()
+        exp_page.revert_confirm_button.click()
+        exp_page.add_experiment_button.wait_for(timeout=30000)
+
+    # delete all experiments and deploy changes
+    exp_page.delete_all_experiments()
+    if exp_page.deploy_changes_button.is_visible():
+        exp_page.deploy_changes()
+
+    yield exp_page
+
+
+@pytest.fixture
+def traffic_page(use_login_state: dict,
+                 page: Page,
+                 ltfrc_console_app: dict,
+                 base_url: str) -> Generator[Page, None, None]:
+    # Set global timeout
+    page.set_default_timeout(PAGE_TIMEOUT)
+
+    try:
+        traffic_path = (f"{ltfrc_console_app['team']}/"
+                        f"{ltfrc_console_app['property']}/"
+                        f"{TRAFFIC_URL_PATH}")
+    except KeyError:
+        raise ValueError(f'team and property variables are missed in .ltfrc')
+    traffic = TrafficPage(page, url=urljoin(base_url, traffic_path))
+    traffic.goto()
+    yield traffic
