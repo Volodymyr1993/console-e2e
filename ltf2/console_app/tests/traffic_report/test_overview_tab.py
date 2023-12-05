@@ -1,4 +1,7 @@
-from ltf2.console_app.magic.constants import TRAFFIC_ROUTES, ORIGINS_OVERTIME
+import time
+from datetime import date, timedelta, datetime
+
+from ltf2.console_app.magic.constants import TRAFFIC_ROUTES, ORIGINS_OVERTIME, TRAFFIC_OVERTIME, ERRORS_OVERTIME, DATA_USAGE_OVERTIME
 import pytest
 
 
@@ -38,7 +41,7 @@ def test_metric_selector_main_chart(traffic_page):
     for key, value in metric_selector_values.items():
         traffic_page.select_by_name(name=key).click()
         traffic_page.traffic_metric_selector.click()
-        assert  traffic_page.traffic_main_chart_summary.inner_text().split()[0] == value, "Wrong summary"
+        assert traffic_page.traffic_main_chart_summary.inner_text().split()[0] == value, "Wrong summary"
 
     traffic_page.chart_filter_button[0].click()
     assert traffic_page.chart_filter_button_deployments[0].is_checked() is True
@@ -124,12 +127,13 @@ def test_origin_latency_over_tyme_grid_buttons_check(traffic_page):
         5. response status code is 200 after clicking buttons
 
         """
-    # default percentile is 75
-    assert traffic_page.traffic_origin_latency_percentile_selector.get_attribute('value') == 'p75'
     # Verify that response is 200 while first entering hte page
     with traffic_page.expect_response(ORIGINS_OVERTIME) as response_info_origin:
         response = response_info_origin.value
         assert response.status == 200
+
+    # default percentile is 75
+    assert traffic_page.traffic_origin_latency_percentile_selector.get_attribute('value') == 'p75'
 
     rules_percentiles_selector = ['p95', 'p99']
     traffic_page.traffic_origin_latency_percentile_selector.click()
@@ -163,3 +167,108 @@ def test_origin_latency_over_tyme_grid_buttons_check(traffic_page):
         assert response.status == 200
         assert traffic_page.traffic_origin_latency_drop_down_filter.get_attribute('value') == value
         traffic_page.traffic_origin_latency_drop_down_filter.click()
+
+
+@pytest.mark.regression
+def test_date_picker_traffic_overview(traffic_page):
+    """Traffic - Date Picker selector
+
+        Preconditions:
+        --------------
+        1. Navigate to Traffic --> Overview tab
+
+        Steps:
+        ------
+        1. Verify Today, Last 24 Hours, Last 7 Days, This Month, Last Month, Last 30 Days, Last 90 Day  from the date picker
+
+        Expected Results:
+        -----------------
+        1. ranges are selected correctly
+        """
+
+    date_picker_options = {
+        traffic_page.date_picker_today: 'Today',
+        traffic_page.date_picker_last_24_hours: 'Last 24 Hours',
+        traffic_page.date_picker_last_7_days: 'Last 7 Days',
+        traffic_page.date_picker_this_month: 'This Month',
+        traffic_page.date_picker_last_month: 'Last Month',
+        traffic_page.date_picker_last_30_days: 'Last 30 Days',
+        traffic_page.date_picker_last_90_days: 'Last 90 Days',
+    }
+
+    # default day is Last 30 Days
+    assert traffic_page.date_picker.inner_text() == 'Last 30 Days'
+
+    # Verify all values from the date picker are clickable
+    for key, value in date_picker_options.items():
+        traffic_page.date_picker.click()
+        with traffic_page.expect_response(TRAFFIC_OVERTIME) as response:
+            key.click()
+            response_info = response.value
+        assert response_info.status == 200
+        assert traffic_page.date_picker.inner_text() == value
+
+
+@pytest.mark.regression
+def test_date_picker_monthly(traffic_page):
+    """Traffic - Daily and Monthly ranges
+
+        Preconditions:
+        --------------
+        1. Navigate to Traffic --> Overview tab
+
+        Steps:
+        ------
+        1. Verify Daily is range selected
+        2. Verify Monthly range is selected
+
+        Expected Results:
+        -----------------
+        1. Daily is range selected
+        2. Monthly range is selected
+        """
+
+    today_date = date.today()
+
+    custom_ranges = {
+        traffic_page.date_picker_daily: '%d %b %Y',
+        traffic_page.date_picker_monthly: '%b %Y'
+    }
+
+    for item, time_format in custom_ranges.items():
+        traffic_page.date_picker.click()
+        item.click()
+        with traffic_page.expect_response(DATA_USAGE_OVERTIME) as response:
+            traffic_page.date_picker_apply_button.click()
+            response_info = response.value
+        assert response_info.status == 200
+        assert traffic_page.date_picker.inner_text() == today_date.strftime(time_format)
+
+
+def test_date_picker_custom_date_range(traffic_page):
+    """Traffic - Custom Date Range
+
+        Preconditions:
+        --------------
+        1. Navigate to Traffic --> Overview tab
+
+        Steps:
+        ------
+        1. Verify Custom Date Range
+
+        Expected Results:
+        -----------------
+        1. Custom Date Range is range selected
+    """
+
+    today = datetime.now()
+    thirty_days_ago = today - timedelta(days=29)
+    date_range_format = f"{thirty_days_ago.strftime('%d %b %Y')} - {today.strftime('%d %b %Y')}"
+
+    traffic_page.date_picker.click()
+    traffic_page.date_picker_custom_date_range.click()
+    with traffic_page.expect_response(ERRORS_OVERTIME) as response:
+        traffic_page.date_picker_apply_button.click()
+        response_info = response.value
+    assert response_info.status == 200
+    assert traffic_page.date_picker.inner_text() == date_range_format

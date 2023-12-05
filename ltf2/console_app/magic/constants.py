@@ -20,3 +20,6 @@ ACCESS_CONTROL_TYPE = {
 ORIGINS_OVERTIME = "**/api/bff/traffic/origins-overtime"
 TRAFFIC_ROUTES = "**/api/bff/traffic/routes"
 ORIGINS_COUNTRIES = "**/api/bff/traffic/origins-countries"
+DATA_USAGE_OVERTIME = "**/api/bff/traffic/data-usage-overtime"
+ERRORS_OVERTIME = "**/api/bff/traffic/errors-overtime"
+TRAFFIC_OVERTIME = "**/api/bff/traffic/traffic-overtime"

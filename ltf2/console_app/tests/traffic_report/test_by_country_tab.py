@@ -24,7 +24,7 @@ def test_metric_selector_main_chart(traffic_page):
         """
     metric_selector_values = [
         'Bytes Transferred',
-        'Requests',
+        'Origin Requests',
         'Errors',
         'Origin TTFB',
         'Response Time',
