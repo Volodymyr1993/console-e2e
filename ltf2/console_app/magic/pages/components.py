@@ -281,13 +281,19 @@ class TrafficMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
 
-        # Range Picker
-        self.traffic_24_hours = PageElement(self.page,
-            "//div//p[contains(text(), '24 hours')]")
-        self.traffic_7_days = PageElement(self.page,
-            "//div//a[contains(text(), '7 days')]")
-        self.traffic_28_days = PageElement(self.page,
-            "//div//a[contains(text(), '28 days')]")
+        # Date Picker
+        self.date_picker = PageElement(self.page, "//div[@data-qa='date-range-picker']")
+        self.date_picker_today = PageElement(self.page, "//div[@data-qa='dp-range-TODAY']")
+        self.date_picker_last_24_hours = PageElement(self.page, "//div[@data-qa='dp-range-LAST_24_HOURS']")
+        self.date_picker_last_7_days = PageElement(self.page, "//div[@data-qa='dp-range-LAST_7_DAYS']")
+        self.date_picker_this_month = PageElement(self.page, "//div[@data-qa='dp-range-THIS_MONTH']")
+        self.date_picker_last_month = PageElement(self.page, "//div[@data-qa='dp-range-LAST_MONTH']")
+        self.date_picker_last_30_days = PageElement(self.page, "//div[@data-qa='dp-range-LAST_30_DAYS']")
+        self.date_picker_last_90_days = PageElement(self.page, "//div[@data-qa='dp-range-LAST_90_DAYS']")
+        self.date_picker_daily = PageElement(self.page, "//div[@data-qa='dp-range-DAY']")
+        self.date_picker_monthly = PageElement(self.page, "//div[@data-qa='dp-range-MONTH']")
+        self.date_picker_custom_date_range = PageElement(self.page, "//div[@data-qa='dp-range-CUSTOM_RANGE']")
+        self.date_picker_apply_button = PageElement(self.page, "//span[text()='Apply']")
 
         # Traffic Overview elements
         self.traffic_header = PageElement(self.page, "//h2/span[text()='Traffic']")
@@ -296,9 +302,9 @@ class TrafficMixin:
         self.traffic_metric_selector = PageElement(self.page,
             '//input[@data-qa="data-usage-metricsSelector"]')
         self.traffic_requests_grid_summary = PageElement(self.page,
-            '//span[@data-qa="requests-summary"]')
+            "//div[@data-qa='urls-chart']//span[contains(text(), 'Requests')]")
         self.traffic_errors_grid_summary = PageElement(self.page,
-            '//span[@data-qa="errors-summary"]')
+            '//div[@data-qa="errors-card"]//span[contains(text(), "Errors")]')
         self.traffic_rules_grid_summary = PageElement(self.page,
             '//div[@class="MuiCardHeader-content"]//span[text()="Rules"]')
         self.traffic_rules_metric_selector = PageElement(self.page,
