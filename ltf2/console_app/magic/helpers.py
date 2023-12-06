@@ -19,6 +19,26 @@ def random_int(n: int) -> str:
     return ''.join([str(randint(1, 9))] + [str(randint(0, 9)) for _ in range(n - 1)])
 
 
+def login(login_page: Page, username: str, password: str):
+    login_page.username.fill(username)
+    login_page.submit.click()
+    login_page.password.fill(password)
+    login_page.submit.click()
+    # Skip multi-factor auth if present
+    try:
+        login_page.skip_this_step.click(timeout=2000)
+    except TimeoutError:
+        pass
+    try:
+        login_page.overview.wait_for()
+    except TimeoutError as e:
+        if login_page.reset_pasword.is_visible():
+            raise AssertionError(
+                "Password has been expired. "
+                "Please reset the password") from e
+        raise AssertionError(f"Cannot login to {login_page.url}") from e
+
+
 def delete_orgs(orgs: list[(Page, str)]) -> None:
     for page, org_name, in orgs:
         # To make sure that org_switcher_button will be available

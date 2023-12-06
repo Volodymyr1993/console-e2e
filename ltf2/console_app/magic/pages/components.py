@@ -25,7 +25,8 @@ class LoginMixin:
             '//*[contains(@class, "Login-errorWhite")]/*[text()]')
         self.skip_this_step = PageElement(self.page,
                                           "//label[text()='Skip This Step']")
-
+        self.reset_pasword = PageElement(self.page,
+                                         "//form[@class='change-password-form']")
 
 class CommonMixin:
     """ Shared elements """
