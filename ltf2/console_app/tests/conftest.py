@@ -8,18 +8,16 @@ from urllib.parse import urljoin
 
 import pytest
 from ltf2.util.config import get_ltfrc_section
-from playwright.sync_api import Page, Browser
-from requests.structures import CaseInsensitiveDict
-from playwright.sync_api import TimeoutError
-
-from ltf2.console_app.magic.helpers import delete_orgs, revert_rules
-from ltf2.console_app.magic.constants import PAGE_TIMEOUT
-from ltf2.console_app.magic.pages.pages import LoginPage, OrgPage, PropertyPage, \
-    ExperimentsPage, TrafficPage
-
+from playwright.sync_api import Browser, Page, TimeoutError
 # Explicitly import to avoid using the `context` fixture from ltf2.utils
 from pytest_playwright.pytest_playwright import context
+from requests.structures import CaseInsensitiveDict
 
+from ltf2.console_app.magic.constants import PAGE_TIMEOUT
+from ltf2.console_app.magic.helpers import delete_orgs, revert_rules, login
+from ltf2.console_app.magic.pages.pages import (ExperimentsPage, LoginPage,
+                                                OrgPage, PropertyPage,
+                                                TrafficPage)
 
 Credentials = namedtuple('Credentials', 'users password')
 
@@ -78,31 +76,18 @@ def saved_login(browser: Browser,
 
     Return cookies
     """
-    context = browser.new_context()
-    page = context.new_page()
+    br_context = browser.new_context()
+    page = br_context.new_page()
     # go to login page
     login_page = LoginPage(page, url=base_url)
     login_page.goto()
     login_page.login_button.click()
     # perform login
-    login_page.username.fill(credentials.users[0])
-    login_page.submit.click()
-    login_page.password.fill(credentials.password)
-    login_page.submit.click()
-
-    # Skip multi-factor auth if present
-    try:
-        login_page.skip_this_step.click(timeout=2000)
-    except TimeoutError:
-        pass
-    try:
-        login_page.overview.wait_for()
-    except TimeoutError:
-        raise AssertionError(f"Cannot login to {base_url}")
+    login(login_page, credentials.users[0], credentials.password)
     assert not login_page.submit.is_visible()
     # Save storage state into the file.
-    storage_state = {'cookies': context.cookies()}
-    context.close()
+    storage_state = {'cookies': br_context.cookies()}
+    br_context.close()
     yield storage_state
 
 

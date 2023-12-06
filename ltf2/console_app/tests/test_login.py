@@ -1,9 +1,13 @@
 from collections import namedtuple
+
 import pytest
+
+from ltf2.console_app.magic.helpers import login
 from ltf2.console_app.magic.pages.pages import LoginPage
 
+
 @pytest.mark.regression
-def test_negative_wrong_email_format(login_page: LoginPage, credentials: namedtuple):
+def test_negative_wrong_email_format(login_page: LoginPage):
     """ Login - Negative - Wrong email format
 
     Precondition:
@@ -96,10 +100,5 @@ def test_positive_login(login_page: LoginPage, credentials: namedtuple):
     -----------------
     1. Get 'Login successful!' message and team switcher appears
     """
-    login_page.username.fill(credentials.users[0])
-    login_page.submit.click()
-    login_page.password.fill(credentials.password)
-    login_page.submit.click()
-
-    login_page.overview.wait_for()
+    login(login_page, credentials.users[0], credentials.password)
     assert not login_page.submit.is_visible()
