@@ -184,11 +184,10 @@ class MembersTableElement(PageElement):
     class TdMembersElement(TdElements):
         def __init__(self, page: Page, selector: str):
             super().__init__(page, selector)
-            self.role_input = self[3].locator('input[name="role-select"]')
-            self.resend_email_button = self[1].locator('button', has_text="Resend Email")
             self.member_checkbox = self[0].locator('input[type="checkbox"]')
-            self.delete_member_button = self[4].locator('button')
-            self.username = self[2]
+            self.resend_email_button = self[2].locator('button', has_text="Resend Email")
+            self.username = self[3]
+            self.role = self[4]
 
     def __init__(self, page: Page, selector: str):
         super().__init__(page, selector)

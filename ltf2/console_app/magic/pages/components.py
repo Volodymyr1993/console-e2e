@@ -82,16 +82,16 @@ class CommonMixin:
 class OrgMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
-        self.add_member_button = PageElement(self.page, "//button//span[text()='Add Members']")
+        self.add_member_button = PageElement(self.page, "//button//span[text()='Add Member']")
         self.invite_member_button = PageElement(self.page,
-                                                "//button//span[text()='Invite Members']")
+                                                "//button//span[text()='Invite']")
+        self.member_permission = DynamicPageElement(self.page, "//div/p/span[text()='{role}']")
         self.email = PageElement(self.page, "//input[@id='email']")
         self.plus_button = PageElement(self.page, "//button[@title='Add']")
-        self.role_select_input = PageElement(
-            self.page, "//div[@role='dialog']//input[@id='role-select']")
-        self.role_select = UlElement(self.page, "//ul[@id='role-select-popup']")
 
         self.members_table = MembersTableElement(self.page, "//table")
+        self.selected_org = DynamicPageElement(self.page,
+                                               "//header//p[text()='{name}']")
         # Create property
         self.new_property_button = PageElement(self.page, "//span[text()='New Property']")
         self.origin_hostname_input = PageElement(

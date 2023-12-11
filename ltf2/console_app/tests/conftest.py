@@ -109,13 +109,13 @@ def use_login_state(browser_context_args: dict, saved_login: dict) -> dict:
 @pytest.fixture
 def create_org(org_page) -> Generator[str, None, None]:
     orgs = []
-    org_name = f'testname-{time.time()}'
+    org_name = f'test-organization-{int(time.time()*1000)}'
     org_page.org_switcher_button.click()
     org_page.org_switcher_list.li[-1].click()
     org_page.input_name.fill(org_name)
     org_page.button_create_org_dialog.click()
     # Organization name is a current org
-    org_page.locator('p', has_text=org_name).wait_for(timeout=8000)
+    org_page.selected_org(name=org_name).wait_for(timeout=8000)
     orgs.append((org_page, org_name))
 
     yield org_name
