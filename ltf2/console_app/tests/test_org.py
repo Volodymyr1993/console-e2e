@@ -47,7 +47,7 @@ def test_create_org(org_page: OrgPage, orgs_to_delete: list):
 
 @pytest.mark.regression
 @pytest.mark.parametrize("role",
-                         ['Read only', 'Purger', 'Member', 'Admin', 'Super Admin'])
+                         ['Viewer', 'Security Manager', 'Editor', 'Maintainer', 'Admin'])
 def test_org_add_nonexistent_user_(org_page: OrgPage, create_org: str, role: str):
     """ Organization - Add organization member - User is not exist
 
@@ -61,7 +61,7 @@ def test_org_add_nonexistent_user_(org_page: OrgPage, create_org: str, role: str
     1. Click 'Organization Members'
     2. Click 'Add Members'
     3. Fill in random email that is not registered in the system
-    4. Choose {role} role from dropdown list
+    4. Choose {role} role
     5. Click 'Invite Members'
 
     Expected Results:
@@ -73,40 +73,42 @@ def test_org_add_nonexistent_user_(org_page: OrgPage, create_org: str, role: str
         4) Member role selected  on step 5
         5) Delete member button
     """
-    name = f'{random_str(9)}-{time.time()}'
+    name = f'{random_str(9)}-{int(time.time()*1000)}'
     email = f'{name}@{random_str(5)}.com'
     org_page.members.click()
+    org_page.members_table.wait_for(timeout=2000)
+    members_count = org_page.members_table.tbody.tr.count()
     org_page.add_member_button.click()
     # Enter user email
     org_page.email.fill(email)
-    # Choose Role
-    org_page.role_select_input.click()
-    for item in org_page.role_select.li:
-        if item.text_content() == role:
-            item.click()
-            break
+    # Select a Role
+    org_page.member_permission(role=role).click()
     org_page.invite_member_button.click()
-    # Wait dialog to disappear
-    org_page.visible_page_content.wait_for(timeout=5000)
-    # Find row in the table with new member
+    # Wait for member to appear in the table
+    for _ in range(10):
+        if org_page.members_table.tbody.tr.count() > members_count:
+            break
+        time.sleep(0.5)
+    else:
+        raise AssertionError("New member was not added")
+    # Find a row in the table with the new member
     row = None
     for tr in org_page.members_table.tbody.tr:
-        if tr.username.text_content() == name:
+        if tr.username.text_content().lower() == name:
             row = tr
             break
-    assert row, 'Cannot find row with new member'
+    else:
+        raise AssertionError("Cannot find a row with the new member")
     # Verify row
     assert not row.member_checkbox.is_checked()
     row.resend_email_button.wait_for(timeout=5000)
-    assert row[1].text_content() == f'{email} (pending) Resend Email'
-    assert row.username.text_content() == name
-    assert row.role_input.input_value() == role
-    row.delete_member_button.wait_for(timeout=500)
+    assert row[2].text_content() == f'{email}Resend Email'
+    assert row.role.text_content() == f'Organization Role: {role}'
 
 
 @pytest.mark.regression
 @pytest.mark.parametrize("role",
-                        ['Read only', 'Purger', 'Member', 'Admin', 'Super Admin'])
+                         ['Viewer', 'Security Manager', 'Editor', 'Maintainer', 'Admin'])
 def test_add_existent_user_(org_page: OrgPage,
                             create_org: str,
                             credentials: namedtuple,
@@ -142,28 +144,30 @@ def test_add_existent_user_(org_page: OrgPage,
 
     name = email.split('@')[0]
     org_page.members.click()
+    org_page.members_table.wait_for(timeout=2000)
+    members_count = org_page.members_table.tbody.tr.count()
     org_page.add_member_button.click()
     # Enter user email
     org_page.email.fill(email)
-    # Choose Role
-    org_page.role_select_input.click()
-    for item in org_page.role_select.li:
-        if item.text_content() == role:
-            item.click()
-            break
+    # Select a Role
+    org_page.member_permission(role=role).click()
     org_page.invite_member_button.click()
-    # Wait dialog to disappear
-    org_page.visible_page_content.wait_for(timeout=5000)
+    # Wait for member to appear in the table
+    for _ in range(10):
+        if org_page.members_table.tbody.tr.count() > members_count:
+            break
+        time.sleep(0.5)
+    else:
+        raise AssertionError("New member was not added")
     # Find row in the table with new member
     row = None
     for tr in org_page.members_table.tbody.tr:
-        if tr.username.text_content() == name:
+        if tr.username.text_content().lower() == name:
             row = tr
             break
-    assert row, 'Cannot find row with new member'
+    else:
+        raise AssertionError("Cannot find a row with the new member")
     # Verify row
     assert not row.member_checkbox.is_checked()
-    assert row[1].text_content() == email
-    assert row.username.text_content() == name
-    assert row.role_input.input_value() == role
-    row.delete_member_button.wait_for(timeout=500)
+    assert row[2].text_content() == email
+    assert row.role.text_content() == f'Organization Role: {role}'
