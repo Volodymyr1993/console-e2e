@@ -77,6 +77,7 @@ class CommonMixin:
         self.status_iframe = PageElement(self.page, "//iframe[@title='Layer0 Status']")
         self.status_iframe_close_button = IframeElement(self.status_iframe,
                                                         "//div[contains(@class, 'frame-close')]//button")
+        self.status_snackbar_close = PageElement(self.page, "//div[@aria-describedby='client-snackbar']//button")
 
 
 class OrgMixin:
