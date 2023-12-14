@@ -85,6 +85,11 @@ def saved_login(browser: Browser,
     # perform login
     login(login_page, credentials.users[0], credentials.password)
     assert not login_page.submit.is_visible()
+    # Close the status banner if present
+    try:
+        login_page.status_snackbar_close.click(timeout=1500)
+    except TimeoutError:
+        print('Status banner not found')
     # Save storage state into the file.
     storage_state = {'cookies': br_context.cookies()}
     br_context.close()
