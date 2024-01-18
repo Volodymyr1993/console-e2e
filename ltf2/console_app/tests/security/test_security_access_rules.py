@@ -167,12 +167,12 @@ def test_access_rule_advanced_settings_input_fields(access_rules_page: SecurityP
     # Single File Upload Limit
     access_rules_page.file_upload_limit.fill(upload_limit)
     # Allowed Request Content Types
-    access_rules_page.request_content_type.hover()
-    access_rules_page.request_content_type_clear.click()
+    #access_rules_page.request_content_type.hover()
+    #access_rules_page.request_content_type_clear.click()
     access_rules_page.request_content_type.fill(string_value1)
     # Extension Blacklist
-    access_rules_page.extension_blacklist.hover()
-    access_rules_page.extension_blacklist_clear.click()
+    #access_rules_page.extension_blacklist.hover()
+    #access_rules_page.extension_blacklist_clear.click()
     access_rules_page.extension_blacklist.fill(string_value1)
     # Header Blacklist
     access_rules_page.header_blacklist.fill(string_value1)
