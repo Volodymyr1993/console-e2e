@@ -344,6 +344,41 @@ class TrafficMixin:
             "//div[@data-qa='geo-table']//span[text()='Origin Latency by Country']")
 
 
+class RedirectsMixin:
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+        self.add_a_redirect_button = PageElement(self.page, "//button[@data-qa='redirect-add-btn']")
+        self.remove_selected_redirect = PageElement(self.page, "//button[@data-qa='redirect-remove-btn']")
+        self.confirm_remove_redirect = PageElement(self.page, "//span[text()='Remove ']")
+        self.search_field = PageElement(self.page, "//input[@id='search']")
+        self.default_status_dropdown = PageElement(self.page, "//div[@data-qa='redirect-default-status-picker']")
+        self.import_button = PageElement(self.page, "//button[@data-qa='redirect-import-btn']")
+        self.export_button = PageElement(self.page, "//button[@data-qa='redirect-export-btn']")
+        self.redirect_from = PageElement(self.page, "//input[@id='from']")
+        self.redirect_to = PageElement(self.page, "//input[@id='to']")
+        self.response_status = PageElement(self.page, "//div[@data-qa='redirect-status-picker']//div[@role='button']")
+        self.forward_query_string = PageElement(self.page, "//span[@data-qa='redirect-forward-query-string-checkbox']")
+        self.cancel_button = PageElement(self.page, "//span[text()='Cancel']")
+        self.save_redirect_button = PageElement(self.page, "//button[@data-qa='redirect-add-save-popup-btn']")
+        self.import_override_existing = PageElement(self.page, "//span[text()='Override existing list with file content']")
+        self.import_append_file = PageElement(self.page, "//span[text()='Append file content to existing redirects list']")
+        self.upload_redirect_button = PageElement(self.page, "//span[text()='Upload redirects']")
+        self.table = PageElement(self.page, "//table")
+        self.table_rows = ListElement(self.page, "//table//tbody//tr")
+        self.redeploy_button = PageElement(self.page, "//button[@data-qa='redeploy-btn']")
+        self.redeploy_confirmation = PageElement(self.page, "//div[@role='dialog']//span[contains(text(), 'Redeploy')]")
+        self.delete_all_checkbox = PageElement(self.page, "//table//tr//th//input[@type='checkbox']")
+        self.first_checkbox_from_the_table = PageElement(self.page, "//table//tbody//td//input[@type='checkbox']")
+        self.empty_list_message = PageElement(self.page, "//div[text()='This environment has no redirects']")
+        self.table_value_from_field = PageElement(self.page, "//table//tbody//tr//td[2]")
+        self.table_value_to_field = PageElement(self.page, "//table//tbody//tr//td[3]")
+        self.table_value_status_field = PageElement(self.page, "//table//tbody//tr//td[4]")
+        self.table_value_query_field = PageElement(self.page, "//table//tbody//tr//td[5]")
+        self.import_browse_button = PageElement(self.page, "//button[@data-qa='redirect-import-browse-btn']")
+        self.redirects_page = PageElement(self.page, "//span[text()='Redirects']")
+        self.online_status = PageElement(self.page, "//i[text()='Online']")
+        self.no_redirects_matching = PageElement(self.page, "//div[text()='No redirects matching \"']")
+
 class DeploymentsMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
