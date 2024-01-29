@@ -379,6 +379,7 @@ class RedirectsMixin:
         self.online_status = PageElement(self.page, "//i[text()='Online']")
         self.no_redirects_matching = PageElement(self.page, "//div[text()='No redirects matching \"']")
 
+
 class DeploymentsMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
