@@ -84,7 +84,7 @@ def saved_login(browser: Browser,
     login_page.goto()
     login_page.login_button.click()
     # perform login
-    login(login_page, credentials.users[2], credentials.password)
+    login(login_page, credentials.users[0], credentials.password)
     assert not login_page.submit.is_visible()
     # Close the status banner if present
     try:
