@@ -1,6 +1,8 @@
+import random
 import time
 import pytest
 from ltf2.console_app.magic.helpers import random_str, random_bool
+from random import choice
 
 @pytest.mark.regression
 def test_base_elements(redirect_page):
@@ -226,7 +228,7 @@ def test_redirect_import_override_option(redirect_page):
     assert redirect_page.table_value_from_field.inner_text() == data_to_import[0][0]
     assert redirect_page.table_value_to_field.inner_text() == data_to_import[0][1]
     assert redirect_page.table_value_status_field.inner_text() == data_to_import[0][2]
-    assert redirect_page.table_value_query_field.inner_text() == data_to_import[0][3]
+    assert redirect_page.table_value_query_field.inner_text() == str(data_to_import[0][3])
 
 
 @pytest.mark.regression
@@ -269,7 +271,7 @@ def test_redirect_import_append_option(redirect_page):
     assert redirect_page.table_value_from_field.first.inner_text() == data_to_import[0][0]
     assert redirect_page.table_value_to_field.first.inner_text() == data_to_import[0][1]
     assert redirect_page.table_value_status_field.first.inner_text() == data_to_import[0][2]
-    assert redirect_page.table_value_query_field.first.inner_text() == data_to_import[0][3]
+    assert redirect_page.table_value_query_field.first.inner_text() == str(data_to_import[0][3])
 
 
 @pytest.mark.regression
@@ -364,3 +366,35 @@ def test_redirect_search(redirect_page):
     redirect_page.search_field.fill(random_str(10))
     time.sleep(2)
     assert redirect_page.no_redirects_matching.is_visible(), "Empty field text is not visible"
+
+
+@pytest.mark.regression
+def test_redirect_changing_default_status(redirect_page):
+    """Redirects - changing the default status
+
+      Preconditions:
+      -------------
+        1. Open the Redirects page
+      Steps:
+      ------
+        1. Select the Default Status -> any
+        2. Click the 'Add a redirect' button
+        3. Add a few redirects with the default status
+        4. Change the default status in the main drop-down
+
+      Expected results:
+      -----------------
+        1. Default status was changed successfully for the redirects which were created from stem 3.
+    """
+    random_data = f"test{int(time.time())}"
+    set_default = '301 - Moved Permanently'
+    new_default = '308 - Permanent Redirect'
+
+    redirect_page.default_status_dropdown.click()
+    redirect_page.select_by_name(name=set_default).click()
+    redirect_page.add_redirect(from_=random_data, to=random_data)
+    redirect_page.wait_for_timeout(timeout=1000)
+    assert redirect_page.table_value_status_field.inner_text() == 'Default (301)'
+    redirect_page.default_status_dropdown.click()
+    redirect_page.select_by_name(name=new_default).click()
+    assert redirect_page.table_value_status_field.inner_text() == 'Default (308)'
