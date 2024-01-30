@@ -110,7 +110,7 @@ def test_redirect_delete(redirect_page):
     redirect_page.first_checkbox_from_the_table.set_checked(True)
     redirect_page.remove_selected_redirect.click()
     redirect_page.confirm_remove_redirect.click()
-    redirect_page.reload()
+    redirect_page.wait_for_timeout(timeout=1000)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     assert redirect_page.empty_list_message.is_visible(), 'empty list message is not visible'
 
@@ -149,7 +149,7 @@ def test_redirect_update(redirect_page):
     redirect_page.forward_query_string.click()
     redirect_page.forward_query_string.set_checked(True)
     redirect_page.save_redirect_button.click()
-    redirect_page.reload()
+    redirect_page.wait_for_timeout(timeout=1000)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     assert redirect_page.table_value_from_field.inner_text() == new_random_data
     assert redirect_page.table_value_to_field.inner_text() == new_random_data
@@ -221,7 +221,7 @@ def test_redirect_import_override_option(redirect_page):
     redirect_page.csv_for_import(csv_file_name, data_to_import)
     redirect_page.add_redirect(from_=random_data, to=random_data)
     redirect_page.upload_csv_file(csv_file_name)
-    redirect_page.reload()
+    redirect_page.wait_for_timeout(timeout=1000)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     assert redirect_page.table_value_from_field.inner_text() == data_to_import[0][0]
     assert redirect_page.table_value_to_field.inner_text() == data_to_import[0][1]
@@ -261,7 +261,7 @@ def test_redirect_import_append_option(redirect_page):
     count_rows_before_import = redirect_page.table_rows.count()
 
     redirect_page.upload_csv_file(csv_file_name, False)
-    redirect_page.reload()
+    redirect_page.wait_for_timeout(timeout=1000)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     count_after_append_redirects = redirect_page.table_rows.count()
 
@@ -302,7 +302,7 @@ def test_redirect_export_option(redirect_page):
     ]
     redirect_page.csv_for_import(csv_file_name, data_to_import)
     redirect_page.upload_csv_file(csv_file_name, True)
-    redirect_page.reload()
+    redirect_page.wait_for_timeout(timeout=1000)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     with redirect_page.expect_download() as download_info:
         redirect_page.export_button.click()
@@ -343,7 +343,7 @@ def test_redirect_search(redirect_page):
         ]
     redirect_page.csv_for_import(csv_file_name, data_to_import)
     redirect_page.upload_csv_file(csv_file_name, True)
-    redirect_page.reload()
+    redirect_page.wait_for_timeout(timeout=1000)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
 
     redirect_page.search_field.click()
