@@ -2,7 +2,6 @@ import random
 import time
 import pytest
 from ltf2.console_app.magic.helpers import random_str, random_bool, random_int
-from random import choice
 
 @pytest.mark.regression
 def test_base_elements(redirect_page):
@@ -22,7 +21,6 @@ def test_base_elements(redirect_page):
     redirect_page.add_redirect(from_=random_data, to=random_data)
     redirect_page.reload()
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
-
     assert redirect_page.add_a_redirect_button.is_visible(), 'Add a redirect button is not visible'
     assert not redirect_page.remove_selected_redirect.is_visible(), 'Button is visible'
     assert redirect_page.default_status_dropdown.is_visible(), 'Default Status drop-down is not visible'
@@ -55,8 +53,8 @@ def test_base_elements(redirect_page):
 @pytest.mark.regression
 @pytest.mark.parametrize("from_, to, status, forward_query_string",
                          [
-                            pytest.param('/' + random_str(10), '/' + random_str(10), "301 - Moved Permanently", True, id="randon string"),
-                            pytest.param('/' + random_int(10), '/' + random_int(10), "302 - Found", True, id="randon int"),
+                            pytest.param('/' + random_str(10), '/' + random_str(10), "301 - Moved Permanently", True, id="random string"),
+                            pytest.param('/' + random_int(10), '/' + random_int(10), "302 - Found", True, id="random int"),
                             pytest.param('/$-_.+!*\'()?', '/$-_.+!*\'()?', "307 - Temporary Redirect", False, id="allowed symbols"),
                             pytest.param('/' + random_str(10), '/' + random_str(10), "308 - Permanent Redirect", False, id="Permanent Redirect")
                          ])
@@ -109,7 +107,6 @@ def test_redirect_max_allowed(redirect_page):
     """
     max_allowed_value = '/' + random_str(1)*255
     expected = max_allowed_value[0:20] + "..."
-
     redirect_page.add_a_redirect_button.click()
     redirect_page.redirect_from.fill(max_allowed_value)
     redirect_page.redirect_to.fill(max_allowed_value)
@@ -169,7 +166,6 @@ def test_redirect_update(redirect_page):
     """
     status_value = '307 - Temporary Redirect'
     random_data = f"test{int(time.time())}"
-
     redirect_page.add_redirect(from_=random_data, to=random_data)
     redirect_page.table_value_to_field(row=1).click()
     new_random_data = f"/test{int(time.time())}"
@@ -211,7 +207,6 @@ def test_redirect_deploy(redirect_page):
         2. Yellow banner disappeared
     """
     random_data = f"test{int(time.time())}"
-
     redirect_page.add_redirect(from_=random_data, to=random_data)
     redirect_page.redeploy_button.click()
     redirect_page.redeploy_confirmation.click()
@@ -250,7 +245,6 @@ def test_redirect_import_override_option(redirect_page):
     data_to_import = [
         ["/" + random_str(15), "/" + random_str(15), '302', random_bool()]
     ]
-
     redirect_page.csv_for_import(csv_file_name, data_to_import)
     redirect_page.add_redirect(from_=random_data, to=random_data)
     redirect_page.upload_csv_file(csv_file_name)
@@ -288,16 +282,13 @@ def test_redirect_import_append_option(redirect_page):
     data_to_import = [
         ["/123", "/321", '302', random_bool()]
     ]
-
     redirect_page.csv_for_import(csv_file_name, data_to_import)
     redirect_page.add_redirect(from_=random_data, to=random_data)
     count_rows_before_import = redirect_page.table_rows.count()
-
     redirect_page.upload_csv_file(csv_file_name, False)
     redirect_page.wait_for_timeout(timeout=1000)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     count_after_append_redirects = redirect_page.table_rows.count()
-
     assert count_rows_before_import + len(data_to_import) == count_after_append_redirects
     assert redirect_page.table_value_from_field(row=1).first.inner_text() == data_to_import[0][0]
     assert redirect_page.table_value_to_field(row=1).first.inner_text() == data_to_import[0][1]
@@ -379,21 +370,18 @@ def test_redirect_search(redirect_page):
     redirect_page.upload_csv_file(csv_file_name, True)
     redirect_page.wait_for_timeout(timeout=1000)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
-
     redirect_page.search_field.click()
     redirect_page.search_field.fill(random_from)
     time.sleep(2)
     assert redirect_page.table_value_from_field(row=1).inner_text() == random_from, \
         'The search result does not match the expected'
     assert len(redirect_page.table_rows) == 1, "More rows are present than expected"
-
     redirect_page.search_field.clear()
     redirect_page.search_field.fill(random_to)
     time.sleep(2)
     assert redirect_page.table_value_to_field(row=1).inner_text() == random_to, \
         'The search result does not match the expected'
     assert len(redirect_page.table_rows) == 1, "More rows are present than expected"
-
     redirect_page.search_field.clear()
     redirect_page.search_field.fill(random_str(10))
     time.sleep(2)
@@ -421,7 +409,6 @@ def test_redirect_changing_default_status(redirect_page):
     random_data = f"test{int(time.time())}"
     set_default = '301 - Moved Permanently'
     new_default = '308 - Permanent Redirect'
-
     redirect_page.default_status_dropdown.click()
     redirect_page.select_by_name(name=set_default).click()
     redirect_page.add_redirect(from_=random_data, to=random_data)
@@ -485,7 +472,6 @@ def test_redirect_import_mapping(redirect_page):
         ["/" + random_str(15), "/" + random_str(15), '308', True],
         ["/" + random_str(15), "/" + random_str(15), '308', False]
     ]
-
     redirect_page.csv_for_import(csv_file_name, data_to_import)
     redirect_page.upload_csv_file(csv_file_name)
     redirect_page.wait_for_timeout(timeout=1000)
