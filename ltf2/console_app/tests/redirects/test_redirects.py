@@ -1,7 +1,7 @@
 import random
 import time
 import pytest
-from ltf2.console_app.magic.helpers import random_str, random_bool
+from ltf2.console_app.magic.helpers import random_str, random_bool, random_int
 from random import choice
 
 @pytest.mark.regression
@@ -31,10 +31,10 @@ def test_base_elements(redirect_page):
     assert redirect_page.table.is_visible(), 'Table with rows is not visible'
     assert redirect_page.delete_all_checkbox.is_visible(), 'Delete all checkbox is not visible'
     assert redirect_page.first_checkbox_from_the_table.is_visible(), 'First checkbox from the list is not visible'
-    assert redirect_page.table_value_to_field.is_visible(), 'FROM field is not visible'
-    assert redirect_page.table_value_status_field.is_visible(), 'Status field is not visible'
-    assert redirect_page.table_value_to_field.is_visible(), 'TO field is not visible'
-    assert redirect_page.table_value_query_field.is_visible(), 'Query string is not visible'
+    assert redirect_page.table_value_to_field(row=1).is_visible(), 'FROM field is not visible'
+    assert redirect_page.table_value_status_field(row=1).is_visible(), 'Status field is not visible'
+    assert redirect_page.table_value_to_field(row=1).is_visible(), 'TO field is not visible'
+    assert redirect_page.table_value_query_field(row=1).is_visible(), 'Query string is not visible'
     assert redirect_page.search_field.is_visible(), 'Search field is not visible'
     redirect_page.add_a_redirect_button.click()
     assert redirect_page.redirect_from.is_visible(), 'FROM field is visible is not visible'
@@ -53,7 +53,14 @@ def test_base_elements(redirect_page):
 
 
 @pytest.mark.regression
-def test_redirect_add(redirect_page):
+@pytest.mark.parametrize("from_, to, status, forward_query_string",
+                         [
+                            pytest.param('/' + random_str(10), '/' + random_str(10), "301 - Moved Permanently", True, id="randon string"),
+                            pytest.param('/' + random_int(10), '/' + random_int(10), "302 - Found", True, id="randon int"),
+                            pytest.param('/$-_.+!*\'()?', '/$-_.+!*\'()?', "307 - Temporary Redirect", False, id="allowed symbols"),
+                            pytest.param('/' + random_str(10), '/' + random_str(10), "308 - Permanent Redirect", False, id="Permanent Redirect")
+                         ])
+def test_redirect_add(redirect_page, from_, to, status, forward_query_string):
     """Redirects - Add redirect
 
       Preconditions:
@@ -69,23 +76,47 @@ def test_redirect_add(redirect_page):
         1. Redirect is created
         2. Redirect is present in the list, all fields match imputed values
     """
-    redirect_from_value = '/' + random_str(20)
-    redirect_to_value = '/' + random_str(20)
-    status_value = '302 - Found'
-
     redirect_page.add_a_redirect_button.click()
-    redirect_page.redirect_from.fill(redirect_from_value)
-    redirect_page.redirect_to.fill(redirect_to_value)
+    redirect_page.redirect_from.fill(from_)
+    redirect_page.redirect_to.fill(to)
     redirect_page.response_status.click()
-    redirect_page.select_by_name(name=status_value).click()
-    redirect_page.forward_query_string.click()
-    redirect_page.forward_query_string.set_checked(True)
+    redirect_page.select_by_name(name=status).click()
+    redirect_page.forward_query_string.set_checked(forward_query_string)
     redirect_page.save_redirect_button.click()
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
-    assert redirect_page.table_value_from_field.inner_text() == redirect_from_value
-    assert redirect_page.table_value_to_field.inner_text() == redirect_to_value
-    assert redirect_page.table_value_status_field.inner_text() == '302'
-    assert redirect_page.table_value_query_field.inner_text() == 'True'
+    assert redirect_page.table_value_from_field(row=1).inner_text() == from_
+    assert redirect_page.table_value_to_field(row=1).inner_text() == to
+    assert redirect_page.table_value_status_field(row=1).inner_text() == status[0:3]
+    assert redirect_page.table_value_query_field(row=1).inner_text() == str(forward_query_string)
+
+
+@pytest.mark.regression
+def test_redirect_max_allowed(redirect_page):
+    """Redirects - Add redirect
+
+      Preconditions:
+      -------------
+        1. Open the Redirects page
+      Steps:
+      ------
+        1. Click on 'Add a redirect' button
+        2. Fill all the fields with max allowed data
+        3. Click on 'Add a redirect' button
+      Expected results:
+      -----------------
+        1. Redirect is created
+        2. Redirect is present in the list, value contains first 20 symbols
+    """
+    max_allowed_value = '/' + random_str(1)*255
+    expected = max_allowed_value[0:20] + "..."
+
+    redirect_page.add_a_redirect_button.click()
+    redirect_page.redirect_from.fill(max_allowed_value)
+    redirect_page.redirect_to.fill(max_allowed_value)
+    redirect_page.save_redirect_button.click()
+    redirect_page.add_a_redirect_button.wait_for(timeout=30000)
+    assert redirect_page.table_value_from_field(row=1).inner_text() == expected
+    assert redirect_page.table_value_to_field(row=1).inner_text() == expected
 
 
 @pytest.mark.regression
@@ -140,7 +171,7 @@ def test_redirect_update(redirect_page):
     random_data = f"test{int(time.time())}"
 
     redirect_page.add_redirect(from_=random_data, to=random_data)
-    redirect_page.table_value_to_field.click()
+    redirect_page.table_value_to_field(row=1).click()
     new_random_data = f"/test{int(time.time())}"
     redirect_page.redirect_from.clear()
     redirect_page.redirect_to.clear()
@@ -153,10 +184,10 @@ def test_redirect_update(redirect_page):
     redirect_page.save_redirect_button.click()
     redirect_page.wait_for_timeout(timeout=1000)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
-    assert redirect_page.table_value_from_field.inner_text() == new_random_data
-    assert redirect_page.table_value_to_field.inner_text() == new_random_data
-    assert redirect_page.table_value_status_field.inner_text() == '307'
-    assert redirect_page.table_value_query_field.inner_text() == 'True'
+    assert redirect_page.table_value_from_field(row=1).inner_text() == new_random_data
+    assert redirect_page.table_value_to_field(row=1).inner_text() == new_random_data
+    assert redirect_page.table_value_status_field(row=1).inner_text() == '307'
+    assert redirect_page.table_value_query_field(row=1).inner_text() == 'True'
 
 
 @pytest.mark.regression
@@ -225,10 +256,10 @@ def test_redirect_import_override_option(redirect_page):
     redirect_page.upload_csv_file(csv_file_name)
     redirect_page.wait_for_timeout(timeout=1000)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
-    assert redirect_page.table_value_from_field.inner_text() == data_to_import[0][0]
-    assert redirect_page.table_value_to_field.inner_text() == data_to_import[0][1]
-    assert redirect_page.table_value_status_field.inner_text() == data_to_import[0][2]
-    assert redirect_page.table_value_query_field.inner_text() == str(data_to_import[0][3])
+    assert redirect_page.table_value_from_field(row=1).inner_text() == data_to_import[0][0]
+    assert redirect_page.table_value_to_field(row=1).inner_text() == data_to_import[0][1]
+    assert redirect_page.table_value_status_field(row=1).inner_text() == data_to_import[0][2]
+    assert redirect_page.table_value_query_field(row=1).inner_text() == str(data_to_import[0][3])
 
 
 @pytest.mark.regression
@@ -268,10 +299,10 @@ def test_redirect_import_append_option(redirect_page):
     count_after_append_redirects = redirect_page.table_rows.count()
 
     assert count_rows_before_import + len(data_to_import) == count_after_append_redirects
-    assert redirect_page.table_value_from_field.first.inner_text() == data_to_import[0][0]
-    assert redirect_page.table_value_to_field.first.inner_text() == data_to_import[0][1]
-    assert redirect_page.table_value_status_field.first.inner_text() == data_to_import[0][2]
-    assert redirect_page.table_value_query_field.first.inner_text() == str(data_to_import[0][3])
+    assert redirect_page.table_value_from_field(row=1).first.inner_text() == data_to_import[0][0]
+    assert redirect_page.table_value_to_field(row=1).first.inner_text() == data_to_import[0][1]
+    assert redirect_page.table_value_status_field(row=1).first.inner_text() == data_to_import[0][2]
+    assert redirect_page.table_value_query_field(row=1).first.inner_text() == str(data_to_import[0][3])
 
 
 @pytest.mark.regression
@@ -296,7 +327,8 @@ def test_redirect_export_option(redirect_page):
     data_to_import = [
         ["/" + random_str(5), "/" + random_str(5), '302', random_bool()],
         ["/" + random_str(10), "/" + random_str(10), '301', random_bool()],
-        ["/" + random_str(15), "/" + random_str(15), '307', random_bool()]
+        ["/" + random_str(15), "/" + random_str(15), '307', random_bool()],
+        ["/" + random_str(15), "/" + random_str(15), '308', random_bool()]
     ]
     expected_content = [
         ["from", "to", "status", "forwardQueryString"],
@@ -351,14 +383,14 @@ def test_redirect_search(redirect_page):
     redirect_page.search_field.click()
     redirect_page.search_field.fill(random_from)
     time.sleep(2)
-    assert redirect_page.table_value_from_field.inner_text() == random_from, \
+    assert redirect_page.table_value_from_field(row=1).inner_text() == random_from, \
         'The search result does not match the expected'
     assert len(redirect_page.table_rows) == 1, "More rows are present than expected"
 
     redirect_page.search_field.clear()
     redirect_page.search_field.fill(random_to)
     time.sleep(2)
-    assert redirect_page.table_value_to_field.inner_text() == random_to, \
+    assert redirect_page.table_value_to_field(row=1).inner_text() == random_to, \
         'The search result does not match the expected'
     assert len(redirect_page.table_rows) == 1, "More rows are present than expected"
 
@@ -394,7 +426,72 @@ def test_redirect_changing_default_status(redirect_page):
     redirect_page.select_by_name(name=set_default).click()
     redirect_page.add_redirect(from_=random_data, to=random_data)
     redirect_page.wait_for_timeout(timeout=1000)
-    assert redirect_page.table_value_status_field.inner_text() == 'Default (301)'
+    assert redirect_page.table_value_status_field(row=1).inner_text() == 'Default (301)'
     redirect_page.default_status_dropdown.click()
     redirect_page.select_by_name(name=new_default).click()
-    assert redirect_page.table_value_status_field.inner_text() == 'Default (308)'
+    assert redirect_page.table_value_status_field(row=1).inner_text() == 'Default (308)'
+
+
+@pytest.mark.regression
+def test_redirect_import_duplicate_values(redirect_page):
+    """Redirects - import duplicate values
+
+      Preconditions:
+      -------------
+        1. Open the Redirects page
+      Steps:
+      ------
+        1. Import file with valid redirects
+        2. Import the same file one more time using append option
+
+      Expected results:
+      -----------------
+        1. duplicate error occurs
+    """
+    csv_file_name = 'import_test.csv'
+    data_to_import = [
+        ["/123", "/321", '302', random_bool()]
+    ]
+    redirect_page.csv_for_import(csv_file_name, data_to_import)
+    redirect_page.upload_csv_file(csv_file_name, True)
+    redirect_page.upload_csv_file(csv_file_name, False)
+    redirect_page.wait_for_timeout(timeout=1000)
+    assert redirect_page.client_snackbar.text_content() == f"Redirect {data_to_import[0][0]} is already defined on this environment."
+
+
+@pytest.mark.regression
+def test_redirect_import_mapping(redirect_page):
+    """Redirects - Verify imported values match UI
+
+      Preconditions:
+      -------------
+        1. Open the Redirects page
+        2. Import redirects
+      Steps:
+      ------
+        1. Import CSV with all statuses and forward query strings combinations
+
+      Expected results:
+      -----------------
+        1. Redirects uploaded successfully
+        2. Mapping results match expectations
+    """
+    csv_file_name = 'import_test.csv'
+    data_to_import = [
+        ["/" + random_str(15), "/" + random_str(15), '301', "True"],
+        ["/" + random_str(15), "/" + random_str(15), '302', "False"],
+        ["/" + random_str(15), "/" + random_str(15), '307', "true"],
+        ["/" + random_str(15), "/" + random_str(15), '308', "false"],
+        ["/" + random_str(15), "/" + random_str(15), '308', True],
+        ["/" + random_str(15), "/" + random_str(15), '308', False]
+    ]
+
+    redirect_page.csv_for_import(csv_file_name, data_to_import)
+    redirect_page.upload_csv_file(csv_file_name)
+    redirect_page.wait_for_timeout(timeout=1000)
+    redirect_page.add_a_redirect_button.wait_for(timeout=30000)
+    for row_number in range(1, len(redirect_page.table_rows) + 1):
+        assert redirect_page.table_value_from_field(row=row_number).inner_text() == data_to_import[row_number - 1][0]
+        assert redirect_page.table_value_to_field(row=row_number).inner_text() == data_to_import[row_number - 1][1]
+        assert redirect_page.table_value_status_field(row=row_number).inner_text() == data_to_import[row_number - 1][2]
+        assert redirect_page.table_value_query_field(row=row_number).inner_text() == str(data_to_import[row_number - 1][3]).capitalize()

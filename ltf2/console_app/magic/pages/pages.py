@@ -136,7 +136,7 @@ class RedirectsPage(CommonMixin, RedirectsMixin, BasePage):
         with self.expect_file_chooser() as fc_info:
             self.import_button.click()
             self.import_browse_button.click()
-
+            # True for 'Override list with file content' option
             if method_for_import:
                 self.import_override_existing.click()
             else:
