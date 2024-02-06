@@ -366,7 +366,7 @@ class RedirectsMixin:
         self.table = PageElement(self.page, "//table")
         self.table_rows = ListElement(self.page, "//table//tbody//tr")
         self.redeploy_button = PageElement(self.page, "//button[@data-qa='redeploy-btn']")
-        self.redeploy_confirmation = PageElement(self.page, "//div[@role='dialog']//span[contains(text(), 'Redeploy')]")
+        self.redeploy_confirmation = PageElement(self.page, "//div[@role='dialog']//span[contains(text(), 'Deploy Now')]")
         self.delete_all_checkbox = PageElement(self.page, "//table//tr//th//input[@type='checkbox']")
         self.first_checkbox_from_the_table = PageElement(self.page, "//table//tbody//td//input[@type='checkbox']")
         self.empty_list_message = PageElement(self.page, "//div[text()='This environment has no redirects']")

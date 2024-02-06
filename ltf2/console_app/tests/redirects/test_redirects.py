@@ -211,7 +211,7 @@ def test_redirect_deploy(redirect_page):
     redirect_page.redeploy_button.click()
     redirect_page.redeploy_confirmation.click()
     # wait for deployment finish
-    redirect_page.online_status.wait_for(timeout=15000)
+    redirect_page.online_status.wait_for(timeout=20000)
     redirect_page.redirects_page.click()
     redirect_page.reload()
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
@@ -316,14 +316,14 @@ def test_redirect_export_option(redirect_page):
     """
     csv_file_name = 'import_test.csv'
     data_to_import = [
-        ["/" + random_str(5), "/" + random_str(5), '302', random_bool()],
-        ["/" + random_str(10), "/" + random_str(10), '301', random_bool()],
-        ["/" + random_str(15), "/" + random_str(15), '307', random_bool()],
-        ["/" + random_str(15), "/" + random_str(15), '308', random_bool()]
+        ["/" + random_str(5), "/" + random_str(5), '302', 'True'],
+        ["/" + random_str(10), "/" + random_str(10), '301', 'False'],
+        ["/" + random_str(15), "/" + random_str(15), '307', 'True'],
+        ["/" + random_str(15), "/" + random_str(15), '308', 'False']
     ]
     expected_content = [
         ["from", "to", "status", "forwardQueryString"],
-        [data_to_import]
+        data_to_import
     ]
     redirect_page.csv_for_import(csv_file_name, data_to_import)
     redirect_page.upload_csv_file(csv_file_name, True)

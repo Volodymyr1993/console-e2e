@@ -126,9 +126,9 @@ class RedirectsPage(CommonMixin, RedirectsMixin, BasePage):
                 return False, f"{actual_headers} do not match the {expected_content}"
 
             # Compare data rows
-            for row, actual_row_data in enumerate(csv_reader, start=1):
-                if actual_row_data != expected_content[row]:
-                    return False, print(f"Row {row} {actual_row_data} != {expected_content[row]} data.")
+            for row, actual_row_data in enumerate(csv_reader, start=0):
+                if actual_row_data != expected_content[1][row]:
+                    return False, print(f"Row {row} {actual_row_data} != {expected_content[1][row]} data.")
         # If no mismatches found, return True
         return True
 
