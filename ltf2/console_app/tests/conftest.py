@@ -263,7 +263,7 @@ def redirect_page(use_login_state: dict,
     red_page.goto()
     red_page.add_a_redirect_button.wait_for(timeout=30000)
 
-    # delete all redirects and deploy changes if present
+    # delete all redirects if present
     if not red_page.empty_list_message.is_visible():
         red_page.delete_all_redirects()
 
