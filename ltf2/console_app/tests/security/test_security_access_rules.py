@@ -197,10 +197,11 @@ def test_access_rule_advanced_settings_input_fields(access_rules_page: SecurityP
     assert access_rules_page.file_upload_limit.input_value() == upload_limit, \
         "Wrong Single File Upload Limit"
     # Allowed Request Content Types
-    assert access_rules_page.request_content_type_buttons[0].text_content() == string_value1, \
+    assert access_rules_page.request_content_type_buttons[-1].text_content() == string_value1, \
         f"Cannot find `{string_value1}` in Allowed Request Content Types"
     # Extension Blacklist
-    assert access_rules_page.extension_blacklist_buttons[0].text_content() == string_value1, \
+    access_rules_page.extension_blacklist_buttons[-1].click()
+    assert access_rules_page.extension_blacklist_buttons[-1].text_content() == string_value1, \
         f"Cannot find `{string_value1}` in Extension Blacklist"
     # Header Blacklist
     assert access_rules_page.header_blacklist_buttons[0].text_content() == string_value1, \
