@@ -440,6 +440,7 @@ def test_redirect_import_duplicate_values(redirect_page):
     ]
     csv_file = redirect_page.csv_for_import(data_to_import)
     redirect_page.upload_csv_file(csv_file, True)
+    csv_file.seek(0)
     redirect_page.upload_csv_file(csv_file, False)
     redirect_page.wait_for_timeout(timeout=2000)
     assert redirect_page.client_snackbar.text_content() == f"Redirect {data_to_import[0][0]} is already defined on this environment."
