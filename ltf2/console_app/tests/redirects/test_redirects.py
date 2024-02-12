@@ -244,14 +244,13 @@ def test_redirect_import_override_option(redirect_page):
         1. Redirects uploaded successfully
         2. Previous redirects are overroded by new one
     """
-    csv_file_name = 'import_test.csv'
     random_data = f"test{int(time.time())}"
     data_to_import = [
         ["/" + random_str(15), "/" + random_str(15), '302', random_bool()]
     ]
-    redirect_page.csv_for_import(csv_file_name, data_to_import)
+    csv_file = redirect_page.csv_for_import(data_to_import)
     redirect_page.add_redirect(from_=random_data, to=random_data)
-    redirect_page.upload_csv_file(csv_file_name)
+    redirect_page.upload_csv_file(csv_file, True)
     redirect_page.wait_for_timeout(timeout=5000)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     assert redirect_page.table_value_from_field(row=1).inner_text() == data_to_import[0][0]
@@ -281,16 +280,15 @@ def test_redirect_import_append_option(redirect_page):
         1. Redirects uploaded successfully
         2. Previous redirects are present, new one is in the end of the list
     """
-    csv_file_name = 'import_test.csv'
     random_data = f"test{int(time.time())}"
     data_to_import = [
         ["/123", "/321", '302', random_bool()]
     ]
-    redirect_page.csv_for_import(csv_file_name, data_to_import)
+    csv_file = redirect_page.csv_for_import(data_to_import)
     redirect_page.add_redirect(from_=random_data, to=random_data)
     redirect_page.wait_for_timeout(timeout=5000)
     count_rows_before_import = redirect_page.table_rows.count()
-    redirect_page.upload_csv_file(csv_file_name, False)
+    redirect_page.upload_csv_file(csv_file, False)
     redirect_page.wait_for_timeout(timeout=5000)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     count_after_append_redirects = redirect_page.table_rows.count()
@@ -319,7 +317,6 @@ def test_redirect_export_option(redirect_page):
         1. Redirects downloaded successfully
         2. Data is correct
     """
-    csv_file_name = 'import_test.csv'
     data_to_import = [
         ["/" + random_str(5), "/" + random_str(5), '302', 'True'],
         ["/" + random_str(10), "/" + random_str(10), '301', 'False'],
@@ -330,8 +327,8 @@ def test_redirect_export_option(redirect_page):
         ["from", "to", "status", "forwardQueryString"],
         data_to_import
     ]
-    redirect_page.csv_for_import(csv_file_name, data_to_import)
-    redirect_page.upload_csv_file(csv_file_name, True)
+    csv_file = redirect_page.csv_for_import(data_to_import)
+    redirect_page.upload_csv_file(csv_file, True)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     redirect_page.wait_for_timeout(timeout=2000)
     with redirect_page.expect_download() as download_info:
@@ -358,7 +355,6 @@ def test_redirect_search(redirect_page):
       -----------------
         1. Redirects was found successfully
     """
-    csv_file_name = 'import_test.csv'
     random_from = '/' + random_str(5)
     random_to = '/' + random_str(5)
     data_to_import = [
@@ -371,8 +367,8 @@ def test_redirect_search(redirect_page):
         ["/" + random_str(5), random_to, '301', random_bool()],
         ["/" + random_str(5), "/" + random_str(5), '307', random_bool()]
         ]
-    redirect_page.csv_for_import(csv_file_name, data_to_import)
-    redirect_page.upload_csv_file(csv_file_name, True)
+    csv_file = redirect_page.csv_for_import(data_to_import)
+    redirect_page.upload_csv_file(csv_file, True)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     redirect_page.search_field.click()
     redirect_page.search_field.fill(random_from)
@@ -388,7 +384,7 @@ def test_redirect_search(redirect_page):
     assert len(redirect_page.table_rows) == 1, "More rows are present than expected"
     redirect_page.search_field.clear()
     redirect_page.search_field.fill(random_str(10))
-    time.sleep(2)
+    redirect_page.wait_for_timeout(timeout=2000)
     assert redirect_page.no_redirects_matching.is_visible(), "Empty field text is not visible"
 
 
@@ -439,13 +435,12 @@ def test_redirect_import_duplicate_values(redirect_page):
       -----------------
         1. duplicate error occurs
     """
-    csv_file_name = 'import_test.csv'
     data_to_import = [
-        ["/123", "/321", '302', random_bool()]
+        ["/123", "/321", '302', 'True']
     ]
-    redirect_page.csv_for_import(csv_file_name, data_to_import)
-    redirect_page.upload_csv_file(csv_file_name, True)
-    redirect_page.upload_csv_file(csv_file_name, False)
+    csv_file = redirect_page.csv_for_import(data_to_import)
+    redirect_page.upload_csv_file(csv_file, True)
+    redirect_page.upload_csv_file(csv_file, False)
     redirect_page.wait_for_timeout(timeout=2000)
     assert redirect_page.client_snackbar.text_content() == f"Redirect {data_to_import[0][0]} is already defined on this environment."
 
@@ -467,7 +462,6 @@ def test_redirect_import_mapping(redirect_page):
         1. Redirects uploaded successfully
         2. Mapping results match expectations
     """
-    csv_file_name = 'import_test.csv'
     data_to_import = [
         ["/" + random_str(15), "/" + random_str(15), '301', "True"],
         ["/" + random_str(15), "/" + random_str(15), '302', "False"],
@@ -476,8 +470,8 @@ def test_redirect_import_mapping(redirect_page):
         ["/" + random_str(15), "/" + random_str(15), '308', True],
         ["/" + random_str(15), "/" + random_str(15), '308', False]
     ]
-    redirect_page.csv_for_import(csv_file_name, data_to_import)
-    redirect_page.upload_csv_file(csv_file_name)
+    csv_file = redirect_page.csv_for_import(data_to_import)
+    redirect_page.upload_csv_file(csv_file)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     redirect_page.wait_for_timeout(timeout=2000)
     for row_number in range(1, len(redirect_page.table_rows) + 1):

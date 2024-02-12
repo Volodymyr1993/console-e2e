@@ -7,6 +7,7 @@ and BasePage class. Please note that the position of the mixins and BasePage is 
 """
 from playwright.sync_api import Page
 import csv
+from io import StringIO
 
 from ltf2.console_app.magic.pages.components import (LoginMixin, OrgMixin, CommonMixin,
                                                      SecurityMixin, EnvironmentMixin,
@@ -110,11 +111,15 @@ class RedirectsPage(CommonMixin, RedirectsMixin, BasePage):
         self.redirect_to.fill('/' + to)
         self.save_redirect_button.click()
 
-    def csv_for_import(self, csv_file_name, data_to_upload: list):
-        with open(csv_file_name, mode='w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(["from", "to", "status", "forwardQueryString"])
-            writer.writerows(data_to_upload)
+    def csv_for_import(self, data_to_upload: list, headers=None):
+        if headers is None:
+            headers = ["from", "to", "status", "forwardQueryString"]
+        csv_buffer = StringIO()
+        csv_writer = csv.writer(csv_buffer)
+        csv_writer.writerow(headers)
+        csv_writer.writerows(data_to_upload)
+        csv_buffer.seek(0)
+        return csv_buffer
 
     def verify_exported_csv(self, csv_file_name, expected_content):
         with open(csv_file_name, 'r', newline='') as file:
@@ -132,7 +137,7 @@ class RedirectsPage(CommonMixin, RedirectsMixin, BasePage):
         # If no mismatches found, return True
         return True
 
-    def upload_csv_file(self, file_name: str, method_for_import=True):
+    def upload_csv_file(self, file_obj: str, method_for_import=True):
         with self.expect_file_chooser() as fc_info:
             self.import_button.click()
             self.import_browse_button.click()
@@ -143,5 +148,6 @@ class RedirectsPage(CommonMixin, RedirectsMixin, BasePage):
                 self.import_append_file.click()
 
         file_chooser = fc_info.value
-        file_chooser.set_files(file_name)
+        file_chooser.set_files(
+            files=[{"name": "test.csv", "mimeType": "text/plain", "buffer": file_obj.read().encode('utf-8')}])
         self.upload_redirect_button.click()
