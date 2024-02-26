@@ -143,7 +143,6 @@ def test_redirect_delete(redirect_page):
     redirect_page.first_checkbox_from_the_table.set_checked(True)
     redirect_page.remove_selected_redirect.click()
     redirect_page.confirm_remove_redirect.click()
-    redirect_page.reload()
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     redirect_page.wait_for_timeout(timeout=500)
     assert redirect_page.empty_list_message.is_visible(), 'empty list message is not visible'
