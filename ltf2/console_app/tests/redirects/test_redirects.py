@@ -19,7 +19,7 @@ def test_base_elements(redirect_page):
     """
     random_data = f"test{int(time.time())}"
     redirect_page.add_redirect(from_=random_data, to=random_data)
-    redirect_page.first_checkbox_from_the_table.wait_for(timeout=25000)
+    redirect_page.first_checkbox_from_the_table.wait_for(timeout=5000)
     assert redirect_page.add_a_redirect_button.is_visible(), 'Add a redirect button is not visible'
     assert not redirect_page.remove_selected_redirect.is_visible(), 'Button is visible'
     assert redirect_page.default_status_dropdown.is_visible(), 'Default Status drop-down is not visible'
@@ -34,7 +34,7 @@ def test_base_elements(redirect_page):
     assert redirect_page.table_value_query_field(row=1).is_visible(), 'Query string is not visible'
     assert redirect_page.search_field.is_visible(), 'Search field is not visible'
     redirect_page.add_a_redirect_button.click()
-    redirect_page.redirect_from.wait_for(timeout=25000)
+    redirect_page.redirect_from.wait_for(timeout=5000)
     assert redirect_page.redirect_from.is_visible(), 'FROM field is visible is not visible'
     assert redirect_page.redirect_to.is_visible(), 'TO field is not visible'
     assert redirect_page.response_status.is_visible(), 'Response Status is not visible'
@@ -43,7 +43,7 @@ def test_base_elements(redirect_page):
     assert redirect_page.save_redirect_button.is_visible(), 'Add a redirect button is not visible'
     redirect_page.cancel_button.click()
     redirect_page.import_button.click()
-    redirect_page.import_browse_button.wait_for(timeout=25000)
+    redirect_page.import_browse_button.wait_for(timeout=5000)
     assert redirect_page.import_browse_button.is_visible(), 'Browse button is not visible'
     assert redirect_page.import_override_existing.is_visible(), 'Override button is not visible'
     assert redirect_page.import_append_file.is_visible(), 'Override button is not visible'
@@ -83,7 +83,7 @@ def test_redirect_add(redirect_page, from_, to, status, forward_query_string):
     redirect_page.forward_query_string.set_checked(forward_query_string)
     redirect_page.save_redirect_button.click()
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
-    redirect_page.wait_for_timeout(timeout=2000)
+    redirect_page.wait_for_timeout(timeout=500)
     assert redirect_page.table_value_from_field(row=1).inner_text() == from_
     assert redirect_page.table_value_to_field(row=1).inner_text() == to
     assert redirect_page.table_value_status_field(row=1).inner_text() == status[0:3]
@@ -114,7 +114,7 @@ def test_redirect_max_allowed(redirect_page):
     redirect_page.redirect_to.fill(max_allowed_value)
     redirect_page.save_redirect_button.click()
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
-    redirect_page.wait_for_timeout(timeout=2000)
+    redirect_page.wait_for_timeout(timeout=500)
     assert redirect_page.table_value_from_field(row=1).inner_text() == expected
     assert redirect_page.table_value_to_field(row=1).inner_text() == expected
 
@@ -145,7 +145,7 @@ def test_redirect_delete(redirect_page):
     redirect_page.confirm_remove_redirect.click()
     redirect_page.reload()
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
-    redirect_page.wait_for_timeout(timeout=2000)
+    redirect_page.wait_for_timeout(timeout=500)
     assert redirect_page.empty_list_message.is_visible(), 'empty list message is not visible'
 
 
@@ -183,7 +183,7 @@ def test_redirect_update(redirect_page):
     redirect_page.forward_query_string.set_checked(True)
     redirect_page.save_redirect_button.click()
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
-    redirect_page.wait_for_timeout(timeout=2000)
+    redirect_page.wait_for_timeout(timeout=500)
     assert redirect_page.table_value_from_field(row=1).inner_text() == new_random_data
     assert redirect_page.table_value_to_field(row=1).inner_text() == new_random_data
     assert redirect_page.table_value_status_field(row=1).inner_text() == '307'
@@ -215,7 +215,7 @@ def test_redirect_deploy(redirect_page):
     redirect_page.redeploy_button.click()
     redirect_page.redeploy_confirmation.click()
     # wait for deployment finish
-    redirect_page.online_status.wait_for(timeout=100000)
+    redirect_page.online_status.wait_for(timeout=60000)
     redirect_page.redirects_page.click()
     redirect_page.reload()
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
@@ -251,7 +251,7 @@ def test_redirect_import_override_option(redirect_page):
     csv_file = redirect_page.csv_for_import(data_to_import)
     redirect_page.add_redirect(from_=random_data, to=random_data)
     redirect_page.upload_csv_file(csv_file, True)
-    redirect_page.wait_for_timeout(timeout=5000)
+    redirect_page.wait_for_timeout(timeout=500)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     assert redirect_page.table_value_from_field(row=1).inner_text() == data_to_import[0][0]
     assert redirect_page.table_value_to_field(row=1).inner_text() == data_to_import[0][1]
@@ -286,10 +286,10 @@ def test_redirect_import_append_option(redirect_page):
     ]
     csv_file = redirect_page.csv_for_import(data_to_import)
     redirect_page.add_redirect(from_=random_data, to=random_data)
-    redirect_page.wait_for_timeout(timeout=5000)
+    redirect_page.wait_for_timeout(timeout=500)
     count_rows_before_import = redirect_page.table_rows.count()
     redirect_page.upload_csv_file(csv_file, False)
-    redirect_page.wait_for_timeout(timeout=5000)
+    redirect_page.wait_for_timeout(timeout=500)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     count_after_append_redirects = redirect_page.table_rows.count()
     assert count_rows_before_import + len(data_to_import) == count_after_append_redirects
@@ -330,7 +330,7 @@ def test_redirect_export_option(redirect_page):
     csv_file = redirect_page.csv_for_import(data_to_import)
     redirect_page.upload_csv_file(csv_file, True)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
-    redirect_page.wait_for_timeout(timeout=2000)
+    redirect_page.wait_for_timeout(timeout=500)
     with redirect_page.expect_download() as download_info:
         redirect_page.export_button.click()
     download = download_info.value
@@ -372,19 +372,19 @@ def test_redirect_search(redirect_page):
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     redirect_page.search_field.click()
     redirect_page.search_field.fill(random_from)
-    redirect_page.wait_for_timeout(timeout=2000)
+    redirect_page.wait_for_timeout(timeout=500)
     assert redirect_page.table_value_from_field(row=1).inner_text() == random_from, \
         'The search result does not match the expected'
     assert len(redirect_page.table_rows) == 1, "More rows are present than expected"
     redirect_page.search_field.clear()
     redirect_page.search_field.fill(random_to)
-    time.sleep(2)
+    redirect_page.wait_for_timeout(timeout=500)
     assert redirect_page.table_value_to_field(row=1).inner_text() == random_to, \
         'The search result does not match the expected'
     assert len(redirect_page.table_rows) == 1, "More rows are present than expected"
     redirect_page.search_field.clear()
     redirect_page.search_field.fill(random_str(10))
-    redirect_page.wait_for_timeout(timeout=2000)
+    redirect_page.wait_for_timeout(timeout=500)
     assert redirect_page.no_redirects_matching.is_visible(), "Empty field text is not visible"
 
 
@@ -412,7 +412,7 @@ def test_redirect_changing_default_status(redirect_page):
     redirect_page.default_status_dropdown.click()
     redirect_page.select_by_name(name=set_default).click()
     redirect_page.add_redirect(from_=random_data, to=random_data)
-    redirect_page.wait_for_timeout(timeout=2000)
+    redirect_page.wait_for_timeout(timeout=500)
     assert redirect_page.table_value_status_field(row=1).inner_text() == 'Default (301)'
     redirect_page.default_status_dropdown.click()
     redirect_page.select_by_name(name=new_default).click()
@@ -442,7 +442,7 @@ def test_redirect_import_duplicate_values(redirect_page):
     redirect_page.upload_csv_file(csv_file, True)
     csv_file.seek(0)
     redirect_page.upload_csv_file(csv_file, False)
-    redirect_page.wait_for_timeout(timeout=2000)
+    redirect_page.wait_for_timeout(timeout=500)
     assert redirect_page.client_snackbar.text_content() == f"Redirect {data_to_import[0][0]} is already defined on this environment."
 
 
@@ -474,7 +474,7 @@ def test_redirect_import_mapping(redirect_page):
     csv_file = redirect_page.csv_for_import(data_to_import)
     redirect_page.upload_csv_file(csv_file)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
-    redirect_page.wait_for_timeout(timeout=2000)
+    redirect_page.wait_for_timeout(timeout=500)
     for row_number in range(1, len(redirect_page.table_rows) + 1):
         assert redirect_page.table_value_from_field(row=row_number).inner_text() == data_to_import[row_number - 1][0]
         assert redirect_page.table_value_to_field(row=row_number).inner_text() == data_to_import[row_number - 1][1]

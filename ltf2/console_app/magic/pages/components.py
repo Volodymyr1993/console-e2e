@@ -376,7 +376,7 @@ class RedirectsMixin:
         self.table_value_query_field = DynamicPageElement(self.page, "//table//tbody//tr[{row}]//td[5]")
         self.import_browse_button = PageElement(self.page, "//button[@data-qa='redirect-import-browse-btn']")
         self.redirects_page = PageElement(self.page, "//span[text()='Redirects']")
-        self.online_status = PageElement(self.page, "//i[text()='Online']")
+        self.online_status = PageElement(self.page, "//i[text()='Deployed']")
         self.no_redirects_matching = PageElement(self.page, "//div[text()='No redirects matching \"']")
 
 
