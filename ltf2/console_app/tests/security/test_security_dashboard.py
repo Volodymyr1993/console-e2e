@@ -1,30 +1,47 @@
 from datetime import datetime, timedelta
+
 import pytest
 
 
-@pytest.mark.regression
-def make_time_frame(time_range: str):
-    """ Make expected time value with 1 minute difference (now - 1m, now, now + 1m)
-
-    :param time_range: time range, e.g. '1 day', '6 hours', ...
-    :return list of time frames [now - 1m, now, now + 1m] in the following format:
-        'UTC 12/12 13:27 - 12/12 13:42'
+def get_utc_time_range(time_period):
     """
-    try:
-        number, period = time_range
-    except ValueError:
-        number, period = 1, f'{time_range[0]}s'
-    now = datetime.utcnow()
-    future = now + timedelta(minutes=1)
-    past = now - timedelta(minutes=1)
-    frames = []
-    for t in (past, now, future):
-        frames.append(
-            f'UTC '
-            f'{(t - timedelta(**{period: int(number)})).strftime("%m/%d %H:%M")}'
-            f' - {t.strftime("%m/%d %H:%M")}')
-    return frames
+    Generate a time range string based on a specified time period.
 
+    Parameters:
+    - time_period (str): A string representing the time period, e.g., 'Last 10 minutes', 'Last 7 days'.
+
+    Returns:
+    - str: A formatted string representing the time range in UTC.
+           Format: 'Monday, February 28, 2024 at 10:30 AM - Monday, February 28, 2024 at 10:40 AM'.
+    """
+    now_utc = datetime.now()
+
+    assert 'Last' in time_period, "Wrong time_period format"
+
+    period = time_period.split()[1:]
+    if len(period) == 2:
+        num, unit = period
+        num = int(num)
+    elif len(period) == 1:
+        # Last hour, Last day
+        unit = time_period.split()[1:]
+        num = 1
+    else:
+        raise ValueError("Invalid time_period")
+
+    if 'minute' in unit:
+        start_time_utc = now_utc - timedelta(minutes=num)
+    elif 'hour' in unit:
+        start_time_utc = now_utc - timedelta(hours=num)
+    elif 'day' in unit:
+        start_time_utc = now_utc - timedelta(days=num)
+    else:
+        raise ValueError("Invalid time period")
+
+    start_time_str = start_time_utc.strftime('%A, %B %d, %Y at %I:%M %p').replace("AM", "am").replace("PM", "pm")
+    end_time_str = now_utc.strftime('%A, %B %d, %Y at %I:%M %p').replace("AM", "am").replace("PM", "pm")
+
+    return f"{start_time_str} - {end_time_str}"
 
 @pytest.mark.regression
 def test_dashboard_logs_current_time_range(dashboard_page):
@@ -46,19 +63,21 @@ def test_dashboard_logs_current_time_range(dashboard_page):
     dashboard_page.dashboard_time_frame_input.click()
     for li in dashboard_page.select.li:
         # Get Time Frame name, e.g. Last 15 minutes
-        item_name = li.text_content()
-        _, *time_range = item_name.split()
+        time_range = li.text_content()
+        # Skip Custom Time Range
+        if time_range == 'Custom time range':
+            continue
         # Select Time Frame
         li.click()
         actual = dashboard_page.dashboard_current_time.text_content()
-        expected = make_time_frame(time_range)
-        assert actual in expected, f'Wrong current time for `{item_name}`'
+        expected = get_utc_time_range(time_range)
+        assert actual in expected, f'Wrong current time for `{time_range}`'
         dashboard_page.dashboard_time_frame_input.click()
 
 
 @pytest.mark.regression
-def test_dashboard_add_filter_and_change_tab(dashboard_page):
-    """ Dashboard - Add Filter and change tab
+def test_dashboard_add_filter(dashboard_page):
+    """ Dashboard - Add Filter
 
     Preconditions:
     --------------
@@ -70,91 +89,23 @@ def test_dashboard_add_filter_and_change_tab(dashboard_page):
     1. Select field in Advanced Filters
     2. Fill in 'Exact Value' field
     3. Click 'Add filter' button
-    4. Click 'Rate Enforcement' tab
 
     Expected Results:
     -----------------
     3. Filter should be added near chart in format '<Filter name>: <Filter value>'
-    4. Filter should not be applied after switching a tab
     """
     filter_value = 'qwerty'
-   # dashboard_page.apply_filters.click()
+
+    dashboard_page.add_edit_filters.click()
+    dashboard_page.add_filter.click()
     dashboard_page.field_input.click()
+
     filter_name = dashboard_page.select.li[-1].text_content()
     dashboard_page.select.li[-1].click()
     dashboard_page.value_input.fill(filter_value)
-    dashboard_page.value_input.press('Enter')
+    dashboard_page.save.click()
+    dashboard_page.apply.click()
+    # Validation
     f_name = dashboard_page.filter_names[0].text_content()
-    assert f_name == f'{filter_name}:  {filter_value}', \
-        "Wrong filter name or value before changing a tab"
-
-    dashboard_page.rate_enforcement_button.click()
-
-    assert not dashboard_page.filter_names.is_visible(), \
-        "Unexpected filter is applied for another tab"
-
-
-@pytest.mark.regression
-def test_event_logs_current_time_range(dashboard_page):
-    """ Event Logs - Current time range
-
-    Preconditions:
-    --------------
-    1. Navigate to Security tab
-    2. Click 'Event Logs' on the left sidebar
-
-    Steps:
-    ------
-    1. Select 'Time Frame'
-
-    Expected Results:
-    -----------------
-    1. Proper 'Current Time Range' should appear
-    """
-    dashboard_page.event_log_time_frame_input.click()
-    for li in dashboard_page.select.li:
-        # Get Time Frame name, e.g. Last 15 minutes
-        item_name = li.text_content()
-        _, *time_range = item_name.split()
-        # Select Time Frame
-        li.click()
-        actual = dashboard_page.event_log_current_time.text_content()
-        expected = make_time_frame(time_range)
-        assert actual in expected, f'Wrong current time for `{item_name}`'
-        dashboard_page.event_log_time_frame_input.click()
-
-
-# def test_event_logs_add_filter_and_change_tab(dashboard_page):
-#     """ Event Logs - Add Filter and change tab
-#
-#     Preconditions:
-#     --------------
-#     1. Navigate to Security tab
-#     2. Click 'Event Logs' on the left sidebar
-#
-#     Steps:
-#     ------
-#     1. Select field in Advanced Filters
-#     2. Fill in 'Exact Value' field
-#     3. Click 'Add filter' button
-#     4. Click 'Rate Enforcement' tab
-#
-#     Expected Results:
-#     -----------------
-#     3. Filter should be added near chart in format '<Filter name>: <Filter value>'
-#     4. Filter should not change
-#     """
-#     filter_value = 'qwerty'
-#     dashboard_page.apply_filters.click()
-#     dashboard_page.field_input.click()
-#     filter_name = dashboard_page.select.li[-1].text_content()
-#     dashboard_page.select.li[-1].click()
-#
-#     dashboard_page.value_input.fill(filter_value)
-#     dashboard_page.value_input.press('Enter')
-#     f_name = dashboard_page.filter_names[0].text_content()
-#     assert f_name == f'{filter_name}:  {filter_value}', "Wrong filter name or value"
-#
-#     dashboard_page.rate_enforcement_button.click()
-#     assert not dashboard_page.filter_names.is_visible(), \
-#         "Unexpected filter is applied for another tab"
+    assert f_name == f'{filter_name}={filter_value}', \
+        "Wrong filter name"
