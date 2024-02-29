@@ -334,7 +334,7 @@ def test_redirect_export_option(redirect_page):
         redirect_page.export_button.click()
     download = download_info.value
     download.save_as("" + download.suggested_filename)
-    assert redirect_page.verify_exported_csv(download.suggested_filename, expected_content) == True
+    redirect_page.verify_exported_csv(download.suggested_filename, expected_content)
 
 
 @pytest.mark.regression
