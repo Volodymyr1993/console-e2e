@@ -286,11 +286,11 @@ def test_redirect_import_append_option(redirect_page):
     csv_file = redirect_page.csv_for_import(data_to_import)
     redirect_page.add_redirect(from_=random_data, to=random_data)
     redirect_page.wait_for_timeout(timeout=1500)
-    count_rows_before_import = redirect_page.table_rows.count()
+    count_rows_before_import = redirect_page.table.tbody.tr.count()
     redirect_page.upload_csv_file(csv_file, False)
     redirect_page.wait_for_timeout(timeout=1500)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
-    count_after_append_redirects = redirect_page.table_rows.count()
+    count_after_append_redirects = redirect_page.table.tbody.tr.count()
     assert count_rows_before_import + len(data_to_import) == count_after_append_redirects
     assert redirect_page.table_value_from_field(row=1).first.inner_text() == data_to_import[0][0]
     assert redirect_page.table_value_to_field(row=1).first.inner_text() == data_to_import[0][1]
@@ -374,13 +374,13 @@ def test_redirect_search(redirect_page):
     redirect_page.wait_for_timeout(timeout=500)
     assert redirect_page.table_value_from_field(row=1).inner_text() == random_from, \
         'The search result does not match the expected'
-    assert len(redirect_page.table_rows) == 1, "More rows are present than expected"
+    assert len(redirect_page.table.tbody.tr) == 1, "More rows are present than expected"
     redirect_page.search_field.clear()
     redirect_page.search_field.fill(random_to)
     redirect_page.wait_for_timeout(timeout=500)
     assert redirect_page.table_value_to_field(row=1).inner_text() == random_to, \
         'The search result does not match the expected'
-    assert len(redirect_page.table_rows) == 1, "More rows are present than expected"
+    assert len(redirect_page.table.tbody.tr) == 1, "More rows are present than expected"
     redirect_page.search_field.clear()
     redirect_page.search_field.fill(random_str(10))
     redirect_page.wait_for_timeout(timeout=500)
@@ -474,7 +474,7 @@ def test_redirect_import_mapping(redirect_page):
     redirect_page.upload_csv_file(csv_file)
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     redirect_page.wait_for_timeout(timeout=500)
-    for row_number in range(1, len(redirect_page.table_rows) + 1):
+    for row_number in range(1, len(redirect_page.table.tbody.tr) + 1):
         assert redirect_page.table_value_from_field(row=row_number).inner_text() == data_to_import[row_number - 1][0]
         assert redirect_page.table_value_to_field(row=row_number).inner_text() == data_to_import[row_number - 1][1]
         assert redirect_page.table_value_status_field(row=row_number).inner_text() == data_to_import[row_number - 1][2]

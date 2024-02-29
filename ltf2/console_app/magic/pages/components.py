@@ -363,7 +363,6 @@ class RedirectsMixin:
         self.import_override_existing = PageElement(self.page, "//span[text()='Override existing list with file content']")
         self.import_append_file = PageElement(self.page, "//span[text()='Append file content to existing redirects list']")
         self.upload_redirect_button = PageElement(self.page, "//span[text()='Upload redirects']")
-        self.table_rows = ListElement(self.page, "//table//tbody//tr")
         self.redeploy_button = PageElement(self.page, "//button[@data-qa='redeploy-btn']")
         self.redeploy_confirmation = PageElement(self.page, "//div[@role='dialog']//span[contains(text(), 'Deploy Now')]")
         self.delete_all_checkbox = PageElement(self.page, "//table//tr//th//input[@type='checkbox']")
