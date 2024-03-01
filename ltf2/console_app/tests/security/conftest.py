@@ -71,10 +71,9 @@ def security_logged(use_login_state: dict,
     main_page.security.click()
     # Close the status banner if present
     try:
-        main_page.status_iframe_close_button.click(timeout=1000)
+        main_page.status_snackbar_close.click(timeout=1500)
     except TimeoutError:
-        # Status banner not found
-        pass
+        print('Status banner not found')
     yield main_page
 
 
