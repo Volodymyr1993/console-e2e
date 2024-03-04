@@ -3,12 +3,13 @@ import time
 import pytest
 from playwright.sync_api import TimeoutError
 
+from ltf2.console_app.magic.constants import SECURITY_RULE_NAME_PREFIX
 from ltf2.console_app.magic.helpers import random_str
 from ltf2.console_app.magic.pages.pages import SecurityPage
 
 
 def create_app_name(page: SecurityPage) -> str:
-    name = f'ltf-{random_str(10)}'
+    name = f'{SECURITY_RULE_NAME_PREFIX}{random_str(10)}'
     # Add rule
     page.new_seccurity_application.click()
     page.input_name.fill(name)
