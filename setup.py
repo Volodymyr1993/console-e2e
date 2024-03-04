@@ -18,7 +18,8 @@ setup(
     install_requires=[
         'allure-pytest',
         'ltf2-util',
-        'pytest',
+        # Freeze until resolved https://github.com/allure-framework/allure-python/issues/794
+        'pytest==8.0.2',
         'pytest-playwright',
     ],
 )
