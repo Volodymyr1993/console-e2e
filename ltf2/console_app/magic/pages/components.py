@@ -35,6 +35,7 @@ class CommonMixin:
         # General
         self.input_name = PageElement(self.page, "//input[@id='name']")
         self.client_snackbar = PageElement(self.page, "//*[@id='client-snackbar']")
+        self.apply = PageElement(self.page, "//button//span[text()='Apply']")
         self.save = PageElement(self.page, "//button//span[text()='Save']")
         self.create = PageElement(self.page, "//button//span[text()='Create']")
         self.close = PageElement(self.page, "//button//span[text()='Close']").nth(1)
@@ -670,9 +671,7 @@ class SecurityMixin:
         # ==================== Dashboard & Event Logs ==============
 
         self.dashboard_time_frame_input = PageElement(
-            self.page, "//input[@name='time']").nth(0)
-        self.event_log_time_frame_input = PageElement(
-            self.page, "//input[@name='time']").nth(1)
+            self.page, "//input[@id='time']")
         self.view_input = PageElement(self.page, "//input[@name='view']")
         self.refresh_input = PageElement(self.page, "//input[@name='refresh']")
 
@@ -683,18 +682,19 @@ class SecurityMixin:
         self.rate_enforcement_button = PageElement(self.page,
                                                    "//button//span[text()='Rate Enforcement']")
         # Advanced filters
-        self.field_input = PageElement(self.page, "//input[@name='field']")
-        self.value_input = PageElement(self.page, "//input[@name='value']")
+        self.add_edit_filters = PageElement(self.page, "//button//span[text()='Edit/Add Filters']")
+        self.add_filter = PageElement(self.page, "//button//span[text()='Add Filter']")
 
-        self.apply_filters = PageElement(self.page, "//button//span[text()='Apply Filters']")
-        self.filter_names = ListElement(self.page,
-                                        "//div[p[contains(., 'Filters:')]]//div//p")
+        self.field_input = PageElement(self.page, "//input[@placeholder='Select Field']")
+        self.value_input = PageElement(self.page, "//input[@name='domain']")
+
+        self.filter_names = ListElement(
+            self.page,
+            "//div[contains(@class, 'MuiGrid-container')]/div[contains(@class, 'MuiGrid-item')]/div[@role='button']")
         self.filter_remove = ListElement(self.page,
                                          "//div[p[contains(., 'Filters:')]]//button")
         self.dashboard_current_time = PageElement(
-            self.page, "//h6/span[text()='Current Time Range']/../../h3/span").nth(0)
-        self.event_log_current_time = PageElement(
-            self.page, "//h6/span[text()='Current Time Range']/../../h3/span").nth(1)
+            self.page, "//h2[contains(text(), 'Security')]/../h6")
 
 
 class ExperimentsMixin:
