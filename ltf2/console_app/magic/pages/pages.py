@@ -6,11 +6,13 @@ and BasePage class. Please note that the position of the mixins and BasePage is 
 (BasePage should follow mixin) as super() follows the MRO.
 """
 from playwright.sync_api import Page
+import csv
+from io import StringIO
 
 from ltf2.console_app.magic.pages.components import (LoginMixin, OrgMixin, CommonMixin,
                                                      SecurityMixin, EnvironmentMixin,
                                                      DeploymentsMixin, ExperimentsMixin,
-                                                     TrafficMixin)
+                                                     TrafficMixin, RedirectsMixin)
 
 from ltf2.console_app.magic.pages.base_page import BasePage
 from ltf2.console_app.magic.ruleconfig import RuleFeature, RuleCondition, ExperimentCondition, ExperimentFeature
@@ -92,3 +94,60 @@ class DeploymentsPage(CommonMixin, DeploymentsMixin, BasePage):
 
 class TrafficPage(CommonMixin, TrafficMixin, BasePage):
     pass
+
+
+class RedirectsPage(CommonMixin, RedirectsMixin, BasePage):
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+
+    def delete_all_redirects(self):
+        self.delete_all_checkbox.first.set_checked(True)
+        self.remove_selected_redirect.click()
+        self.confirm_remove_redirect.click()
+
+    def add_redirect(self, from_, to):
+        self.add_a_redirect_button.click()
+        self.redirect_from.fill('/' + from_)
+        self.redirect_to.fill('/' + to)
+        self.save_redirect_button.click()
+
+    def csv_for_import(self, data_to_upload: list, headers=None):
+        if headers is None:
+            headers = ["from", "to", "status", "forwardQueryString"]
+        csv_buffer = StringIO()
+        csv_writer = csv.writer(csv_buffer)
+        csv_writer.writerow(headers)
+        csv_writer.writerows(data_to_upload)
+        csv_buffer.seek(0)
+        return csv_buffer
+
+    def verify_exported_csv(self, csv_file_name, expected_content):
+        with open(csv_file_name, 'r', newline='') as file:
+            csv_reader = csv.reader(file)
+            actual_headers = next(csv_reader)
+
+            # Compare headers
+            if actual_headers != expected_content[0]:
+                return False, f"{actual_headers} do not match the {expected_content}"
+
+            # Compare data rows
+            for row, actual_row_data in enumerate(csv_reader, start=0):
+                if actual_row_data != expected_content[1][row]:
+                    return False, print(f"Row {row} {actual_row_data} != {expected_content[1][row]} data.")
+        # If no mismatches found, return True
+        return True
+
+    def upload_csv_file(self, file_obj: str, method_for_import=True):
+        with self.expect_file_chooser() as fc_info:
+            self.import_button.click()
+            self.import_browse_button.click()
+            # True for 'Override list with file content' option
+            if method_for_import:
+                self.import_override_existing.click()
+            else:
+                self.import_append_file.click()
+
+        file_chooser = fc_info.value
+        file_chooser.set_files(
+            files=[{"name": "test.csv", "mimeType": "text/plain", "buffer": file_obj.read().encode('utf-8')}])
+        self.upload_redirect_button.click()

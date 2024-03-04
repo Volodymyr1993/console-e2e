@@ -17,7 +17,7 @@ from ltf2.console_app.magic.constants import PAGE_TIMEOUT
 from ltf2.console_app.magic.helpers import delete_orgs, revert_rules, login
 from ltf2.console_app.magic.pages.pages import (ExperimentsPage, LoginPage,
                                                 OrgPage, PropertyPage,
-                                                TrafficPage)
+                                                TrafficPage, RedirectsPage)
 
 Credentials = namedtuple('Credentials', 'users password')
 
@@ -26,6 +26,7 @@ ENV_URL_PATH = "env/production/"
 TRAFFIC_URL_PATH = f"{ENV_URL_PATH}traffic"
 EXPERIMENTS_URL_PATH = f"{ENV_URL_PATH}configuration/experiments"
 PROPERTY_URL_PATH = f"{ENV_URL_PATH}configuration/rules"
+REDIRECTS_URL_PATH = f"{ENV_URL_PATH}redirects"
 
 
 @pytest.fixture(scope='session')
@@ -242,3 +243,28 @@ def traffic_page(use_login_state: dict,
     traffic = TrafficPage(page, url=urljoin(base_url, traffic_path))
     traffic.goto()
     yield traffic
+
+
+@pytest.fixture
+def redirect_page(use_login_state: dict,
+                    page: Page,
+                    ltfrc_console_app: dict,
+                    base_url: str) -> Generator[Page, None, None]:
+    # Set global timeout
+    page.set_default_timeout(PAGE_TIMEOUT)
+    try:
+        property_path = (f"{ltfrc_console_app['team']}/"
+                         f"{ltfrc_console_app['property']}/"
+                         f"{REDIRECTS_URL_PATH}")
+    except KeyError:
+        raise ValueError(f'team and property variables are missed in .ltfrc')
+
+    red_page = RedirectsPage(page, url=urljoin(base_url, property_path))
+    red_page.goto()
+    red_page.add_a_redirect_button.wait_for(timeout=30000)
+
+    # delete all redirects if present
+    if not red_page.empty_list_message.is_visible():
+        red_page.delete_all_redirects()
+
+    yield red_page

@@ -19,6 +19,10 @@ def random_int(n: int) -> str:
     return ''.join([str(randint(1, 9))] + [str(randint(0, 9)) for _ in range(n - 1)])
 
 
+def random_bool():
+    return choice([True, False])
+
+
 def login(login_page: Page, username: str, password: str):
     login_page.username.fill(username)
     login_page.submit.click()
