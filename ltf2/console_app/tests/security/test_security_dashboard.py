@@ -38,8 +38,8 @@ def get_utc_time_range(time_period):
     else:
         raise ValueError("Invalid time period")
 
-    start_time_str = start_time_utc.strftime('%A, %B %d, %Y at %I:%M %p').replace("AM", "am").replace("PM", "pm")
-    end_time_str = now_utc.strftime('%A, %B %d, %Y at %I:%M %p').replace("AM", "am").replace("PM", "pm")
+    start_time_str = start_time_utc.strftime('%A, %B %-d, %Y at %I:%M %P')
+    end_time_str = now_utc.strftime('%A, %B %-d, %Y at %I:%M %P')
 
     return f"{start_time_str} - {end_time_str}"
 
@@ -71,7 +71,7 @@ def test_dashboard_logs_current_time_range(dashboard_page):
         li.click()
         actual = dashboard_page.dashboard_current_time.text_content()
         expected = get_utc_time_range(time_range)
-        assert actual in expected, f'Wrong current time for `{time_range}`'
+        assert actual == expected, f'Wrong current time for `{time_range}`'
         dashboard_page.dashboard_time_frame_input.click()
 
 
