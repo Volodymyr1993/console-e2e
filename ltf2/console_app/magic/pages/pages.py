@@ -12,7 +12,8 @@ from io import StringIO
 from ltf2.console_app.magic.pages.components import (LoginMixin, OrgMixin, CommonMixin,
                                                      SecurityMixin, EnvironmentMixin,
                                                      DeploymentsMixin, ExperimentsMixin,
-                                                     TrafficMixin, RedirectsMixin)
+                                                     TrafficMixin, RedirectsMixin,
+                                                     OriginsMixin)
 
 from ltf2.console_app.magic.pages.base_page import BasePage
 from ltf2.console_app.magic.ruleconfig import RuleFeature, RuleCondition, ExperimentCondition, ExperimentFeature
@@ -151,3 +152,30 @@ class RedirectsPage(CommonMixin, RedirectsMixin, BasePage):
         file_chooser.set_files(
             files=[{"name": "test.csv", "mimeType": "text/plain", "buffer": file_obj.read().encode('utf-8')}])
         self.upload_redirect_button.click()
+
+
+class OriginsPage(CommonMixin, OriginsMixin, BasePage):
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+
+    def delete_all_origins(self):
+        for _ in range(self.delete_button_list.count()):
+            self.delete_button_list.first.click()
+            self.delete_origin_button_confirmation.click()
+
+    def add_origin(self, name: str, override_host_header: str, origin_hostname: str, origins_number: int):
+        # Only required fields are fulfilled
+        self.add_origin_button.click()
+        self.origin_name_field(origin=origins_number).fill(name)
+        self.origin_hostname(origin=origins_number).fill(origin_hostname)
+        self.origin_override_host_headers(origin=origins_number).fill(override_host_header)
+
+    def deploy_changes(self):
+        self.deploy_changes_button.last.click()
+        self.wait_for_timeout(timeout=1000)
+        self.deploy_changes_button.last.click()
+        # wait for success message
+        message = self.client_snackbar.get_by_text(
+            'Changes deployed successfully')
+        message.first.wait_for(timeout=40000)
+        return message.first
