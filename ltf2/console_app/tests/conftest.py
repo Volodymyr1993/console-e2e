@@ -121,12 +121,12 @@ def create_org(org_page) -> Generator[str, None, None]:
     org_page.button_create_org_dialog.click()
     # Organization name is a current org
     org_page.selected_org(name=org_name).wait_for(timeout=8000)
-    orgs.append((org_page, org_name))
+    orgs.append(org_name)
 
     yield org_name
 
     # Delete org
-    delete_orgs(orgs)
+    org_page.delete_orgs(orgs)
 
 
 @pytest.fixture

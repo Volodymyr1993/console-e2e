@@ -29,7 +29,15 @@ class LoginPage(CommonMixin, LoginMixin, BasePage):
 
 
 class OrgPage(CommonMixin, OrgMixin, BasePage):
-    pass
+    def delete_orgs(self, orgs: list[str]) -> None:
+        for org_name in orgs:
+            # To make sure that org_switcher_button will be available
+            self.goto()
+            self.org_switcher_button.click()
+            self.org_switcher_list.get_by_text(org_name).click()
+            self.settings.click()
+            self.delete_org_checkbox.click()
+            self.delete_org_button.click()
 
 
 class ExperimentsPage(CommonMixin, ExperimentsMixin, BasePage):
