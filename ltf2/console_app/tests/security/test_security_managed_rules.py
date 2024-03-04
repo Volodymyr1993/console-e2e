@@ -3,15 +3,13 @@ from datetime import datetime, timezone
 
 import pytest
 
-from ltf2.console_app.magic.helpers import random_str, random_int, open_rule_editor
+from ltf2.console_app.magic.constants import SECURITY_RULE_NAME_PREFIX
+from ltf2.console_app.magic.helpers import random_int, random_str
 from ltf2.console_app.magic.pages.pages import SecurityPage
 
 
-open_managed_rule = lambda page, rule: open_rule_editor(page, 'managed_rules', rule)
-
-
 def fill_in_rule_name(page: SecurityPage) -> str:
-    name = f'ltf-{random_str(10)}'
+    name = f'{SECURITY_RULE_NAME_PREFIX}{random_str(10)}'
     # Add rule
     page.add_managed_rule.click()
     page.input_name.fill(name)
@@ -42,9 +40,9 @@ def test_managed_rules_add(managed_rules_page: SecurityPage,
     name = fill_in_rule_name(managed_rules_page)
     managed_rules_page.save.click()
     # Verify if created
-    delete_managed_rules.append((managed_rules_page, name))
+    delete_managed_rules.append(name)
     assert managed_rules_page.client_snackbar.text_content() == "Managed rule created"
-    open_managed_rule(managed_rules_page, name)
+    managed_rules_page.open_managed_rule_editor(name)
     assert managed_rules_page.input_name.input_value() == name
 
 
@@ -87,10 +85,10 @@ def test_managed_rules_add_rule_with_header_and_ignore_list(managed_rules_page: 
 
     managed_rules_page.save.click()
     # Verify if created
-    delete_managed_rules.append((managed_rules_page, name))
+    delete_managed_rules.append(name)
     assert managed_rules_page.client_snackbar.text_content() == "Managed rule created"
 
-    open_managed_rule(managed_rules_page, name)
+    managed_rules_page.open_managed_rule_editor(name)
     # Verify fields
     assert managed_rules_page.header_name_input.input_value() == header
     assert managed_rules_page.ignore_cookies_buttons[0].text_content() == cookie
@@ -140,10 +138,9 @@ def test_managed_rules_add_rule_more_details(managed_rules_page: SecurityPage,
 
     managed_rules_page.save.click()
     # Verify if created
-    delete_managed_rules.append((managed_rules_page, name))
+    delete_managed_rules.append(name)
     assert managed_rules_page.client_snackbar.text_content() == "Managed rule created"
-
-    open_managed_rule(managed_rules_page, name)
+    managed_rules_page.open_managed_rule_editor(name)
     # Verify fields
     managed_rules_page.more_details.click()
     assert managed_rules_page.max_args_reqs_input.input_value() == max_args_reqs
@@ -282,10 +279,10 @@ def test_managed_rules_add_rule_with_policies(
 
     managed_rules_page.ruleset_switch.check()
     managed_rules_page.save.click()
-    delete_managed_rules.append((managed_rules_page, name))
+    delete_managed_rules.append(name)
 
     # Verification
-    open_managed_rule(managed_rules_page, name)
+    managed_rules_page.open_managed_rule_editor(name)
     managed_rules_page.policies.click()
     assert managed_rules_page.ruleset_input.is_disabled()
     assert managed_rules_page.ruleset_input.input_value() == ruleset
@@ -340,10 +337,10 @@ def test_managed_rules_add_rule_with_exception(
     ids = random_str(5)
     managed_rules_page.rule_ids.fill(ids)
     managed_rules_page.save.click()
-    delete_managed_rules.append((managed_rules_page, name))
+    delete_managed_rules.append(name)
     assert managed_rules_page.client_snackbar.text_content() == f"Managed rule created"
     # Verification
-    open_managed_rule(managed_rules_page, name)
+    managed_rules_page.open_managed_rule_editor(name)
     managed_rules_page.exceptions.click()
 
     assert condition_name in managed_rules_page.conditions[0].text_content()
@@ -381,9 +378,9 @@ def test_managed_rules_graphql_plaintext_error(managed_rules_page: SecurityPage,
     name = fill_in_rule_name(managed_rules_page)
     managed_rules_page.save.click()
     # Verify if created
-    delete_managed_rules.append((managed_rules_page, name))
+    delete_managed_rules.append(name)
     assert managed_rules_page.client_snackbar.text_content() == "Managed rule created"
-    open_managed_rule(managed_rules_page, name)
+    managed_rules_page.open_managed_rule_editor(name)
     # Delete rule
     managed_rules_page.delete_button.click()
     managed_rules_page.mock.schedule(
@@ -429,9 +426,9 @@ def test_managed_rules_add_delete_graphql_jsonasstring_error(
     name = fill_in_rule_name(managed_rules_page)
     managed_rules_page.save.click()
     # Verify if created
-    delete_managed_rules.append((managed_rules_page, name))
+    delete_managed_rules.append(name)
     assert managed_rules_page.client_snackbar.text_content() == "Managed rule created"
-    open_managed_rule(managed_rules_page, name)
+    managed_rules_page.open_managed_rule_editor(name)
     # Delete rule
     managed_rules_page.delete_button.click()
     managed_rules_page.mock.schedule(
