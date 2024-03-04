@@ -38,8 +38,8 @@ def get_utc_time_range(time_period):
     else:
         raise ValueError("Invalid time period")
 
-    start_time_str = start_time_utc.strftime('%A, %B %-d, %Y at %I:%M %P')
-    end_time_str = now_utc.strftime('%A, %B %-d, %Y at %I:%M %P')
+    start_time_str = start_time_utc.strftime('%A, %B %-d, %Y at %-I:%M %P')
+    end_time_str = now_utc.strftime('%A, %B %-d, %Y at %-I:%M %P')
 
     return f"{start_time_str} - {end_time_str}"
 
