@@ -3,7 +3,6 @@ from random import randint, choice
 import string
 
 from playwright.sync_api import Page
-from playwright.sync_api import TimeoutError
 
 
 QUERY_STR_SECURITY_SECTION = '?tab=security&section='
@@ -15,6 +14,10 @@ def random_str(n: int) -> str:
 
 def random_int(n: int) -> str:
     return ''.join([str(randint(1, 9))] + [str(randint(0, 9)) for _ in range(n - 1)])
+
+
+def random_bool():
+    return choice([True, False])
 
 
 def mock_frame_request(page: Page) -> Page:
