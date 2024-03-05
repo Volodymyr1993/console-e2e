@@ -38,6 +38,7 @@ def delete_sec_app(security_app_page):
 
     yield rules
 
+    security_app_page.mock.clear()
     for rule in rules:
         security_app_page.mock.clear()
         security_app_page.goto(f"{security_app_page.url.strip('/')}/security/application")
