@@ -284,6 +284,8 @@ def test_managed_rules_add_rule_with_policies(
     # Verification
     managed_rules_page.open_managed_rule_editor(name)
     managed_rules_page.policies.click()
+    managed_rules_page.ruleset_input.wait_for(timeout=5000)
+
     assert managed_rules_page.ruleset_input.is_disabled()
     assert managed_rules_page.ruleset_input.input_value() == ruleset
     assert managed_rules_page.threshold_input.input_value() == threshold
@@ -440,7 +442,6 @@ def test_managed_rules_add_delete_graphql_jsonasstring_error(
                              "response":None,
                              "__typename": "MutateWafConfigPayload"}}})
     managed_rules_page.confirm_button.click()
-
     # Wait message on the snackbar to change
     managed_rules_page.client_snackbar.get_by_text('Message inside JSON').wait_for()
 

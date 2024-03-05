@@ -74,7 +74,7 @@ def test_security_application_add_rule(security_app_page: SecurityPage, delete_s
     security_app_page.select.li[0].click()
 
     # Save Rule
-    delete_sec_app.append((security_app_page, rule_name))
+    delete_sec_app.append(rule_name)
     security_app_page.save.click()
     security_app_page.save_secapp.click()
     assert security_app_page.client_snackbar.text_content() == \
@@ -137,7 +137,7 @@ def test_security_application_edit_rule(security_app_page: SecurityPage,
     security_app_page.url_values_input.fill(value)
     security_app_page.config_access_rules.click()
     # Save Rule
-    delete_sec_app.append((security_app_page, rule_name))
+    delete_sec_app.append(rule_name)
     security_app_page.save.click()
     security_app_page.save_secapp.click()
     assert security_app_page.client_snackbar.text_content() == \
@@ -232,7 +232,7 @@ def test_security_application_delete_rule(security_app_page: SecurityPage, delet
 
     security_app_page.save.click()
     security_app_page.save_secapp.click()
-    delete_sec_app.append((security_app_page, rule_name))
+    delete_sec_app.append(rule_name)
     assert security_app_page.client_snackbar.text_content() == 'Security application updated'
 
     # Find created app

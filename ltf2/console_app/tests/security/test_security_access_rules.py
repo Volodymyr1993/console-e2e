@@ -4,11 +4,11 @@ from datetime import datetime, timezone
 import pytest
 from playwright.sync_api import TimeoutError
 
-from ltf2.console_app.magic.constants import SECURITY_RULE_NAME_PREFIX
+from ltf2.console_app.magic.constants import (ACCESS_CONTROL_TYPE,
+                                              HTTP_METHODS,
+                                              SECURITY_RULE_NAME_PREFIX)
 from ltf2.console_app.magic.helpers import random_str
 from ltf2.console_app.magic.pages.pages import SecurityPage
-from ltf2.console_app.magic.constants import ACCESS_CONTROL_TYPE, HTTP_METHODS
-
 
 LIST_NAMES = ('blacklist', 'whitelist', 'accesslist')
 

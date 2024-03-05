@@ -8,8 +8,8 @@ and BasePage class. Please note that the position of the mixins and BasePage is 
 from __future__ import annotations
 
 from playwright.sync_api import Page
+from playwright.sync_api import TimeoutError
 
-from ltf2.console_app.magic.elements import TrElements
 from ltf2.console_app.magic.nested_rules import NestedRules
 from ltf2.console_app.magic.pages.base_page import BasePage
 from ltf2.console_app.magic.pages.components import (CommonMixin,
@@ -25,7 +25,24 @@ from ltf2.console_app.magic.ruleconfig import (ExperimentCondition,
 
 
 class LoginPage(CommonMixin, LoginMixin, BasePage):
-    pass
+    def login(self, username: str, password: str):
+        self.username.fill(username)
+        self.submit.click()
+        self.password.fill(password)
+        self.submit.click()
+        # Skip multi-factor auth if present
+        try:
+            self.skip_this_step.click(timeout=2000)
+        except TimeoutError:
+            pass
+        try:
+            self.overview.wait_for()
+        except TimeoutError as e:
+            if self.reset_pasword.is_visible():
+                raise AssertionError(
+                    "Password has been expired. "
+                    "Please reset the password") from e
+            raise AssertionError(f"Cannot login to {self.url}") from e
 
 
 class OrgPage(CommonMixin, OrgMixin, BasePage):
@@ -94,9 +111,20 @@ class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
     def set_conditions_operator_and(self):
         self.change_conditions_operator('and')
 
+    def revert_rules(self):
+        try:
+            # Click `Revert` button if available
+            self.revert_button.click(timeout=4000)
+            self.revert_changes_button.click(timeout=2000)
+            self.wait_for_timeout(timeout=2000)
+        except TimeoutError:
+            pass
+
+
 
 class SecurityPage(CommonMixin, SecurityMixin, BasePage):
     def _delete_rules(self, rules: list[(Page, str)], url_section: str) -> None:
+        self.mock.clear()
         for rule in rules:
             url = f"{self.url.strip('/')}/security/{url_section}"
             self.goto(url)
@@ -125,8 +153,8 @@ class SecurityPage(CommonMixin, SecurityMixin, BasePage):
             if row[name_index].text_content() == name:
                 row[name_index].click()
                 return True
-        else:
-            raise AssertionError("Rule was not saved")
+
+        raise AssertionError("Rule was not saved")
 
     def delete_managed_rules(self, rules: list[str]):
         self._delete_rules(rules, 'managed_rules')
@@ -145,6 +173,22 @@ class SecurityPage(CommonMixin, SecurityMixin, BasePage):
 
     def open_rate_rule_editor(self, name: str, name_index: int = 0):
         self._open_rule_editor('rate_rules', name, name_index)
+
+
+    def delete_sec_app():
+        rules = []
+
+        yield rules
+
+        # Remove all mock schedules
+        for page, rule in rules:
+            page.mock.clear()
+            page.goto(f"{page.url.strip('/')}/security/application")
+            page.secapp_by_name(name=rule).click()
+            page.delete_button.click()
+            page.confirm_button.click()
+            page.save_secapp.click()
+            page.client_snackbar.get_by_text('Security application updated').wait_for()
 
 
 class DeploymentsPage(CommonMixin, DeploymentsMixin, BasePage):

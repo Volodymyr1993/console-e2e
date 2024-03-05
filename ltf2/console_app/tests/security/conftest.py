@@ -33,20 +33,19 @@ inject_fixture('delete_rate_rules')
 
 
 @pytest.fixture
-def delete_sec_app():
+def delete_sec_app(security_app_page):
     rules = []
 
     yield rules
 
-    # Remove all mock schedules
-    for page, rule in rules:
-        page.mock.clear()
-        page.goto(f"{page.url.strip('/')}/security/application")
-        page.secapp_by_name(name=rule).click()
-        page.delete_button.click()
-        page.confirm_button.click()
-        page.save_secapp.click()
-        page.client_snackbar.get_by_text('Security application updated').wait_for()
+    for rule in rules:
+        security_app_page.mock.clear()
+        security_app_page.goto(f"{security_app_page.url.strip('/')}/security/application")
+        security_app_page.secapp_by_name(name=rule).click()
+        security_app_page.delete_button.click()
+        security_app_page.confirm_button.click()
+        security_app_page.save_secapp.click()
+        security_app_page.client_snackbar.get_by_text('Security application updated').wait_for()
 
 
 # =============== Pages ======================
@@ -68,7 +67,6 @@ def security_logged(use_login_state: dict,
     except TimeoutError:
         print('Status banner not found')
     yield main_page
-
     main_page.mock.clear()
 
 
