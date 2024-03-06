@@ -4,17 +4,17 @@ from datetime import datetime, timezone
 import pytest
 from playwright.sync_api import TimeoutError
 
-from ltf2.console_app.magic.helpers import random_str, open_rule_editor
+from ltf2.console_app.magic.constants import (ACCESS_CONTROL_TYPE,
+                                              HTTP_METHODS,
+                                              SECURITY_RULE_NAME_PREFIX)
+from ltf2.console_app.magic.helpers import random_str
 from ltf2.console_app.magic.pages.pages import SecurityPage
-from ltf2.console_app.magic.constants import ACCESS_CONTROL_TYPE, HTTP_METHODS
 
-
-open_access_rule = lambda page, rule: open_rule_editor(page, 'access_rules', rule)
 LIST_NAMES = ('blacklist', 'whitelist', 'accesslist')
 
 
 def fill_in_rule_name(page: SecurityPage) -> str:
-    name = f'ltf-{random_str(10)}'
+    name = f'{SECURITY_RULE_NAME_PREFIX}{random_str(10)}'
     # Add rule
     page.add_access_rule.click()
     page.input_name.fill(name)
@@ -79,9 +79,9 @@ def test_access_rule_access_control(access_rules_page: SecurityPage,
     # Save rule
     access_rules_page.save.click()
     assert access_rules_page.client_snackbar.text_content() == "Access rule created"
-    delete_access_rules.append((access_rules_page, rule_name))
+    delete_access_rules.append(rule_name)
 
-    open_access_rule(access_rules_page, rule_name)
+    access_rules_page.open_access_rule_editor(rule_name)
     # Check created rule
     for list_name in LIST_NAMES:
         text_field = getattr(access_rules_page, f'{type_id}_{list_name}_input')
@@ -121,9 +121,9 @@ def test_access_rule_advanced_settings_http_methods(access_rules_page: SecurityP
     # Save rule
     access_rules_page.save.click()
     assert access_rules_page.client_snackbar.text_content() == "Access rule created"
-    delete_access_rules.append((access_rules_page, rule_name))
+    delete_access_rules.append(rule_name)
 
-    open_access_rule(access_rules_page, rule_name)
+    access_rules_page.open_access_rule_editor(rule_name)
 
     for method in HTTP_METHODS:
         checkbox = getattr(access_rules_page, f'method_{method.lower()}')
@@ -180,9 +180,9 @@ def test_access_rule_advanced_settings_input_fields(access_rules_page: SecurityP
     # Save rule
     access_rules_page.save.click()
     assert access_rules_page.client_snackbar.text_content() == "Access rule created"
-    delete_access_rules.append((access_rules_page, rule_name))
+    delete_access_rules.append(rule_name)
 
-    open_access_rule(access_rules_page, rule_name)
+    access_rules_page.open_access_rule_editor(rule_name)
 
     # ==== Verifications ====
     # Other HTTP Methods
@@ -238,9 +238,9 @@ def test_access_rule_edit_rule(access_rules_page: SecurityPage,
     # Save rule
     access_rules_page.save.click()
     assert access_rules_page.client_snackbar.text_content() == "Access rule created"
-    delete_access_rules.append((access_rules_page, rule_name))
+    delete_access_rules.append(rule_name)
 
-    open_access_rule(access_rules_page, rule_name)
+    access_rules_page.open_access_rule_editor(rule_name)
     # Edit Rule
     string_value1, string_value2 = 'Value 1', 'Value 2'
     response_header = 'Header'
@@ -264,7 +264,7 @@ def test_access_rule_edit_rule(access_rules_page: SecurityPage,
     access_rules_page.save.click()
     assert access_rules_page.client_snackbar.text_content() == "Access rule updated"
 
-    open_access_rule(access_rules_page, rule_name)
+    access_rules_page.open_access_rule_editor(rule_name)
 
     # Verification
     # Other HTTP Methods
@@ -312,26 +312,24 @@ def test_access_rule_delete_rule(access_rules_page: SecurityPage,
     # Save rule
     access_rules_page.save.click()
     assert access_rules_page.client_snackbar.text_content() == "Access rule created"
-    delete_access_rules.append((access_rules_page, rule_name))
+    delete_access_rules.append(rule_name)
 
-    open_access_rule(access_rules_page, rule_name)
+    access_rules_page.open_access_rule_editor(rule_name)
 
     # Delete rule
     access_rules_page.delete_button.click()
     access_rules_page.confirm_button.click()
     assert access_rules_page.client_snackbar.text_content() == "Successfully deleted"
     try:
-        access_rules_page.table.wait_for(timeout=10000)  # ms
-    except TimeoutError:
         # Check if there is no access rules
-        access_rules_page.no_data_to_display.wait_for(timeout=500)  # ms
+        access_rules_page.no_data_to_display.wait_for(timeout=10000)  # ms
         delete_access_rules.pop()
-        return
-    for row in access_rules_page.table.tbody.tr:
-        if row[0].text_content() == rule_name:
-            row[0].click()
-            raise AssertionError("Rule was not deleted")
-    delete_access_rules.pop()
+    except TimeoutError as exc:
+        access_rules_page.table.wait_for(timeout=500)  # ms
+        for row in access_rules_page.table.tbody.tr:
+            if row[0].text_content() == rule_name:
+                row[0].click()
+                raise AssertionError("Rule was not deleted") from exc
 
 
 @pytest.mark.regression

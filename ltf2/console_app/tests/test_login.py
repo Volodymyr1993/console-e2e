@@ -2,7 +2,6 @@ from collections import namedtuple
 
 import pytest
 
-from ltf2.console_app.magic.helpers import login
 from ltf2.console_app.magic.pages.pages import LoginPage
 
 
@@ -100,5 +99,5 @@ def test_positive_login(login_page: LoginPage, credentials: namedtuple):
     -----------------
     1. Get 'Login successful!' message and team switcher appears
     """
-    login(login_page, credentials.users[0], credentials.password)
+    login_page.login(credentials.users[0], credentials.password)
     assert not login_page.submit.is_visible()

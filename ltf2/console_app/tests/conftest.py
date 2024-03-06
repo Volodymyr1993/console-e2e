@@ -14,7 +14,6 @@ from pytest_playwright.pytest_playwright import context
 from requests.structures import CaseInsensitiveDict
 
 from ltf2.console_app.magic.constants import PAGE_TIMEOUT
-from ltf2.console_app.magic.helpers import delete_orgs, revert_rules, login
 from ltf2.console_app.magic.pages.pages import (ExperimentsPage, LoginPage,
                                                 OrgPage, PropertyPage,
                                                 TrafficPage, RedirectsPage)
@@ -84,7 +83,7 @@ def saved_login(browser: Browser,
     login_page.goto()
     login_page.login_button.click()
     # perform login
-    login(login_page, credentials.users[0], credentials.password)
+    login_page.login(credentials.users[0], credentials.password)
     assert not login_page.submit.is_visible()
     # Close the status banner if present
     try:
@@ -114,6 +113,7 @@ def use_login_state(browser_context_args: dict, saved_login: dict) -> dict:
 
 @pytest.fixture
 def create_org(org_page) -> Generator[str, None, None]:
+    """ Create org and delete on teardown """
     orgs = []
     org_name = f'test-organization-{int(time.time()*1000)}'
     org_page.org_switcher_button.click()
@@ -122,29 +122,25 @@ def create_org(org_page) -> Generator[str, None, None]:
     org_page.button_create_org_dialog.click()
     # Organization name is a current org
     org_page.selected_org(name=org_name).wait_for(timeout=8000)
-    orgs.append((org_page, org_name))
+    orgs.append(org_name)
 
     yield org_name
 
     # Delete org
-    delete_orgs(orgs)
+    org_page.delete_orgs(orgs)
 
 
 @pytest.fixture
-def orgs_to_delete() -> Generator[list, None, None]:
-    """ Delete orgs at test tear down
-
-    orgs = [(page, org_name), ...]
-    """
+def orgs_to_delete(org_page) -> Generator[list, None, None]:
+    """ Delete orgs at test tear down """
     orgs = []
 
     yield orgs
 
-    # Remove all mock schedules
-    for page, _ in orgs:
-        page.mock.clear()
+    # Remove mock schedules
+    org_page.mock.clear()
 
-    delete_orgs(orgs)
+    org_page.delete_orgs(orgs)
 
 
 # ========= Pages =============
@@ -190,7 +186,7 @@ def property_page(use_login_state: dict,
     prop_page.mock.page.unroute("**/graphql")
     prop_page.goto()
     # Revert previously added rules
-    revert_rules(prop_page)
+    prop_page.revert_rules()
     yield prop_page
 
 

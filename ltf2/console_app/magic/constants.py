@@ -17,6 +17,9 @@ ACCESS_CONTROL_TYPE = {
 }
 
 
+SECURITY_RULE_NAME_PREFIX = 'ltf-'
+
+
 ORIGINS_OVERTIME = "**/api/bff/traffic/origins-overtime"
 TRAFFIC_ROUTES = "**/api/bff/traffic/routes"
 ORIGINS_COUNTRIES = "**/api/bff/traffic/origins-countries"
