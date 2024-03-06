@@ -176,21 +176,6 @@ class SecurityPage(CommonMixin, SecurityMixin, BasePage):
     def open_rate_rule_editor(self, name: str, name_index: int = 0):
         self._open_rule_editor('rate_rules', name, name_index)
 
-    def delete_sec_app():
-        rules = []
-
-        yield rules
-
-        # Remove all mock schedules
-        for page, rule in rules:
-            page.mock.clear()
-            page.goto(f"{page.url.strip('/')}/security/application")
-            page.secapp_by_name(name=rule).click()
-            page.delete_button.click()
-            page.confirm_button.click()
-            page.save_secapp.click()
-            page.client_snackbar.get_by_text('Security application updated').wait_for()
-
 
 class DeploymentsPage(CommonMixin, DeploymentsMixin, BasePage):
     def __init__(self, page: Page, url: str):
