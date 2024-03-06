@@ -140,7 +140,7 @@ class RuleFeature:
                 self.page.exclude_input.press('Enter')
             self.page.headers_input.fill(headers)
             self.page.cookies_input.fill(cookies)
-            self.page.cookies_input.press('Enter')
+            #self.page.cookies_input.press('Enter')
             self.page.add_expression_button.click()
             self.page.expression_input.fill(expression)
             self.page.expression_input.press('Enter')
