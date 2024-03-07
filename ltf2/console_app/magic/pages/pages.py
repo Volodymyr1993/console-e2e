@@ -179,9 +179,6 @@ class TrafficPage(CommonMixin, TrafficMixin, BasePage):
 
 
 class RedirectsPage(CommonMixin, RedirectsMixin, BasePage):
-    def __init__(self, page: Page, url: str):
-        super().__init__(page, url)
-
     def delete_all_redirects(self):
         self.delete_all_checkbox.first.set_checked(True)
         self.remove_selected_redirect.click()
@@ -236,9 +233,6 @@ class RedirectsPage(CommonMixin, RedirectsMixin, BasePage):
 
 
 class OriginsPage(CommonMixin, OriginsMixin, BasePage):
-    def __init__(self, page: Page, url: str):
-        super().__init__(page, url)
-
     def delete_all_origins(self):
         for _ in range(self.delete_button_list.count()):
             self.delete_button_list.first.click()
