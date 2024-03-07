@@ -8,52 +8,45 @@ from playwright.sync_api import TimeoutError
 from playwright.sync_api import Page
 
 from ltf2.console_app.magic.constants import PAGE_TIMEOUT
-from ltf2.console_app.magic.helpers import delete_rules
 from ltf2.console_app.magic.pages.pages import SecurityPage
 
 
-def generate_fixture(rule_type: str):
+def generate_fixture(delete_method: str):
     @pytest.fixture
-    def delete_rule():
+    def delete_rule(security_logged):
         rules = []
 
         yield rules
 
-        # Remove all mock schedules
-        for page, _ in rules:
-            page.mock.clear()
-
-        delete_rules(rules, rule_type)
+        getattr(security_logged, delete_method)(rules)
     return delete_rule
 
 
-def inject_fixture(name: str, rule_type: str):
-    globals()[name] = generate_fixture(rule_type)
+def inject_fixture(name: str):
+    globals()[name] = generate_fixture(name)
 
 
 # Add fixtures that delete specified rules
-inject_fixture('delete_access_rules', 'access_rules')
-inject_fixture('delete_managed_rules', 'managed_rules')
-inject_fixture('delete_rate_rules', 'rate_rules')
-#inject_fixture('delete_bot_rules', 'bot_rules')
-#inject_fixture('delete_custom_rules', 'custom_rules')
+inject_fixture('delete_access_rules')
+inject_fixture('delete_managed_rules')
+inject_fixture('delete_rate_rules')
 
 
 @pytest.fixture
-def delete_sec_app():
+def delete_sec_app(security_app_page):
     rules = []
 
     yield rules
 
-    # Remove all mock schedules
-    for page, rule in rules:
-        page.mock.clear()
-        page.goto(f"{page.url.strip('/')}/security/application")
-        page.secapp_by_name(name=rule).click()
-        page.delete_button.click()
-        page.confirm_button.click()
-        page.save_secapp.click()
-        page.client_snackbar.get_by_text('Security application updated').wait_for()
+    security_app_page.mock.clear()
+    for rule in rules:
+        security_app_page.mock.clear()
+        security_app_page.goto(f"{security_app_page.url.strip('/')}/security/application")
+        security_app_page.secapp_by_name(name=rule).click()
+        security_app_page.delete_button.click()
+        security_app_page.confirm_button.click()
+        security_app_page.save_secapp.click()
+        security_app_page.client_snackbar.get_by_text('Security application updated').wait_for()
 
 
 # =============== Pages ======================
@@ -75,6 +68,7 @@ def security_logged(use_login_state: dict,
     except TimeoutError:
         print('Status banner not found')
     yield main_page
+    main_page.mock.clear()
 
 
 @pytest.fixture
@@ -104,22 +98,4 @@ def rate_rules_page(security_logged) -> Generator[SecurityPage, None, None]:
 @pytest.fixture
 def security_app_page(security_logged) -> Generator[SecurityPage, None, None]:
     security_logged.security_application.click()
-    yield security_logged
-
-
-@pytest.fixture
-def bot_rules_page(security_logged) -> Generator[SecurityPage, None, None]:
-    security_logged.bot_rules.click()
-    yield security_logged
-
-
-@pytest.fixture
-def custom_rules_page(security_logged) -> Generator[SecurityPage, None, None]:
-    security_logged.custom_rules.click()
-    yield security_logged
-
-
-@pytest.fixture
-def event_logs_page(security_logged) -> Generator[SecurityPage, None, None]:
-    security_logged.event_logs.click()
     yield security_logged

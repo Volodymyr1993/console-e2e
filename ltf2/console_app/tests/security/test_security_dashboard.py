@@ -5,7 +5,7 @@ import pytest
 
 def get_utc_time_range(time_period):
     """
-    Generate a time range string based on a specified time period.
+    Generate a time range strings (-1m, now, +1m) based on a specified time period.
 
     Parameters:
     - time_period (str): A string representing the time period, e.g., 'Last 10 minutes', 'Last 7 days'.
@@ -37,11 +37,22 @@ def get_utc_time_range(time_period):
         start_time_utc = now_utc - timedelta(days=num)
     else:
         raise ValueError("Invalid time period")
+    start_tuple = (start_time_utc - timedelta(minutes=1),
+                   start_time_utc,
+                   start_time_utc + timedelta(minutes=1))
 
-    start_time_str = start_time_utc.strftime('%A, %B %-d, %Y at %-I:%M %P')
-    end_time_str = now_utc.strftime('%A, %B %-d, %Y at %-I:%M %P')
+    end_tuple = (now_utc - timedelta(minutes=1),
+                 now_utc,
+                 now_utc + timedelta(minutes=1))
 
-    return f"{start_time_str} - {end_time_str}"
+    time_ranges = []
+
+    for start, end in zip(start_tuple, end_tuple):
+        start_time_str = start.strftime('%A, %B %-d, %Y at %-I:%M %P')
+        end_time_str = end.strftime('%A, %B %-d, %Y at %-I:%M %P')
+        time_ranges.append(f"{start_time_str} - {end_time_str}")
+
+    return time_ranges
 
 @pytest.mark.regression
 def test_dashboard_logs_current_time_range(dashboard_page):
@@ -71,7 +82,7 @@ def test_dashboard_logs_current_time_range(dashboard_page):
         li.click()
         actual = dashboard_page.dashboard_current_time.text_content()
         expected = get_utc_time_range(time_range)
-        assert actual == expected, f'Wrong current time for `{time_range}`'
+        assert actual in expected, f'Wrong current time for `{time_range}`'
         dashboard_page.dashboard_time_frame_input.click()
 
 

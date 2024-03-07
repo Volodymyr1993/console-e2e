@@ -4,14 +4,12 @@ from datetime import datetime, timezone
 import pytest
 from playwright.sync_api import Page
 
-from ltf2.console_app.magic.helpers import random_str, random_int, open_rule_editor
-
-
-open_rate_rule = lambda page, rule: open_rule_editor(page, 'rate_rules', rule)
+from ltf2.console_app.magic.constants import SECURITY_RULE_NAME_PREFIX
+from ltf2.console_app.magic.helpers import random_str, random_int
 
 
 def fill_in_rule_name(page: Page) -> str:
-    name = f'ltf-{random_str(10)}'
+    name = f'{SECURITY_RULE_NAME_PREFIX}{random_str(10)}'
     rate = '1000'
     # Add rule
     page.add_rate_rule.click()
@@ -41,7 +39,7 @@ def test_rate_rules_add_rule_without_condition_group(rate_rules_page: Page,
     3. 'Rate rule created' should appear on the snackbar
     """
     # Add rule
-    name = f'ltf-{random_str(10)}'
+    name = f'{SECURITY_RULE_NAME_PREFIX}{random_str(10)}'
     rate = random_int(4)
     # Add rule
     rate_rules_page.add_rate_rule.click()
@@ -50,9 +48,9 @@ def test_rate_rules_add_rule_without_condition_group(rate_rules_page: Page,
 
     rate_rules_page.save.click()
     # Verify if created
-    delete_rate_rules.append((rate_rules_page, name))
+    delete_rate_rules.append(name)
     assert rate_rules_page.client_snackbar.text_content() == "Rate rule created"
-    open_rate_rule(rate_rules_page, name)
+    rate_rules_page.open_rate_rule_editor(name)
     assert rate_rules_page.input_name.input_value() == name
     assert rate_rules_page.input_num.input_value() == rate
 
@@ -106,10 +104,10 @@ def test_rate_rules_add_rule_with_condition_group(rate_rules_page: Page,
     rate_rules_page.rate_condition_value_input.fill(value[match_param])
     rate_rules_page.save.click()
     # Verify if created
-    delete_rate_rules.append((rate_rules_page, name))
+    delete_rate_rules.append(name)
     assert rate_rules_page.client_snackbar.text_content() == "Rate rule created"
 
-    open_rate_rule(rate_rules_page, name)
+    rate_rules_page.open_rate_rule_editor(name)
     # Verification
     rate_rules_page.rate_condition_match_by(group=0, condition=0).wait_for()
     assert rate_rules_page.rate_condition_match_by(
@@ -155,10 +153,10 @@ def test_rate_rules_add_rule_with_five_conditions(rate_rules_page: Page,
         rate_rules_page.rate_condition_value_input.fill(f'10.10.10.{i}')
     rate_rules_page.save.click()
     # Verify if created
-    delete_rate_rules.append((rate_rules_page, name))
+    delete_rate_rules.append(name)
     assert rate_rules_page.client_snackbar.text_content() == "Rate rule created"
 
-    open_rate_rule(rate_rules_page, name)
+    rate_rules_page.open_rate_rule_editor(name)
     # Validate conditions
     for i in range(5):
         rate_rules_page.rate_conditions(group=0, condition=i).click()
@@ -199,7 +197,7 @@ def test_rate_rules_add_rule_with_empty_condition_value(rate_rules_page: Page,
     # Trying to save the rule
     rate_rules_page.rate_condition_value_input.fill('')
     rate_rules_page.save.click()
-    delete_rate_rules.append((rate_rules_page, name))
+    delete_rate_rules.append(name)
 
     # for item, err in ((rate_rules_page.rate_condition_value_input,
     #                    'Type desired value and ENTER to apply.'),):

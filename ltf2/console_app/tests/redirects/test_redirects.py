@@ -145,6 +145,7 @@ def test_redirect_delete(redirect_page):
     redirect_page.confirm_remove_redirect.click()
     redirect_page.add_a_redirect_button.wait_for(timeout=30000)
     redirect_page.wait_for_timeout(timeout=2000)
+
     assert redirect_page.empty_list_message.is_visible(), 'empty list message is not visible'
 
 
@@ -377,7 +378,7 @@ def test_redirect_search(redirect_page):
     assert len(redirect_page.table.tbody.tr) == 1, "More rows are present than expected"
     redirect_page.search_field.clear()
     redirect_page.search_field.fill(random_to)
-    redirect_page.wait_for_timeout(timeout=500)
+    redirect_page.wait_for_timeout(timeout=1500)
     assert redirect_page.table_value_to_field(row=1).inner_text() == random_to, \
         'The search result does not match the expected'
     assert len(redirect_page.table.tbody.tr) == 1, "More rows are present than expected"
