@@ -14,7 +14,7 @@ from pytest_playwright.pytest_playwright import context
 from requests.structures import CaseInsensitiveDict
 
 from ltf2.console_app.magic.constants import PAGE_TIMEOUT
-from ltf2.console_app.magic.helpers import delete_orgs, revert_rules, login
+from ltf2.console_app.magic.helpers import delete_orgs, revert_rules, login, deploy_changes
 from ltf2.console_app.magic.pages.pages import (ExperimentsPage, LoginPage,
                                                 OrgPage, PropertyPage,
                                                 TrafficPage, RedirectsPage,
@@ -65,7 +65,7 @@ def browser_type_launch_args(browser_type_launch_args: dict,
     return {
         **browser_type_launch_args,
         'headless': not (headed or bool(ltfrc_console_app.get('headed'))),
-        'slow_mo': 750,
+        'slow_mo': slow_mo,
         'timeout': 60 * 1000,  # 60 sec
        # 'devtools': True,
     }
@@ -290,7 +290,7 @@ def origins_page(use_login_state: dict,
     origins_page.origins_title.wait_for(timeout=30000)
 
     # delete all origins if present
-    if origins_page.origin_name_field.is_visible():
+    if origins_page.delete_button_list.first.is_visible():
         origins_page.delete_all_origins()
         origins_page.deploy_changes_button.wait_for(timeout=30000)
 

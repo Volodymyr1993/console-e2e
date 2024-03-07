@@ -49,16 +49,6 @@ class ExperimentsPage(CommonMixin, ExperimentsMixin, BasePage):
         deploy_button = self.deploy_changes_button
         deploy_button.wait_for(timeout=10000)
 
-    def deploy_changes(self):
-        self.deploy_changes_button.last.click()
-        self.wait_for_timeout(timeout=1000)
-        self.deploy_changes_button.last.click()
-        # wait for success message
-        message = self.client_snackbar.get_by_text(
-            'Changes deployed successfully')
-        message.first.wait_for(timeout=40000)
-        return message.first
-
 
 class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
     def __init__(self, page: Page, url: str):
@@ -163,19 +153,9 @@ class OriginsPage(CommonMixin, OriginsMixin, BasePage):
             self.delete_button_list.first.click()
             self.delete_origin_button_confirmation.click()
 
-    def add_origin(self, name: str, override_host_header: str, origin_hostname: str, origins_number: int):
+    def add_origin(self, name: str, override_host_header: str, origin_hostname: str, origins_number: int, row=0):
         # Only required fields are fulfilled
         self.add_origin_button.click()
         self.origin_name_field(origin=origins_number).fill(name)
-        self.origin_hostname(origin=origins_number).fill(origin_hostname)
+        self.origin_hostname(origin=origins_number, row=row).fill(origin_hostname)
         self.origin_override_host_headers(origin=origins_number).fill(override_host_header)
-
-    def deploy_changes(self):
-        self.deploy_changes_button.last.click()
-        self.wait_for_timeout(timeout=1000)
-        self.deploy_changes_button.last.click()
-        # wait for success message
-        message = self.client_snackbar.get_by_text(
-            'Changes deployed successfully')
-        message.first.wait_for(timeout=40000)
-        return message.first
