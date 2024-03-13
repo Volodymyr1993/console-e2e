@@ -131,11 +131,11 @@ class SecurityPage(CommonMixin, SecurityMixin, BasePage):
             url = f"{self.url.strip('/')}/security/{url_section}"
             self.goto(url)
             try:
-                # Check if there is no rules present
-                self.no_data_to_display.wait_for(timeout=3000)  # ms
-                return
+                self.table.wait_for(timeout=5000)  # ms
             except TimeoutError:
-                self.table.wait_for(timeout=1000)  # ms
+                # Check if there is no rules present
+                self.no_data_to_display.wait_for(timeout=500)  # ms
+                return
             for row in self.table.tbody.tr:
                 if row[0].text_content() == rule:
                     row[0].click()
