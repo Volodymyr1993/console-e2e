@@ -16,13 +16,6 @@ def create_app_name(page: SecurityPage) -> str:
     return name
 
 
-def open_secapp_editor(page: SecurityPage, rule_name: str) -> None:
-    page.goto()
-    page.security.click()
-    page.security_application.click()
-    page.secapp_by_name(name=rule_name).click()
-
-
 @pytest.mark.regression
 def test_security_application_add_rule(security_app_page: SecurityPage, delete_sec_app: list):
     """ Security Application - Add rule
@@ -81,7 +74,7 @@ def test_security_application_add_rule(security_app_page: SecurityPage, delete_s
            "Security application updated"
 
     # Find created app
-    open_secapp_editor(security_app_page, rule_name)
+    security_app_page.open_secapp_rule_editor(rule_name)
 
     # Check host
     assert security_app_page.host_input.input_value() == host_match, \
@@ -144,7 +137,7 @@ def test_security_application_edit_rule(security_app_page: SecurityPage,
            "Security application updated"
 
     # Find created app
-    open_secapp_editor(security_app_page, rule_name)
+    security_app_page.open_secapp_rule_editor(rule_name)
 
     # Edit
     # Select last hostname
@@ -181,7 +174,7 @@ def test_security_application_edit_rule(security_app_page: SecurityPage,
            "Security application updated"
 
     # Find created app
-    open_secapp_editor(security_app_page, rule_name)
+    security_app_page.open_secapp_rule_editor(rule_name)
 
     # Check host
     assert security_app_page.host_input.input_value() == host_match, \
@@ -236,7 +229,7 @@ def test_security_application_delete_rule(security_app_page: SecurityPage, delet
     assert security_app_page.client_snackbar.text_content() == 'Security application updated'
 
     # Find created app
-    open_secapp_editor(security_app_page, rule_name)
+    security_app_page.open_secapp_rule_editor(rule_name)
 
     security_app_page.delete_button.click()
     security_app_page.confirm_button.click()
