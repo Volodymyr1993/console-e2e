@@ -68,7 +68,7 @@ def setup_security_rules(browser: Browser,
 
 
 @pytest.fixture(scope="module")
-def setup_managed_rules(setup_security_rules: SecurityPage,
+def cleanup_managed_rules(setup_security_rules: SecurityPage,
                         cmp) -> None:
     """ Delete Managed Rules from previous run """
     setup_security_rules.managed_rules.click()
@@ -78,7 +78,7 @@ def setup_managed_rules(setup_security_rules: SecurityPage,
 
 
 @pytest.fixture(scope="module")
-def setup_access_rules(setup_security_rules: SecurityPage,
+def cleanup_access_rules(setup_security_rules: SecurityPage,
                        cmp) -> None:
     """ Delete Access Rules from previous run """
     setup_security_rules.access_rules.click()
@@ -88,7 +88,7 @@ def setup_access_rules(setup_security_rules: SecurityPage,
 
 
 @pytest.fixture(scope="module")
-def setup_rate_rules(setup_security_rules: SecurityPage,
+def cleanup_rate_rules(setup_security_rules: SecurityPage,
                      cmp) -> None:
     """ Delete Rate Rules from previous run """
     setup_security_rules.rate_rules.click()
@@ -98,7 +98,7 @@ def setup_rate_rules(setup_security_rules: SecurityPage,
 
 
 @pytest.fixture(scope="module")
-def setup_security_app_rules(setup_security_rules: SecurityPage) -> None:
+def cleanup_security_app_rules(setup_security_rules: SecurityPage) -> None:
     """ Delete Security App Rules from previous run """
     setup_security_rules.security_application.click()
     # Check if there is no rules present
@@ -146,28 +146,28 @@ def dashboard_page(security_logged) -> Generator[SecurityPage, None, None]:
 
 
 @pytest.fixture
-def managed_rules_page(setup_managed_rules,
+def managed_rules_page(cleanup_managed_rules,
                        security_logged: SecurityPage) -> Generator[SecurityPage, None, None]:
     security_logged.managed_rules.click()
     yield security_logged
 
 
 @pytest.fixture
-def access_rules_page(setup_access_rules,
+def access_rules_page(cleanup_access_rules,
                       security_logged: SecurityPage) -> Generator[SecurityPage, None, None]:
     security_logged.access_rules.click()
     yield security_logged
 
 
 @pytest.fixture
-def rate_rules_page(setup_rate_rules,
+def rate_rules_page(cleanup_rate_rules,
                     security_logged: SecurityPage) -> Generator[SecurityPage, None, None]:
     security_logged.rate_rules.click()
     yield security_logged
 
 
 @pytest.fixture
-def security_app_page(setup_security_app_rules,
+def security_app_page(cleanup_security_app_rules,
                       security_logged: SecurityPage) -> Generator[SecurityPage, None, None]:
     security_logged.security_application.click()
     yield security_logged
