@@ -767,7 +767,8 @@ class ExperimentsMixin:
 class OriginsMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
-        self.origins_title = PageElement(self.page, "//h2/*[text()='Origins']")
+        self.origins_title = PageElement(self.page, "//div[text()='Origins']")
+        self.origin_row = ListElement(self.page, "//div[@data-qa='origin-block']")
         self.delete_origin_button_confirmation = PageElement(self.page, "//span[text()='Delete Origin']")
         self.origin_name_field = DynamicPageElement(self.page, "//input[@name='origins.{origin}.name']")
         self.origin_override_host_headers = DynamicPageElement(
@@ -778,17 +779,18 @@ class OriginsMixin:
         self.origin_ip_version_preference = DynamicPageElement(
             self.page, "//input[@name='origins.{origin}.hosts.{row}.dns_preference']")
         self.origin_add_host = PageElement(self.page, "//button//span[text()='Add Host']")
-        self.origin_use_sni = ListElement(self.page, "//input[@type='checkbox']")
+        self.origin_use_sni = ListElement(self.page, "//span[@data-qa='use-sni-checkbox']")
+        self.allow_self_signed_certs = ListElement(self.page, "//span[@data-qa='allow-self-signed-certs-checkbox']")
         self.origin_use_the_following_sni_field = DynamicPageElement(
             self.page, "//input[@name='origins.{origin}.tls_verify.sni_hint_and_strict_san_check']")
-        self.add_pin_button = PageElement(self.page, "//button//span[text()='Add Pin']")
+        self.add_pin_button = PageElement(self.page, "//button[@data-qa='add-pin-button']")
         self.pinned_certs = DynamicPageElement(
             self.page, "//input[@name='origins.{origin}.tls_verify.pinned_certs.{row}.pinned_cert']")
         self.shields_drop_down = DynamicPageElement(
             self.page, "//input[@name='origins.{origin}.shields']")
-        self.shields_row = PageElement(self.page, "//div[text()='Shields']")
-        self.add_origin_button = PageElement(self.page, "//button//span[text()='Add Origin']")
-        self.origin_json_editor = PageElement(self.page, "//button//span[text()='JSON Editor']")
-        self.origin_editor = PageElement(self.page, "//button//span[text()='Origins Editor']")
+        self.shields_row = PageElement(self.page, "//div[@data-qa='origin-shields-block']")
+        self.add_origin_button = PageElement(self.page, "//button[@data-qa='add-origin-button']")
+        self.origin_json_editor = PageElement(self.page, "//button[@data-qa='json-editor-button']")
+        self.origin_editor = PageElement(self.page, "//button[@data-qa='origins-editor-button']")
         self.json_field = PageElement(self.page, "//div[@class='lines-content monaco-editor-background']")
         self.balancer_type = DynamicPageElement(self.page, "//input[@name='origins.{origin}.balancer']")

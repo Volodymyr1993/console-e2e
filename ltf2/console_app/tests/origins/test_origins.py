@@ -272,8 +272,8 @@ def test_origin_tls_settings(origins_page):
     random_name = random_str(25)
     override_host_header = generate_random_domain()
     random_data = generate_random_domain()
-    use_sni = origins_page.origin_use_sni.first
-    allow_sert = origins_page.origin_use_sni.last
+    use_sni = origins_page.origin_use_sni
+    allow_sert = origins_page.allow_self_signed_certs
 
     origins_page.add_origin(name=random_name,
                             override_host_header=override_host_header,
