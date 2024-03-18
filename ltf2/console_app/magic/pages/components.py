@@ -496,6 +496,7 @@ class SecurityMixin:
         self.secapp_by_name = DynamicPageElement(
             self.page,
             "//div[@data-rbd-droppable-id='droppable']//h4[text()='{name}']/ancestor::div[2]")
+        self.secapp_names = PageElement(self.page, "//div[@role='button']/div/h4")
         self.save_secapp = PageElement(
             self.page,
             "//div[text()='You have unsaved changes.']/../..//span[text()='Save']")
@@ -527,14 +528,6 @@ class SecurityMixin:
             "//div[@aria-label='Managed rule exceptions']//button[text()='Rate Rules']")
         self.prod_rate_rule_input = PageElement(self.page,
                                                 "//input[@placeholder='Add Rate Rule']")
-        # Custom Rules
-        self.config_custom_rules = PageElement(
-            self.page,
-            "//div[@aria-label='Managed rule exceptions']//button[text()='Custom Rule']")
-        self.prod_custom_rule_input = PageElement(self.page, "//input[@name='rulesProdId']")
-        self.action_custom_rule_input = PageElement(self.page,
-                                                    "//input[@name='rulesProdAction.enfType']")
-        self.audit_custom_rule_input = PageElement(self.page, "//input[@name='rulesAuditId']")
         # Managed Rules
         self.config_managed_rules = PageElement(
             self.page,
@@ -542,17 +535,6 @@ class SecurityMixin:
         self.prod_managed_rule_input = PageElement(self.page, "//input[@name='rulesProdId']")
         self.action_managed_rule_input = PageElement(self.page, "//input[@name='rulesProdAction.enfType']")
         self.audit_managed_rule_input = PageElement(self.page, "//input[@name='rulesAuditId']")
-        # Bot Rules
-        self.config_bot_rules = PageElement(
-            self.page,
-            "//div[@aria-label='Managed rule exceptions']//button[text()='Bot Rule']")
-        self.prod_bot_rule_input = PageElement(self.page, "//input[@name='botsProdId']")
-        self.action_bot_rule_input = PageElement(self.page,
-                                                 "//input[@name='botsProdAction.enfType']")
-        self.status_bot_rule_input = PageElement(self.page,
-                                                 "//input[@name='botsProdAction.status']")
-        self.valid_bot_rule_input = PageElement(self.page,
-                                                "//input[@name='botsProdAction.validForSec']")
 
         # ================= Access Rules ==========
 
@@ -620,56 +602,6 @@ class SecurityMixin:
         self.header_blacklist_clear = ListElement(
             self.page,
             "//label[text()='Header Blacklist']/..//button[@title='Clear']")
-
-        # =========== Bot Rules =============
-
-        self.add_bot_rule = PageElement(self.page, "button :text('Add Bot Rule')")
-        self.rule_type_input = DynamicPageElement(
-            self.page, '//input[@name="directive[{directive}].include"]')
-        self.bot_rule_name_input = DynamicPageElement(
-            self.page, '//input[@name="directive[{directive}].name"]')
-        self.bot_rule_msg = DynamicPageElement(
-            self.page, '//input[@name="directive[{directive}].actionMsg"]')
-
-        self.bot_condition_variable = DynamicPageElement(
-            self.page,
-            '//input[@name="directive[{directive}].conditions[{condition}].variable[0].type"]')
-        self.bot_condition_count = DynamicPageElement(
-            self.page,
-            '//input[@name="directive[{directive}].conditions[{condition}].variable[0].isCount"]')
-        self.bot_condition_operator = DynamicPageElement(
-            self.page,
-            '//input[@name="directive[{directive}].conditions[{condition}].operatorType"]')
-        self.add_match = PageElement(self.page, "//button//span[text()='Add Match']")
-        self.bot_condition_match = DynamicPageElement(
-            self.page,
-            '//input[@name="directive[{directive}].conditions[{condition}].operatorValue"]')
-        self.bot_condition_match_name = DynamicPageElement(
-            self.page,
-            '//input[@name="directive[{directive}].conditions[{condition}].variable[0].match[{match}].value"]')
-
-        # =========== Custom Rules =============
-
-        self.add_custom_rule = PageElement(self.page, "//button[text()='Add Custom Rule']")
-
-        self.custom_rule_name = DynamicPageElement(
-            self.page, '//input[@name="directive[{directive}].name"]')
-        self.custom_rule_id = DynamicPageElement(
-            self.page, '//input[@name="directive[{directive}].actionId"]')
-        self.custom_rule_msg = DynamicPageElement(
-            self.page, '//input[@name="directive[{directive}].actionMsg"]')
-        self.custom_variable_count = DynamicPageElement(
-            self.page,
-            '//input[@name="directive[{directive}].conditions[{condition}].variable[{variable}].isCount"]')
-        self.custom_variable = DynamicPageElement(
-            self.page,
-            '//input[@name="directive[{directive}].conditions[{condition}].variable[{variable}].type"]')
-        self.custom_condition_operator = DynamicPageElement(
-            self.page,
-            '//input[@name="directive[{directive}].conditions[{condition}].operatorType"]')
-        self.custom_condition_operator_value = DynamicPageElement(
-            self.page,
-            '//input[@name="directive[{directive}].conditions[{condition}].operatorValue"]')
 
         # ==================== Dashboard & Event Logs ==============
 

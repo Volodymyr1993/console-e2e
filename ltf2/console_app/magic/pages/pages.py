@@ -116,13 +116,13 @@ class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
 
 
 class SecurityPage(CommonMixin, SecurityMixin, BasePage):
-    def _delete_rules(self, rules: list[(Page, str)], url_section: str) -> None:
+    def _delete_rules(self, rules: list[str], url_section: str) -> None:
         self.mock.clear()
         for rule in rules:
             url = f"{self.url.strip('/')}/security/{url_section}"
             self.goto(url)
             try:
-                self.table.wait_for(timeout=10000)  # ms
+                self.table.wait_for(timeout=5000)  # ms
             except TimeoutError:
                 # Check if there is no rules present
                 self.no_data_to_display.wait_for(timeout=500)  # ms
@@ -158,6 +158,16 @@ class SecurityPage(CommonMixin, SecurityMixin, BasePage):
     def delete_rate_rules(self, rules: list[str]):
         self._delete_rules(rules, 'rate_rules')
 
+    def delete_security_app_rules(self, rules: list[str]):
+        self.mock.clear()
+        self.goto(f"{self.url.strip('/')}/security/application")
+        for rule in rules:
+            self.secapp_by_name(name=rule).click()
+            self.delete_button.click()
+            self.confirm_button.click()
+            self.save_secapp.click()
+            self.client_snackbar.get_by_text('Security application updated').wait_for()
+
     def open_managed_rule_editor(self, name: str, name_index: int = 0):
         self._open_rule_editor('managed_rules', name, name_index)
 
@@ -166,6 +176,12 @@ class SecurityPage(CommonMixin, SecurityMixin, BasePage):
 
     def open_rate_rule_editor(self, name: str, name_index: int = 0):
         self._open_rule_editor('rate_rules', name, name_index)
+
+    def open_secapp_rule_editor(self, rule_name: str) -> None:
+        self.goto()
+        self.security.click()
+        self.security_application.click()
+        self.secapp_by_name(name=rule_name).click()
 
 
 class DeploymentsPage(CommonMixin, DeploymentsMixin, BasePage):
