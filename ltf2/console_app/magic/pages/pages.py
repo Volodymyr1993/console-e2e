@@ -82,6 +82,16 @@ class ExperimentsPage(CommonMixin, ExperimentsMixin, BasePage):
         deploy_button = self.deploy_changes_button
         deploy_button.wait_for(timeout=10000)
 
+    def deploy_changes(page: Page):
+        page.deploy_changes_button.last.click()
+        page.wait_for_timeout(timeout=1000)
+        page.deploy_changes_button.last.click()
+        # wait for success message
+        message = page.client_snackbar.get_by_text(
+            'Changes deployed successfully')
+        message.first.wait_for(timeout=40000)
+        return message.first
+
 
 class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
     def __init__(self, page: Page, url: str):

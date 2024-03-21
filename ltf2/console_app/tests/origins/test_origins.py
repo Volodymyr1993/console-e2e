@@ -42,7 +42,6 @@ def test_add_origin_required_fields(origins_page):
                             origins_number=0)
     # Deploy changes
     deploy_changes(origins_page)
-
     assert origins_page.origin_name_field(origin=0).input_value() == random_name, "Name field is not as expected"
     assert origins_page.origin_override_host_headers(origin=0).input_value() == override_host_header, \
         "Origin Host Header field is not as expected"
@@ -87,7 +86,6 @@ def test_add_two_origins(origins_page):
                             origins_number=1)
     # Deploy changes
     deploy_changes(origins_page)
-
     assert origins_page.origin_name_field(origin=1).input_value() == random_name2, "Name field is not as expected"
     assert origins_page.origin_override_host_headers(origin=1).input_value() == override_host_header2, \
         "Origin Host Header field is not as expected"
@@ -139,7 +137,6 @@ def test_scheme_port_ip_version_combination(origins_page, scheme, port, ip_versi
     origins_page.select_by_name(name=ip_version).click()
     # Deploy changes
     deploy_changes(origins_page)
-
     assert origins_page.origin_scheme(origin=0, row=0).input_value() == scheme, "Scheme is not as expected"
     if scheme is not 'match':
         assert origins_page.origin_port(origin=0, row=0).input_value() == port, "Port is not as expected"
