@@ -100,7 +100,7 @@ class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
         self.nested_rule = NestedRules(self)
 
     def delete_all_rules(self):
-        for _ in range(self.delete_rule_list.count()):
+        while self.delete_rule_list.count() > 0:
             self.delete_rule_list.first.click()
             self.delete_rule_button.click()
 
