@@ -233,7 +233,6 @@ def experiment_page(use_login_state: dict,
     # delete all experiments and deploy changes
     if exp_page.delete_experiment_list.is_visible():
         exp_page.delete_all_experiments()
-        deploy_changes(exp_page)
 
 
 @pytest.fixture
