@@ -303,7 +303,7 @@ class TrafficMixin:
         self.date_picker_apply_button = PageElement(self.page, "//span[text()='Apply']")
 
         # Traffic Overview elements
-        self.traffic_header = PageElement(self.page, "//h2/span[text()='Traffic']")
+        self.traffic_header = PageElement(self.page, "//div[text()='Traffic']")
         self.traffic_overview_tab_button = PageElement(self.page,
             "//button[@role='tab']/..//span[text()='Overview']")
         self.traffic_metric_selector = PageElement(self.page,
