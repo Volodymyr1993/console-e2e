@@ -336,9 +336,11 @@ class RuleFeature:
                 self.page.proxy_special_headers_input.fill(value)
                 self.page.proxy_special_headers_input.press('Enter')
 
-    def add_set_origin(self, value: str):
+    def add_set_origin(self, value: str = None):
         with self.prepare_feature('Set Origin'):
             self.page.set_origin_input.click()
+            if value is None:
+                value = self.page.select.li[0].text_content()
             self.page.select_by_name(name=value).click()
 
     # ============= Response

@@ -407,7 +407,7 @@ def test_experiment_features_batch(experiment_page):
         value=2, unit='hours')
     experiment_page.feature.add_set_client_ip_custom_header(
         header_name='Header')
-    experiment_page.feature.add_set_origin(value='web')
+    experiment_page.feature.add_set_origin()
     experiment_page.feature.add_token_auth_ignore_url_case(enable=False)
     # headers
     experiment_page.feature.add_add_response_headers(
