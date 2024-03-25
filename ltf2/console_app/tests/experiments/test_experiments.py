@@ -1,6 +1,5 @@
 import time
 import pytest
-from ltf2.console_app.magic.helpers import deploy_changes
 
 
 @pytest.mark.regression
@@ -146,7 +145,7 @@ def test_experiment_add_variants(experiment_page):
     experiment_page.variant_name_input(exp_id=0, var_id=3).fill("variant4")
     experiment_page.variant_name_input(exp_id=0, var_id=3).press("Enter")
     # deploy changes
-    deploy_changes(experiment_page)
+    experiment_page.deploy_changes()
     assert not experiment_page.deploy_changes_button.is_visible()
 
 
@@ -207,18 +206,18 @@ def test_experiment_disabling(experiment_page):
     experiment_page.add_experiment(name=exp_name,
                                    variants=["variant1", "variant2"])
     # deploy changes
-    deploy_changes(experiment_page)
+    experiment_page.deploy_changes()
     # disable experiment
     experiment_page.wait_for_timeout(timeout=500)
     is_active = experiment_page.is_active_checkbox_list.first
     is_active.click()
     # deploy changes
-    deploy_changes(experiment_page)
+    experiment_page.deploy_changes()
     # enable experiment
     experiment_page.wait_for_timeout(timeout=500)
     is_active.click()
     # deploy changes
-    deploy_changes(experiment_page)
+    experiment_page.deploy_changes()
     assert not experiment_page.deploy_changes_button.is_visible()
 
 
@@ -300,7 +299,7 @@ def test_experiment_conditions_batch1(experiment_page):
     experiment_page.condition.add_path(
         operator='matches regular expression', value='qwerty', ignore_case=True)
     # deploy changes
-    deploy_changes(experiment_page)
+    experiment_page.deploy_changes()
     assert not experiment_page.deploy_changes_button.is_visible()
 
 
@@ -358,7 +357,7 @@ def test_experiment_conditions_batch2(experiment_page):
         operator='equals', value='200')
     experiment_page.condition.add_scheme(operator='equals', value='HTTP')
     # deploy changes
-    deploy_changes(experiment_page)
+    experiment_page.deploy_changes()
     assert not experiment_page.deploy_changes_button.is_visible()
 
 
@@ -441,5 +440,5 @@ def test_experiment_features_batch(experiment_page):
     experiment_page.feature.add_rewrite_url(
         source='source', destination='destination', ignore_case=True)
     # deploy changes
-    deploy_changes(experiment_page)
+    experiment_page.deploy_changes()
     assert not experiment_page.deploy_changes_button.is_visible()

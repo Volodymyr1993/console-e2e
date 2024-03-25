@@ -25,14 +25,3 @@ def mock_frame_request(page: Page) -> Page:
                lambda route: route.fulfill(status=200,
                                            body=''))
     return page
-
-
-def deploy_changes(page: Page):
-    page.deploy_changes_button.last.click()
-    page.wait_for_timeout(timeout=1000)
-    page.deploy_changes_button.last.click()
-    # wait for success message
-    message = page.client_snackbar.get_by_text(
-        'Changes deployed successfully')
-    message.first.wait_for(timeout=40000)
-    return message.first

@@ -9,7 +9,6 @@ from urllib.parse import urljoin
 import pytest
 from ltf2.util import comparators
 from ltf2.util.config import get_ltfrc_section
-from ltf2.console_app.magic.helpers import deploy_changes
 from playwright.sync_api import Browser, Page, TimeoutError
 # Explicitly import to avoid using the `context` fixture from ltf2.utils
 from pytest_playwright.pytest_playwright import context

@@ -1,7 +1,6 @@
 import pytest
 from ltf2.console_app.magic.helpers import random_str
 import random
-from ltf2.console_app.magic.helpers import deploy_changes
 
 
 def generate_random_domain():
@@ -41,7 +40,7 @@ def test_add_origin_required_fields(origins_page):
                             origin_hostname=origin_hostname,
                             origins_number=0)
     # Deploy changes
-    deploy_changes(origins_page)
+    origins_page.deploy_changes()
     assert origins_page.origin_name_field(origin=0).input_value() == random_name, "Name field is not as expected"
     assert origins_page.origin_override_host_headers(origin=0).input_value() == override_host_header, \
         "Origin Host Header field is not as expected"
@@ -85,7 +84,7 @@ def test_add_two_origins(origins_page):
                             origin_hostname=origin_hostname2,
                             origins_number=1)
     # Deploy changes
-    deploy_changes(origins_page)
+    origins_page.deploy_changes()
     assert origins_page.origin_name_field(origin=1).input_value() == random_name2, "Name field is not as expected"
     assert origins_page.origin_override_host_headers(origin=1).input_value() == override_host_header2, \
         "Origin Host Header field is not as expected"
@@ -136,7 +135,7 @@ def test_scheme_port_ip_version_combination(origins_page, scheme, port, ip_versi
     origins_page.origin_ip_version_preference(origin=0, row=0).click()
     origins_page.select_by_name(name=ip_version).click()
     # Deploy changes
-    deploy_changes(origins_page)
+    origins_page.deploy_changes()
     assert origins_page.origin_scheme(origin=0, row=0).input_value() == scheme, "Scheme is not as expected"
     if scheme is not 'match':
         assert origins_page.origin_port(origin=0, row=0).input_value() == port, "Port is not as expected"
@@ -192,7 +191,7 @@ def test_multiple_hostnames(origins_page):
     origins_page.origin_ip_version_preference(origin=0, row=2).click()
     origins_page.select_by_name(name=ip_versions[1]).click()
     # Deploy changes
-    deploy_changes(origins_page)
+    origins_page.deploy_changes()
     # Verify 1st row
     assert origins_page.origin_hostname(origin=0, row=1).input_value() == origin_hostname_third, "Origin Hostname is not as expected"
     assert origins_page.origin_scheme(origin=0, row=1).input_value() == protocols[0], "Scheme is not as expected"
@@ -239,13 +238,13 @@ def test_balancer_types(origins_page):
     origins_page.balancer_type(origin=0).click()
     origins_page.keyboard.press("Enter")
     # Deploy changes
-    deploy_changes(origins_page)
+    origins_page.deploy_changes()
     assert origins_page.balancer_type(origin=0).input_value() == balancer_type[0], "selected Balancer Type is not as expected"
     origins_page.balancer_type(origin=0).click()
     origins_page.keyboard.press("ArrowDown")
     origins_page.keyboard.press("Enter")
     # Deploy changes
-    deploy_changes(origins_page)
+    origins_page.deploy_changes()
     assert origins_page.balancer_type(origin=0).input_value() == balancer_type[1], "selected Balancer Type is not as expected"
 
 
@@ -280,7 +279,7 @@ def test_origin_tls_settings(origins_page):
     allow_sert.click()
     origins_page.origin_use_the_following_sni_field(origin=0).fill(random_data)
     # Deploy Changes
-    deploy_changes(origins_page)
+    origins_page.deploy_changes()
     assert use_sni.is_checked() is False
     assert allow_sert.is_checked() is True
     assert origins_page.origin_use_the_following_sni_field(origin=0).input_value() == random_data, "value does not match"
@@ -318,7 +317,7 @@ def test_pinned_certs(origins_page):
     origins_page.add_pin_button.click()
     origins_page.pinned_certs(origin=0, row=1).fill(random_sha2)
     # Deploy Changes
-    deploy_changes(origins_page)
+    origins_page.deploy_changes()
     assert origins_page.pinned_certs(origin=0, row=0).input_value() == random_sha, 'SHA is not as expected'
     assert origins_page.pinned_certs(origin=0, row=1).input_value() == random_sha2, 'SHA is not as expected'
 
@@ -383,7 +382,7 @@ def test_shields(origins_page, apac, emea, us_east, us_west):
     origins_page.shields_drop_down(origin=0).last.click()
     origins_page.select_by_name(name=us_west).click()
     # Deploy changes
-    deploy_changes(origins_page)
+    origins_page.deploy_changes()
     assert origins_page.shields_drop_down(origin=0).first.input_value() == apac, "APAC shield does not match"
     assert origins_page.shields_drop_down(origin=0).nth(1).input_value() == emea, "APAC shield does not match"
     assert origins_page.shields_drop_down(origin=0).nth(2).input_value() == us_east, "US East shield does not match"
