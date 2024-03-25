@@ -17,7 +17,8 @@ from requests.structures import CaseInsensitiveDict
 from ltf2.console_app.magic.constants import PAGE_TIMEOUT
 from ltf2.console_app.magic.pages.pages import (ExperimentsPage, LoginPage,
                                                 OrgPage, PropertyPage,
-                                                RedirectsPage, TrafficPage)
+                                                TrafficPage, RedirectsPage,
+                                                OriginsPage)
 
 Credentials = namedtuple('Credentials', 'users password')
 
@@ -27,6 +28,7 @@ TRAFFIC_URL_PATH = f"{ENV_URL_PATH}traffic"
 EXPERIMENTS_URL_PATH = f"{ENV_URL_PATH}configuration/experiments"
 PROPERTY_URL_PATH = f"{ENV_URL_PATH}configuration/rules"
 REDIRECTS_URL_PATH = f"{ENV_URL_PATH}redirects"
+ORIGINS_URL_PATH = f"{ENV_URL_PATH}configuration/origins"
 
 
 @pytest.fixture(scope='session')
@@ -227,6 +229,9 @@ def experiment_page(use_login_state: dict,
         exp_page.deploy_changes()
 
     yield exp_page
+    # delete all experiments and deploy changes
+    if exp_page.delete_experiment_list.is_visible():
+        exp_page.delete_all_experiments()
 
 
 @pytest.fixture
@@ -271,3 +276,36 @@ def redirect_page(use_login_state: dict,
         red_page.delete_all_redirects()
 
     yield red_page
+
+@pytest.fixture
+def origins_page(use_login_state: dict,
+                    page: Page,
+                    ltfrc_console_app: dict,
+                    base_url: str) -> Generator[Page, None, None]:
+    # Set global timeout
+    page.set_default_timeout(PAGE_TIMEOUT)
+    try:
+        property_path = (f"{ltfrc_console_app['team']}/"
+                         f"{ltfrc_console_app['property']}/"
+                         f"{ORIGINS_URL_PATH}")
+    except KeyError:
+        raise ValueError(f'team and property variables are missed in .ltfrc')
+
+    origins_page = OriginsPage(page, url=urljoin(base_url, property_path))
+    origins_page.goto()
+    origins_page.origins_title.wait_for(timeout=30000)
+
+    # delete all origins if present
+    if origins_page.delete_button_list.first.is_visible():
+        origins_page.delete_all_origins()
+        origins_page.deploy_changes_button.wait_for(timeout=30000)
+
+        # Delete it after bug fixing https://edgio.atlassian.net/browse/CON-1192
+        origins_page.reload()
+
+    yield origins_page
+    # revert all changes if present
+    if origins_page.revert_button.is_visible():
+        origins_page.revert_button.click()
+        origins_page.revert_confirm_button.click()
+        origins_page.origins_title.wait_for(timeout=30000)

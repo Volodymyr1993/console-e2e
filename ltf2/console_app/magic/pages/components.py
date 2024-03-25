@@ -48,7 +48,10 @@ class CommonMixin:
         self.submit_button = PageElement(self.page, "//button//span[text()='Submit']")
         self.delete_button = PageElement(self.page, "//button//span[text()='Delete']")
         self.confirm_button = PageElement(self.page, "//button//span[text()='Confirm']")
-
+        self.revert_button = PageElement(self.page, "//button[./*[text()='Revert']]")
+        self.revert_confirm_button = PageElement(self.page, "//button[./*[text()='Revert Changes']]")
+        self.delete_button_list = ListElement(self.page,"//button[@data-qa='delete-button']")
+        self.deploy_changes_button = PageElement(self.page, "//button//*[text()='Deploy Changes']")
         self.create_org_button = PageElement(self.page, "//span[text()='Create an Organization']")
 
         self.docs = PageElement(self.page, "//li[text()='Docs']")
@@ -300,7 +303,7 @@ class TrafficMixin:
         self.date_picker_apply_button = PageElement(self.page, "//span[text()='Apply']")
 
         # Traffic Overview elements
-        self.traffic_header = PageElement(self.page, "//h2/span[text()='Traffic']")
+        self.traffic_header = PageElement(self.page, "//div[text()='Traffic']")
         self.traffic_overview_tab_button = PageElement(self.page,
             "//button[@role='tab']/..//span[text()='Overview']")
         self.traffic_metric_selector = PageElement(self.page,
@@ -635,10 +638,6 @@ class ExperimentsMixin:
         self.experiments_title = PageElement(self.page, "//h2/*[text()='Experimentation']")
         self.add_experiment_button = PageElement(self.page,
                                                  "//button//*[text()='Add Experiment']")
-        self.deploy_changes_button = PageElement(self.page, "//button//*[text()='Deploy Changes']")
-        self.revert_button = PageElement(self.page, "//button[./*[text()='Revert']]")
-        self.revert_confirm_button = PageElement(self.page,
-                                                 "//button[./*[text()='Revert Changes']]")
         # === Experiment parameters ===
         self.experiment_name = DynamicPageElement(self.page, "//*[text()='Experiment: ']/..//b[text()='{name}']")
         self.experiment_name_input = DynamicPageElement(self.page, "//input[@id='experiments.{id}.name']")
@@ -763,3 +762,35 @@ class ExperimentsMixin:
             self.page, "//label[text()='Proxy Special Headers']/../div/input")
         self.set_origin_input = PageElement(self.page,
                                             "//label[text()='Origin Name']/../div/input")
+
+
+class OriginsMixin:
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+        self.origins_title = PageElement(self.page, "//div[text()='Origins']")
+        self.origin_row = ListElement(self.page, "//div[@data-qa='origin-block']")
+        self.delete_origin_button_confirmation = PageElement(self.page, "//span[text()='Delete Origin']")
+        self.origin_name_field = DynamicPageElement(self.page, "//input[@name='origins.{origin}.name']")
+        self.origin_override_host_headers = DynamicPageElement(
+            self.page, "//input[@name='origins.{origin}.override_host_header']")
+        self.origin_hostname = DynamicPageElement(self.page, "//input[@name='origins.{origin}.hosts.{row}.hostname']")
+        self.origin_scheme = DynamicPageElement(self.page, "//input[@name='origins.{origin}.hosts.{row}.scheme']")
+        self.origin_port = DynamicPageElement(self.page, "//input[@name='origins.{origin}.hosts.{row}.port']")
+        self.origin_ip_version_preference = DynamicPageElement(
+            self.page, "//input[@name='origins.{origin}.hosts.{row}.dns_preference']")
+        self.origin_add_host = PageElement(self.page, "//button//span[text()='Add Host']")
+        self.origin_use_sni = ListElement(self.page, "//span[@data-qa='use-sni-checkbox']")
+        self.allow_self_signed_certs = ListElement(self.page, "//span[@data-qa='allow-self-signed-certs-checkbox']")
+        self.origin_use_the_following_sni_field = DynamicPageElement(
+            self.page, "//input[@name='origins.{origin}.tls_verify.sni_hint_and_strict_san_check']")
+        self.add_pin_button = PageElement(self.page, "//button[@data-qa='add-pin-button']")
+        self.pinned_certs = DynamicPageElement(
+            self.page, "//input[@name='origins.{origin}.tls_verify.pinned_certs.{row}.pinned_cert']")
+        self.shields_drop_down = DynamicPageElement(
+            self.page, "//input[@name='origins.{origin}.shields']")
+        self.shields_row = PageElement(self.page, "//div[@data-qa='origin-shields-block']")
+        self.add_origin_button = PageElement(self.page, "//button[@data-qa='add-origin-button']")
+        self.origin_json_editor = PageElement(self.page, "//button[@data-qa='json-editor-button']")
+        self.origin_editor = PageElement(self.page, "//button[@data-qa='origins-editor-button']")
+        self.json_field = PageElement(self.page, "//div[@class='lines-content monaco-editor-background']")
+        self.balancer_type = DynamicPageElement(self.page, "//input[@name='origins.{origin}.balancer']")
