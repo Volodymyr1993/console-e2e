@@ -2,21 +2,6 @@ from playwright.sync_api import TimeoutError
 import pytest
 
 
-def check_rule_creation(page):
-    """ Check that rule with was created """
-    try:
-        # Wait for rule generation
-        page.deploy_changes.wait_for(timeout=40000)
-    except TimeoutError:
-        # Check if rule generation failed
-        try:
-            error = page.ai_rule_generation_error.inner_text(timeout=10)
-            assert not error, f"Cannot generate rule: {error}"
-        except TimeoutError:
-            pass
-        raise
-
-
 @pytest.mark.regression
 def test_rules_ai_deny_access(property_page):
     """Rules - AI rule - Deny Access
@@ -42,11 +27,7 @@ def test_rules_ai_deny_access(property_page):
     5.1 Feature name should be 'Deny Access'
     5.2 Deny Access checkbox should be selected
     """
-    property_page.add_rule_using_ai.click()
-    property_page.add_rule_using_ai_input.fill('Reject all requests from Russia')
-    property_page.generate_rule.click()
-
-    check_rule_creation(property_page)
+    property_page.generate_ai_rule('Reject all requests from Russia')
 
     property_page.created_rule(num=-1).condition(num=0).click()
     assert property_page.variable_input.input_value() == 'Country', 'Wrong Variable'
@@ -84,11 +65,8 @@ def test_rules_ai_deny_all_except_one(property_page):
     5.1 Feature name should be 'Deny Access'
     5.2 Deny Access checkbox should be selected
     """
-    property_page.add_rule_using_ai.click()
-    property_page.add_rule_using_ai_input.fill('deny request to all but Ukraine')
-    property_page.generate_rule.click()
+    property_page.generate_ai_rule('deny request to all but Ukraine')
 
-    check_rule_creation(property_page)
     property_page.created_rule(num=-1).condition(num=0).click()
     assert property_page.variable_input.input_value() == 'Country', 'Wrong Variable'
     # assert property_page.operator_input.input_value() == 'does not equal', 'Wrong Operator'
@@ -125,11 +103,7 @@ def test_rules_ai_allow_only_post_requests(property_page):
     5.1 Feature name should be 'Deny Access'
     5.2 Deny Access checkbox should be selected
     """
-    property_page.add_rule_using_ai.click()
-    property_page.add_rule_using_ai_input.fill('Allow only requests with method: POST')
-    property_page.generate_rule.click()
-
-    check_rule_creation(property_page)
+    property_page.generate_ai_rule('Allow only requests with method: POST')
 
     property_page.created_rule(num=-1).condition(num=0).click()
     assert property_page.variable_input.input_value() == 'Method', 'Wrong Variable'
@@ -167,10 +141,7 @@ def test_rules_ai_deny_all_sanctioned_countries(property_page):
     5.1 Feature name should be 'Deny Access'
     5.2 Deny Access checkbox should be selected
     """
-    property_page.add_rule_using_ai.click()
-    property_page.add_rule_using_ai_input.fill('deny access for all countries under sanctions')
-    property_page.generate_rule.click()
-    check_rule_creation(property_page)
+    property_page.generate_ai_rule('deny access for all countries under sanctions')
 
     # property_page.created_rule(num=-1).condition(num=0).click()
     # list_of_sanctioned_countries = [
@@ -228,11 +199,7 @@ def test_rules_ai_url_redirect(property_page):
     5.2 Status Code should be 302
     5.3 Correct Source and Destination should be generated
     """
-    property_page.add_rule_using_ai.click()
-    property_page.add_rule_using_ai_input.fill('Redirect http traffic to https')
-    property_page.generate_rule.click()
-
-    check_rule_creation(property_page)
+    property_page.generate_ai_rule('Redirect http traffic to https')
 
     property_page.created_rule(num=-1).condition(num=0).click()
     assert property_page.variable_input.input_value() == 'Scheme', 'Wrong Variable'
@@ -273,11 +240,7 @@ def test_rules_ai_generate_cache_rule_for_static_object(property_page):
     5.1 Feature name should be 'Set Max Age'
     5.2 Response Status 200, Max Age 1 year
     """
-    property_page.add_rule_using_ai.click()
-    property_page.add_rule_using_ai_input.fill('generate cache rule for static objects.')
-    property_page.generate_rule.click()
-
-    check_rule_creation(property_page)
+    property_page.generate_ai_rule('generate cache rule for static objects.')
 
     property_page.created_rule(num=-1).condition(num=0).click()
     assert property_page.variable_input.input_value() == 'Path', 'Wrong Variable'
@@ -318,11 +281,7 @@ def test_rules_ai_bypass_cache_with_strict_query_param(property_page):
         5.1 Feature name should be 'Bypass Cache'
         5.2 Bypass the cache checkbox should be selected
         """
-    property_page.add_rule_using_ai.click()
-    property_page.add_rule_using_ai_input.fill('disable caching when the "nc" query parameter is 1')
-    property_page.generate_rule.click()
-
-    check_rule_creation(property_page)
+    property_page.generate_ai_rule('disable caching when the "nc" query parameter is 1')
 
     property_page.created_rule(num=-1).condition(num=0).click()
     assert property_page.variable_input.input_value() == 'Query Parameter', 'Wrong Variable'
@@ -360,12 +319,8 @@ def test_rules_ai_bypass_cache_with_matched_regex(property_page):
         5.1 Feature name should be 'Bypass Cache'
         5.2 Bypass the cache checkbox should be selected
         """
-    property_page.add_rule_using_ai.click()
-    property_page.add_rule_using_ai_input.fill(
+    property_page.generate_ai_rule(
         'set no-store for all urls containing /highsec/ path')
-    property_page.generate_rule.click()
-
-    check_rule_creation(property_page)
 
     property_page.created_rule(num=-1).condition(num=0).click()
     assert property_page.variable_input.input_value() == 'Path', 'Wrong Variable'
@@ -404,11 +359,7 @@ def test_rules_ai_redirect_host_header(property_page):
         5.2 Status Code should be 302
         5.3 Correct Source and Destination should be generated
         """
-    property_page.add_rule_using_ai.click()
-    property_page.add_rule_using_ai_input.fill('redirect example.com to www.example.com')
-    property_page.generate_rule.click()
-
-    check_rule_creation(property_page)
+    property_page.generate_ai_rule('redirect example.com to www.example.com')
 
     property_page.created_rule(num=-1).condition(num=0).click()
     assert property_page.variable_input.input_value() == 'Request Header', 'Wrong Variable'
@@ -449,11 +400,7 @@ def test_rules_ai_compress_content(property_page):
         5.1 Feature name should be 'Compress Content Types'
         5.2 Compress Content Types should be 'image/png, image/jpeg, image/gif, image/svg, image/jpg'
     """
-    property_page.add_rule_using_ai.click()
-    property_page.add_rule_using_ai_input.fill('compress images')
-    property_page.generate_rule.click()
-
-    check_rule_creation(property_page)
+    property_page.generate_ai_rule('compress images')
 
     # property_page.created_rule(num=-1).condition(num=0).click()
     # assert property_page.variable_input.input_value() == 'Extension', 'Wrong Variable'
@@ -493,14 +440,12 @@ def test_rules_ai_cache_key_query_string_include_option(property_page):
         4.2 Option should be 'Include'
         4.3 Value should be 'Id, Type'
         """
-    property_page.add_rule_using_ai.click()
-    property_page.add_rule_using_ai_input.fill(
+    property_page.generate_ai_rule(
         'include only id and type query parameters in the cache key')
-    property_page.generate_rule.click()
     # There are 2 ways how AI can create a valid rule
     feature = None
     try:
-        property_page.created_rule(num=-1).feature(num=0).click(timeout=30000)
+        property_page.created_rule(num=-1).feature(num=0).click(timeout=1000)
         feature = True
     except TimeoutError:
         try:
@@ -555,11 +500,7 @@ def test_rules_ai_remove_all_except_one_cache_key_query(property_page):
         5.1 Feature Option should be 'Include All Except'
         5.2 Value should be 'uid'
         """
-    property_page.add_rule_using_ai.click()
-    property_page.add_rule_using_ai_input.fill('remove the uid query parameter from the cache key')
-    property_page.generate_rule.click()
-
-    check_rule_creation(property_page)
+    property_page.generate_ai_rule('remove the uid query parameter from the cache key')
 
     # # There are 2 ways how AI can create a valid rule
     # property_page.created_rule(num=-1).condition(num=0).click()

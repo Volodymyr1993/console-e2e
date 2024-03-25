@@ -114,6 +114,36 @@ class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
         except TimeoutError:
             pass
 
+    def generate_ai_rule(self, rule: str):
+        """
+        Generate a new AI rule.
+
+        Parameters:
+        - rule (str): The rule definition or statement that needs to be generated.
+
+        Raises:
+        - TimeoutError: If the rule generation process exceeds the maximum wait.
+        - AssertionError: If the new rule could not be generated due to an error
+        returned by the AI rule generation process, or if the rule count does not
+        increase by 1 after the operation, indicating that the rule was not successfully added.
+        """
+        rules_count = self.rules_list.count()
+        self.add_rule_using_ai.click()
+        self.add_rule_using_ai_input.fill(rule)
+        self.generate_rule.click()
+        try:
+            # Wait for rule generation
+            self.deploy_changes.wait_for(timeout=40000)
+        except TimeoutError:
+            # Check if rule generation failed
+            try:
+                error = self.ai_rule_generation_error.inner_text(timeout=10)
+                assert not error, f"Cannot generate rule: {error}"
+            except TimeoutError:
+                pass
+            raise
+        assert rules_count + 1 == self.rules_list.count(), f"Rule '{rule}' was not created"
+
 
 class SecurityPage(CommonMixin, SecurityMixin, BasePage):
     def _delete_rules(self, rules: list[str], url_section: str) -> None:

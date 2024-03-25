@@ -252,6 +252,7 @@ class EnvironmentMixin:
         self.add_rule_using_ai_input = PageElement(
             self.page, "//input[@data-qa='add-rule-using-ai-text']")
         self.generate_rule = PageElement(self.page, "//button//span[text()='Generate Rule']")
+        self.rules_list = ListElement(self.page, "//div[@data-rbd-droppable-id='droppable-rules']/div")
         self.created_rule = CreatedRuleElement(
             self.page,
             "((//div[@data-qa='rule-conditions'])[{rule_num}]//div[@data-qa='rule-condition'])[{{num}}]",
