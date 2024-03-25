@@ -226,7 +226,7 @@ def experiment_page(use_login_state: dict,
     # delete all experiments and deploy changes
     exp_page.delete_all_experiments()
     if exp_page.deploy_changes_button.is_visible():
-        deploy_changes(exp_page)
+        exp_page.deploy_changes()
 
     yield exp_page
     # delete all experiments and deploy changes
