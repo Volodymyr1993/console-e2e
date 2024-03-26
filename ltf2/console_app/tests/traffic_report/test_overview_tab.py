@@ -266,6 +266,8 @@ def test_date_picker_custom_date_range(traffic_page):
     thirty_days_ago = today - timedelta(days=29)
     date_range_format = f"{thirty_days_ago.strftime('%d %b %Y')} - {today.strftime('%d %b %Y')}"
 
+    traffic_page.date_picker.click()
+    traffic_page.date_picker_last_7_days.click()
     traffic_page.reload()
     traffic_page.date_picker.click()
     traffic_page.date_picker_custom_date_range.click()
