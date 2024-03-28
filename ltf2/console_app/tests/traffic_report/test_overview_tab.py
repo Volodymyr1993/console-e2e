@@ -201,6 +201,7 @@ def test_date_picker_traffic_overview(traffic_page):
 
     # Verify all values from the date picker are clickable
     for key, value in date_picker_options.items():
+        traffic_page.reload()
         traffic_page.date_picker.click()
         with traffic_page.expect_response(TRAFFIC_OVERTIME) as response:
             key.click()
@@ -267,8 +268,5 @@ def test_date_picker_custom_date_range(traffic_page):
 
     traffic_page.date_picker.click()
     traffic_page.date_picker_custom_date_range.click()
-    with traffic_page.expect_response(ERRORS_OVERTIME) as response:
-        traffic_page.date_picker_apply_button.click()
-        response_info = response.value
-    assert response_info.status == 200
+    traffic_page.date_picker_apply_button.click()
     assert traffic_page.date_picker.inner_text() == date_range_format

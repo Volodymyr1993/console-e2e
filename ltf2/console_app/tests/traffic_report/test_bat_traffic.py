@@ -84,7 +84,7 @@ def test_bat_traffic_by_country(traffic_page):
 
     """
     traffic_page.country_tab.click()
-    time.sleep(1)
+    traffic_page.country_map.wait_for(timeout=10000)
     assert traffic_page.country_map.is_visible(), "map is not visible"
     assert traffic_page.country_metric_selector.is_visible(), "selector is not visible"
     assert traffic_page.country_percentile_selector.is_visible(), "selector is not visible"
