@@ -64,7 +64,7 @@ run_tests:
         PYTEST_OPTS+=" -m regression"
       fi
   script:
-    - echo "Running pytest with options: $PYTEST_OPTS"
+    #- echo "Running pytest with options: $PYTEST_OPTS"
     - >
       pytest ltf2/console_app/tests/ $PYTEST_OPTS
       --junitxml=junit-report.xml
