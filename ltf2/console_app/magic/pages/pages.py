@@ -252,13 +252,11 @@ class RedirectsPage(CommonMixin, RedirectsMixin, BasePage):
             actual_headers = next(csv_reader)
 
             # Compare headers
-            if actual_headers != expected_content[0]:
-                return False, f"{actual_headers} do not match the {expected_content}"
+            assert actual_headers == expected_content[0], "Wrong headers"
 
             # Compare data rows
             for row, actual_row_data in enumerate(csv_reader, start=0):
-                if actual_row_data != expected_content[1][row]:
-                    return False, print(f"Row {row} {actual_row_data} != {expected_content[1][row]} data.")
+                assert actual_row_data == expected_content[1][row], f"Row {row} mismatch"
         # If no mismatches found, return True
         return True
 
@@ -272,10 +270,15 @@ class RedirectsPage(CommonMixin, RedirectsMixin, BasePage):
             else:
                 self.import_append_file.click()
 
-        file_chooser = fc_info.value
-        file_chooser.set_files(
-            files=[{"name": "test.csv", "mimeType": "text/plain", "buffer": file_obj.read().encode('utf-8')}])
-        self.upload_redirect_button.click()
+            file_chooser = fc_info.value
+            file_chooser.set_files(
+                files=[
+                    {"name": "test.csv",
+                     "mimeType": "text/plain",
+                     "buffer": file_obj.read().encode('utf-8')}
+                    ]
+                )
+            self.upload_redirect_button.click()
 
 
 class OriginsPage(CommonMixin, OriginsMixin, BasePage):

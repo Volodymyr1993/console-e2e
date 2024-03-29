@@ -48,8 +48,6 @@ class GraphQLMock:
                                                'params': {'field': cmp.re_match('acl_*')}}}),
                           status=204,
                           body_json={"data":{"edgeInsights":{"results":..}}})
-
-
         """
         response = dict(status=status,
                         headers=headers,
