@@ -60,19 +60,22 @@ run_tests:
     - playwright install --with-deps
     - cp ${CI_PROJECT_DIR}/_ltfrc_sample ${HOME}/.ltfrc
     - |
+      BROWSER_OPTS=""
       # Split the BROWSERS variable on spaces and construct the command-line argument
       for browser in $BROWSERS; do
-        PYTEST_OPTS+=" --browser=$browser"
+        BROWSER_OPTS+="--browser=$browser"
       done
     - |
       # Add -m regression to PYTEST_OPTS if $REGRESSION is set
       if [ "$REGRESSION" == "true" ]; then
         PYTEST_OPTS+=" -m regression"
       fi
-    - echo "Running pytest with options $PYTEST_OPTS"
+    - echo "Running pytest with options $PYTEST_OPTS $BROWSER_OPTS"
   script:
     - >
-      pytest ltf2/console_app/tests/ $PYTEST_OPTS
+      pytest ltf2/console_app/tests/
+      $PYTEST_OPTS
+      $BROWSER_OPTS
       --junitxml=junit-report.xml
       --alluredir=$ALLURE_RESULTS_DIR/
       --screenshot=only-on-failure
