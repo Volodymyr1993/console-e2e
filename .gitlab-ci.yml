@@ -63,7 +63,7 @@ run_tests:
       BROWSER_OPTS=""
       # Split the BROWSERS variable on spaces and construct the command-line argument
       for browser in $BROWSERS; do
-        BROWSER_OPTS+="--browser=$browser"
+        BROWSER_OPTS+="--browser=$browser "
       done
     - |
       # Add -m regression to PYTEST_OPTS if $REGRESSION is set
