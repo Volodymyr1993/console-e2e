@@ -63,8 +63,8 @@ run_tests:
       if [ "$REGRESSION" == "true" ]; then
         PYTEST_OPTS+=" -m regression"
       fi
+    - echo "Running pytest with options $PYTEST_OPTS"
   script:
-    #- echo "Running pytest with options: $PYTEST_OPTS"
     - >
       pytest ltf2/console_app/tests/ $PYTEST_OPTS
       --junitxml=junit-report.xml
