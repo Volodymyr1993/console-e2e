@@ -31,7 +31,7 @@ variables:
     description: "Browser names to run test cases on (use space to set multiple browsers, e.g. chromium firefox)"
   PYTEST_OPTS:
     value: ""
-    description: "Set additional pytest options (e.g. -k test_login, -m somemark)"
+    description: "Set additional pytest options (e.g. -k test_positive_login, -m somemark)"
 
 stages:
   - test
@@ -59,10 +59,8 @@ run_tests:
     - pip install -e .
     - playwright install --with-deps
     - cp ${CI_PROJECT_DIR}/_ltfrc_sample ${HOME}/.ltfrc
-    - |
-      # Check if REGRESSION is set to "true"
+    - >
       if [ "$REGRESSION" == "true" ]; then
-        # Add -m regression to PYTEST_OPTS
         PYTEST_OPTS+=" -m regression"
       fi
   script:
