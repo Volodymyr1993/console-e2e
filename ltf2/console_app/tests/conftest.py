@@ -255,9 +255,9 @@ def traffic_page(use_login_state: dict,
 
 @pytest.fixture
 def redirect_page(use_login_state: dict,
-                    page: Page,
-                    ltfrc_console_app: dict,
-                    base_url: str) -> Generator[Page, None, None]:
+                  page: Page,
+                  ltfrc_console_app: dict,
+                  base_url: str) -> Generator[Page, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
     try:
@@ -268,6 +268,8 @@ def redirect_page(use_login_state: dict,
         raise ValueError(f'team and property variables are missed in .ltfrc')
 
     red_page = RedirectsPage(page, url=urljoin(base_url, property_path))
+    # Remove GraphQl mock
+    red_page.mock.page.unroute("**/graphql")
     red_page.goto()
     red_page.add_a_redirect_button.wait_for(timeout=30000)
 
@@ -279,9 +281,9 @@ def redirect_page(use_login_state: dict,
 
 @pytest.fixture
 def origins_page(use_login_state: dict,
-                    page: Page,
-                    ltfrc_console_app: dict,
-                    base_url: str) -> Generator[Page, None, None]:
+                 page: Page,
+                 ltfrc_console_app: dict,
+                 base_url: str) -> Generator[Page, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
     try:
