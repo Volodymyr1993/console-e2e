@@ -59,7 +59,13 @@ run_tests:
     - pip install -e .
     - playwright install --with-deps
     - cp ${CI_PROJECT_DIR}/_ltfrc_sample ${HOME}/.ltfrc
-    - >
+    - |
+      # Split the BROWSERS variable on spaces and construct the command-line argument
+      for browser in $BROWSERS; do
+        PYTEST_OPTS+="--browser=$browser "
+      done
+    - |
+      # Add -m regression to PYTEST_OPTS if $REGRESSION is set
       if [ "$REGRESSION" == "true" ]; then
         PYTEST_OPTS+=" -m regression"
       fi
