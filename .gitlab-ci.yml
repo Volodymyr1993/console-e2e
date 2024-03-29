@@ -19,13 +19,19 @@ variables:
   REPORT_FILE: ${CI_PROJECT_DIR}/junit-report.xml
   MK_DOC:
     value: ""
-    description: "set to true if you want to re-gen the doc"
+    description: "Set to true if you want to re-gen the doc"
   EMAIL_LIST:
     value: "mbondarenko@edg.io"
     description: "Set the emails to send reports"
   REGRESSION:
     value: ""
-    description: "set 'true' to run test cases with 'regression' mark"
+    description: "Set 'true' to run test cases with 'regression' mark"
+  BROWSERS:
+    value: "chromium"
+    description: "Browser names to run test cases on (use space to set multiple browsers, e.g. chromium firefox)"
+  PYTEST_OPTS:
+    value: ""
+    description: "Set additional pytest options (e.g. -k test_login, -m somemark)"
 
 stages:
   - test
@@ -53,15 +59,16 @@ run_tests:
     - pip install -e .
     - playwright install --with-deps
     - cp ${CI_PROJECT_DIR}/_ltfrc_sample ${HOME}/.ltfrc
-  script:
-    - export EDGIO_USER=$EDGIO_USER
-    - export EDGIO_PASSWORD=$EDGIO_PASSWORD
     - |
-      if [[ "$REGRESSION" == "true" ]]; then
-        pytest  -m regression ltf2/console_app/tests/ --junitxml=junit-report.xml --alluredir=$ALLURE_RESULTS_DIR/ --slowmo=200 --screenshot=only-on-failure --output=${CI_PROJECT_DIR}/screenshots
-      else
-        pytest ltf2/console_app/tests/ --junitxml=junit-report.xml --alluredir=$ALLURE_RESULTS_DIR/ --slowmo=200 --screenshot=only-on-failure --output=${CI_PROJECT_DIR}/screenshots
+      # Check if REGRESSION is set to "true"
+      if [ "$REGRESSION" == "true" ]; then
+        # Add -m regression to PYTEST_OPTS
+        PYTEST_OPTS+=" -m regression"
       fi
+  script:
+    - echo "Running pytest with options: $PYTEST_OPTS"
+    - pytest ltf2/console_app/tests/ $PYTEST_OPTS --junitxml=junit-report.xml --alluredir=$ALLURE_RESULTS_DIR/ --screenshot=only-on-failure --output=${CI_PROJECT_DIR}/screenshots
+    #--slowmo=200
   after_script:
     - |
       echo "date=$(date '+%Y/%m/%d %H:%M:%S')" >> $ALLURE_RESULTS_DIR/environment.properties
