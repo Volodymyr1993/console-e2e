@@ -130,14 +130,14 @@ def test_scheme_port_ip_version_combination(origins_page, scheme, port, ip_versi
 
     origins_page.origin_scheme(origin=0, row=0).click()
     origins_page.select_by_name(name=scheme).click()
-    if scheme is not 'match':
+    if scheme != 'match':
         origins_page.origin_port(origin=0, row=0).fill(port)
     origins_page.origin_ip_version_preference(origin=0, row=0).click()
     origins_page.select_by_name(name=ip_version).click()
     # Deploy changes
     origins_page.deploy_changes()
     assert origins_page.origin_scheme(origin=0, row=0).input_value() == scheme, "Scheme is not as expected"
-    if scheme is not 'match':
+    if scheme != 'match':
         assert origins_page.origin_port(origin=0, row=0).input_value() == port, "Port is not as expected"
     assert origins_page.origin_ip_version_preference(origin=0, row=0).input_value() == ip_version, \
         "IP Version Preference field is not as expected"
@@ -145,7 +145,7 @@ def test_scheme_port_ip_version_combination(origins_page, scheme, port, ip_versi
 
 @pytest.mark.regression
 def test_multiple_hostnames(origins_page):
-    f"""Origins - Verify adding multiple hostnames 
+    f"""Origins - Verify adding multiple hostnames
 
       Preconditions:
       -------------
