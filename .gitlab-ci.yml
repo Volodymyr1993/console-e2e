@@ -65,8 +65,13 @@ run_tests:
       fi
   script:
     - echo "Running pytest with options: $PYTEST_OPTS"
-    - pytest ltf2/console_app/tests/ $PYTEST_OPTS --junitxml=junit-report.xml --alluredir=$ALLURE_RESULTS_DIR/ --screenshot=only-on-failure --output=${CI_PROJECT_DIR}/screenshots
-    #--slowmo=200
+    - >
+      pytest ltf2/console_app/tests/ $PYTEST_OPTS
+      --junitxml=junit-report.xml
+      --alluredir=$ALLURE_RESULTS_DIR/
+      --screenshot=only-on-failure
+      --output=${CI_PROJECT_DIR}/screenshots
+      --slowmo=200
   after_script:
     - |
       echo "date=$(date '+%Y/%m/%d %H:%M:%S')" >> $ALLURE_RESULTS_DIR/environment.properties
