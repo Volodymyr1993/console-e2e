@@ -360,7 +360,7 @@ class RuleFeature:
 
     def add_set_response_body(self, body: str = ''):
         with self.prepare_feature('Set Response Body'):
-            self.page.response_body.fill(body)
+            self.page.response_body.fill(body, force=True)
 
     def add_set_status_code(self, code: int = 200):
         with self.prepare_feature('Set Status Code'):
