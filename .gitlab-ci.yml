@@ -80,7 +80,7 @@ run_tests:
       --alluredir=$ALLURE_RESULTS_DIR/
       --screenshot=only-on-failure
       --output=${CI_PROJECT_DIR}/screenshots
-      --slowmo=200
+      --slowmo=50
   after_script:
     - |
       echo "date=$(date '+%Y/%m/%d %H:%M:%S')" >> $ALLURE_RESULTS_DIR/environment.properties
