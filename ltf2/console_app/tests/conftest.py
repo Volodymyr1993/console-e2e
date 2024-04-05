@@ -306,8 +306,4 @@ def origins_page(use_login_state: dict,
         origins_page.reload()
 
     yield origins_page
-    # revert all changes if present
-    if origins_page.revert_button.is_visible():
-        origins_page.revert_button.click()
-        origins_page.revert_confirm_button.click()
-        origins_page.origins_title.wait_for(timeout=30000)
+
