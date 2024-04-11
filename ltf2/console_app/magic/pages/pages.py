@@ -22,7 +22,8 @@ from ltf2.console_app.magic.pages.components import (CommonMixin,
                                                      RedirectsMixin,
                                                      SecurityMixin,
                                                      TrafficMixin,
-                                                     OriginsMixin)
+                                                     OriginsMixin,
+                                                     AttackSurfacesMixin)
 from ltf2.console_app.magic.ruleconfig import (ExperimentCondition,
                                                ExperimentFeature,
                                                RuleCondition, RuleFeature)
@@ -293,3 +294,7 @@ class OriginsPage(CommonMixin, OriginsMixin, BasePage):
         self.origin_name_field(origin=origins_number).fill(name)
         self.origin_hostname(origin=origins_number, row=row).fill(origin_hostname)
         self.origin_override_host_headers(origin=origins_number).fill(override_host_header)
+
+
+class AttackSurfacesPage(CommonMixin, AttackSurfacesMixin, BasePage):
+    pass

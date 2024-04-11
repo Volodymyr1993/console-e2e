@@ -34,10 +34,36 @@ variables:
     description: "Set additional pytest options (e.g. -k test_positive_login, -m somemark)"
 
 stages:
+  - prepare
   - test
   - email
   - report
   - mkdoc
+
+exposure_service:
+  tags: [exposures]
+  rules:
+    - if: '$MK_DOC == ""'
+      when: always
+  stage: prepare
+  cache:
+    key: ${CI_JOB_NAME}
+    paths:
+      - ${CI_PROJECT_DIR}/.cache/pip
+  before_script:
+    - cp $PIP_CONFIG ${CI_PROJECT_DIR}/pip.conf
+    - python3 -m venv venv/
+    - source venv/bin/activate
+    - pip install -U pip setuptools
+    - sudo pkill -TERM -P $(pgrep ltf2-exposure) || true  # kill subs
+    - sudo kill -9 $(pgrep ltf2-exposure) || true  # kill parent
+    - pip install -e .
+    - cp ${CI_PROJECT_DIR}/_ltfrc_sample ${HOME}/.ltfrc
+  script:
+    - nohup ltf2-exposure > /tmp/flask_log.txt 2>&1 &
+    - sleep 5
+    - ps aux | grep ltf2
+    - netstat -ntlp
 
 run_tests:
   rules:
