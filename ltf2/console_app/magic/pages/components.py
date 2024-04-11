@@ -3,7 +3,8 @@ Classes that describe page elements
 """
 from itertools import product
 
-from playwright.sync_api import Page
+from playwright._impl import _errors
+from playwright.sync_api import Page, expect
 
 from ltf2.console_app.magic.constants import ACCESS_CONTROL_TYPE, HTTP_METHODS
 from ltf2.console_app.magic.elements import PageElement, UlElement, MembersTableElement, \
@@ -27,6 +28,7 @@ class LoginMixin:
                                           "//label[text()='Skip This Step']")
         self.reset_pasword = PageElement(self.page,
                                          "//form[@class='change-password-form']")
+
 
 class CommonMixin:
     """ Shared elements """
@@ -64,6 +66,7 @@ class CommonMixin:
         self.members = PageElement(self.page, "//span[text()='Members']")
         self.settings = PageElement(self.page, "//span[text()='Settings']")
         self.security = PageElement(self.page, "//div/span[text()='Security']")
+        self.attack_surfaces = PageElement(self.page, "//div/span[text()='Attack Surfaces']")
 
         # Create organization dialog
         self.button_create_org_dialog = PageElement(
@@ -631,6 +634,203 @@ class SecurityMixin:
                                          "//div[p[contains(., 'Filters:')]]//button")
         self.dashboard_current_time = PageElement(
             self.page, "//h2[contains(text(), 'Security')]/../h6")
+
+
+class AttackSurfacesMixin:
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+
+        self.error_message = PageElement(self.page, "//h1[text()='Something went wrong.']")
+
+        # menu
+        self.dashboard = PageElement(self.page, "//div[@data-qa='asm-dashboard']")
+        self.collections = PageElement(self.page, "//div[@data-qa='asm-collections']")
+        self.entities = PageElement(self.page, "//div[@data-qa='asm-entities']")
+        self.exposures = PageElement(self.page, "//div[@data-qa='asm-exposures']")
+        self.technologies = PageElement(self.page, "//div[@data-qa='asm-technologies']")
+        self.rules = PageElement(self.page, "//div[@data-qa='asm-rules']")
+
+        # Dashboard items
+        self.dash_header = PageElement(self.page, "//div[text()='Attack Surfaces Dashboard']")
+
+        # Collections items
+        self.collections_header = PageElement(self.page, "//div[text()='Collections']")
+        self.create_collection_btn = PageElement(self.page, "//button[@data-qa='create-collection-btn']")
+        self.collections_table = TableElement(self.page, "//table[@data-qa='collections-tbl']")
+
+        # Collections Create dialog
+        self.dlg_name = PageElement(self.page, "//input[@id='name']")
+        self.dlg_descr = PageElement(self.page, "//input[@id='description']")
+        # //button[@data-qa='btn-sch-sun']
+        # //button[@data-qa='btn-sch-mon']
+        # //button[@data-qa='btn-sch-tue']
+        # //button[@data-qa='btn-sch-wed']
+        # //button[@data-qa='btn-sch-thu']
+        # //button[@data-qa='btn-sch-fri']
+        # //button[@data-qa='btn-sch-sat']
+        # //input[@id='scan_at_utc_hour']
+        self.dlg_email_on_start = PageElement(self.page, "//span[@data-qa='email-on-start']//input")
+        self.dlg_email_on_complete = PageElement(self.page, "//span[@data-qa='email-on-complete']//input")
+        self.dlg_email_on_exposure = PageElement(self.page, "//span[@data-qa='email-on-exposure']//input")
+        # //div[@data-qa='email-to']
+        self.dlg_create_collection_btn = PageElement(self.page, "//button[@data-qa='create-dlg-save-btn']")
+        self.dlg_cancel_btn = PageElement(self.page, "//button[@data-qa='create-dlg-cancel-btn']")
+
+        # Collections Delete collection dialog
+        self.del_dlg_cancel_btn = PageElement(self.page, "//div[@role='dialog']//button/span[text()='Cancel']")
+        self.del_dlg_delete_btn = PageElement(self.page, "//div[@role='dialog']//button/span[text()='Delete']")
+
+        # Inside collection
+        self.coll_scan_now_btn = PageElement(self.page, "//button[@data-qa='scan-now-btn']")
+        self.coll_edit_collection_btn = PageElement(self.page, "//button[@data-qa='edit-collection-btn']")
+        # //div[@data-qa='collection-overview']
+        # -------------------- TBD overview here ------------------
+        # Seeds
+        self.seeds_tbl = PageElement(self.page, "//div[@data-qa='collection-seeds']//table")
+        self.add_seed_btn = PageElement(self.page, "//div[@data-qa='collection-seeds']//span[text()='Add a Seed...']")
+        # Add Seed dialog
+        self.add_seed_dlg_type = PageElement(self.page, "//input[@name='seed_type_id']")
+        self.add_seed_dlg_type_select = DynamicSelectElement(self.page, "//ul[@id='seed_type_id-popup']/li[text()='{seed_type}']")
+        self.add_seed_dlg_seed = PageElement(self.page, "//input[contains(@placeholder,'e.g.')]")
+        self.add_seed_dlg_cancel_btn = PageElement(self.page, "//button/span[text()='Cancel']")
+        self.add_seed_dlg_create_btn = PageElement(self.page, "//button/span[text()='Create Seed']")
+        # Scans
+        self.scans_tbl = TableElement(self.page, "//div[@data-qa='collection-scans']//table")
+        # Scan details
+        self.scan_exposures_tbl = TableElement(self.page, "//div[text()='Exposures']/../../../following-sibling::div//table")
+        self.scan_tasks_tbl = TableElement(self.page, "//div/span[text()='Tasks']/../../following-sibling::div//table")
+
+        # Reset Collection
+        self.reset_collection_btn = PageElement(self.page, "(//button/span[text()='Reset Collection'])[1]")
+        self.reset_collection_dlg_reset_btn = PageElement(self.page, "(//button/span[text()='Reset Collection'])[2]")
+
+        # Entities items
+        self.entities_header = PageElement(self.page, "//div[text()='Entities']")
+
+        # Exposures items
+        self.exposures_header = PageElement(self.page, "//div[text()='Exposures']")
+        self.exposures_tbl = TableElement(self.page, "//div[text()='Exposures']/../../../following-sibling::div//table")
+
+        # Technologies items
+        self.technologies_header = PageElement(self.page, "//div[text()='Technologies']")
+
+
+
+        # Rules items
+        self.rules_header = PageElement(self.page, "//div[text()='Rules']")
+        self.rules_reset_to_defaults_btn = PageElement(self.page, "//button/span[text()='Reset to Default']")
+        self.rules_reset_dlg_reset_btn = PageElement(self.page, "//button/span[text()='Reset']")
+
+    def wait_for_error(self, timeout=1000):
+        try:
+            self.error_message.wait_for(timeout=timeout, state="visible")
+        except _errors.TimeoutError:
+            pass
+        else:
+            assert False, "Error displayed"
+
+    def get_collections(self, name_filter=None):
+        self.log.debug(f"List collections")
+        collections = []
+        self.collections_table.scroll_into_view_if_needed()
+        for row in self.collections_table.tbody.tr:
+            coll_name = row[0].text_content()
+            collections.append({
+                'name': coll_name,
+                'entities': row[1].text_content(),
+                'exposures': row[2].text_content(),
+                'last_scanned': row[3].text_content(),
+            })
+            if name_filter and name_filter == coll_name:
+                return collections.pop()
+        return collections
+
+    def create_collection(self, collection_name: str):
+        self.log.debug(f"Creating collection '{collection_name}'")
+        self.create_collection_btn.click()
+        self.dlg_name.fill(collection_name)
+        self.dlg_email_on_start.uncheck()  # disable checkbox
+        self.dlg_email_on_complete.uncheck()  # disable checkbox
+        self.dlg_create_collection_btn.click()
+        self.dlg_create_collection_btn.wait_for(state='hidden', timeout=5000)
+        self.coll_scan_now_btn.wait_for(state='visible', timeout=5000)
+        self.go_back()  # go back to the collections list
+        self.wait_for_load_state('networkidle')
+
+    def remove_collection(self, collection_name: str, skip_empty_table=False):
+        self.log.debug(f"Removing collection '{collection_name}'")
+        self.collections_table.scroll_into_view_if_needed()
+        for row in self.collections_table.tbody.tr:
+            coll_title = row[0].text_content()
+            if coll_title in (collection_name, 'all'):
+                row.get_by_role("button").click()
+                self.del_dlg_delete_btn.click()
+                expect(row._locator, f'{coll_title} was not removed').to_have_count(0, timeout=5000)
+                return
+        else:
+            if not skip_empty_table:
+                raise Exception(f"Collections was not found")
+
+    def open_collection(self, collection_name: str):
+        self.log.debug(f"Opening collection '{collection_name}'")
+        self.collections_table.scroll_into_view_if_needed()
+        for row in self.collections_table.tbody.tr:
+            if row[0].text_content() == collection_name:
+                # self.locator(row[0]._locator).click()
+                # self.locator(row[0]).click()
+                row[0].click()
+
+    def add_seed(self, seed_type, seed):
+        """seed_type: Domain, Github repository, IP Address, IP Address Range"""
+        self.add_seed_btn.click()
+        self.add_seed_dlg_type.click()
+        self.add_seed_dlg_type_select(seed_type=seed_type).click()
+        self.add_seed_dlg_seed.fill(seed)
+        self.add_seed_dlg_create_btn.click()
+
+    def get_scans(self):
+        self.log.debug(f"List scans")
+        scans = []
+        self.scans_tbl.scroll_into_view_if_needed()
+        for row in self.scans_tbl.tbody.tr:
+            scans.append({
+                'when': row[0].text_content(),
+                'status': row[1].text_content(),
+                'entities_scanned': row[2].text_content(),
+                'new_entities_discovered': row[3].text_content(),
+                'new_exposures': row[4].text_content(),
+                'new_technology_versions': row[5].text_content(),
+            })
+        return scans
+
+    def open_scan(self, index):
+        self.log.debug(f"Opening scan index: {index}")
+        self.collections_table.tbody.tr[index][0].click()  # 0 index - first TD
+        self.wait_for_load_state('networkidle')
+
+    def get_scan_tasks(self):
+        self.log.debug(f"List scan tasks")
+        tasks = []
+        self.scan_tasks_tbl.scroll_into_view_if_needed()
+        for row in self.scan_tasks_tbl.tbody.tr:
+            tasks.append({
+                'status': row[0].text_content(),
+                'duration': row[1].text_content(),
+                'task': row[2].text_content(),
+                'entity': row[3].text_content(),
+                'hostnames': row[4].text_content(),
+                'last_update': row[5].text_content(),
+                'exposures_found': row[6].text_content(),
+            })
+        return tasks
+
+    def get_scan_exposures(self):
+        self.log.debug(f"List scan exposures")
+        exposures = []
+        self.scan_exposures_tbl.scroll_into_view_if_needed()
+        for row in self.scan_exposures_tbl.tbody.tr:
+            exposures.append(row[0].text_content())
+        return exposures
 
 
 class ExperimentsMixin:

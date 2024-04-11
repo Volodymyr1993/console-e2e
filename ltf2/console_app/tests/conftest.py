@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import pickle
+
 import os
 import time
 from collections import namedtuple
+from pathlib import Path
 from typing import Generator
 from urllib.parse import urljoin
 
@@ -32,7 +35,15 @@ ORIGINS_URL_PATH = f"{ENV_URL_PATH}configuration/origins"
 
 
 @pytest.fixture(scope='session')
-def ltfrc_console_app() -> CaseInsensitiveDict:
+def project_dir():
+    """
+    Returns pathlib.Path instance of project data directory
+    """
+    return Path(__file__).parent.absolute()
+
+
+@pytest.fixture(scope='session')
+def ltfrc_console_app() -> CaseInsensitiveDict | dict:
     """
     Returns .ltfrc config dict
     """
@@ -73,18 +84,22 @@ def browser_type_launch_args(browser_type_launch_args: dict,
         'headless': not (headed or bool(ltfrc_console_app.get('headed'))),
         'slow_mo': slow_mo,
         'timeout': 60 * 1000,  # 60 sec
-       # 'devtools': True,
+        # 'devtools': True,
     }
 
 
 @pytest.fixture(scope="session")
-def saved_login(browser: Browser,
+def saved_login(project_dir,
+                browser: Browser,
                 base_url: str,
-                credentials: namedtuple) -> Generator[str, None, None]:
-    """ Save signed-in state for reusing that state to skip log-in in tests.
+                credentials: namedtuple) -> dict:
+    """ Save signed in state for reusing that state to skip log-in in tests.
 
     Return cookies
     """
+    cookies_file = project_dir / 'cookies.pkl'
+    if cookies_file.exists():
+        return pickle.load(cookies_file.open('rb'))
     br_context = browser.new_context()
     page = br_context.new_page()
     # go to login page
@@ -101,8 +116,11 @@ def saved_login(browser: Browser,
         print('Status banner not found')
     # Save storage state into the file.
     storage_state = {'cookies': br_context.cookies()}
+
+    with cookies_file.open('wb') as f:
+        pickle.dump(storage_state, f)
     br_context.close()
-    yield storage_state
+    return storage_state
 
 
 @pytest.fixture
@@ -158,7 +176,7 @@ def orgs_to_delete(org_page) -> Generator[list, None, None]:
 @pytest.fixture
 def org_page(use_login_state: dict,
              page: Page,
-             base_url: str) -> Generator[Page, None, None]:
+             base_url: str) -> Generator[OrgPage, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
     org_page = OrgPage(page, base_url)
@@ -168,7 +186,7 @@ def org_page(use_login_state: dict,
 
 @pytest.fixture
 def login_page(page: Page,
-               base_url: str) -> Generator[Page, None, None]:
+               base_url: str) -> Generator[LoginPage, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
     login_page = LoginPage(page, url=base_url)
@@ -181,7 +199,7 @@ def login_page(page: Page,
 def property_page(use_login_state: dict,
                   page: Page,
                   ltfrc_console_app: dict,
-                  base_url: str) -> Generator[Page, None, None]:
+                  base_url: str) -> Generator[PropertyPage, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
 
@@ -203,7 +221,7 @@ def property_page(use_login_state: dict,
 def experiment_page(use_login_state: dict,
                     page: Page,
                     ltfrc_console_app: dict,
-                    base_url: str) -> Generator[Page, None, None]:
+                    base_url: str) -> Generator[ExperimentsPage, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
     try:
@@ -238,7 +256,7 @@ def experiment_page(use_login_state: dict,
 def traffic_page(use_login_state: dict,
                  page: Page,
                  ltfrc_console_app: dict,
-                 base_url: str) -> Generator[Page, None, None]:
+                 base_url: str) -> Generator[TrafficPage, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
 
