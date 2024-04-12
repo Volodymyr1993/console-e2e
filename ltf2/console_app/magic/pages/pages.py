@@ -133,7 +133,7 @@ class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
         self.generate_rule.click()
         try:
             # Wait for rule generation
-            self.deploy_changes.wait_for(timeout=40000)
+            self.deploy_changes_button.wait_for(timeout=40000)
         except TimeoutError:
             # Check if rule generation failed
             try:
