@@ -14,11 +14,17 @@ setup(
     python_requires='>=3.8.7',
 
     packages=find_namespace_packages(include=['ltf2.console_app.*']),
+    package_data={"ltf2.console_app": ["exposure/certs/*"]},
+    entry_points={"console_scripts": [
+        "ltf2-exposure = ltf2.console_app.exposure.app:main",
+    ]},
 
     install_requires=[
         'allure-pytest',
         'ltf2-util',
         'pytest',
         'pytest-playwright',
+        'flask',
+        'requests'
     ],
 )
