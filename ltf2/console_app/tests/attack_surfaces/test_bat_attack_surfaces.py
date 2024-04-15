@@ -16,7 +16,7 @@ def test_bat(reset_rules_to_default, collections_page, cleanup, ltfrc_console_ap
     """Attack Surfaces - BAT 1"""
     target_ip = ltfrc_console_app['exposure_service_ip']
     opened_port = 5900
-    open_port(p_type='http', port=opened_port)
+    # open_port(p_type='http', port=opened_port)
 
     coll_name = f'coll-{time.time()}'
     collections_page.create_collection(coll_name)
@@ -29,7 +29,8 @@ def test_bat(reset_rules_to_default, collections_page, cleanup, ltfrc_console_ap
     collections_page.add_seed(seed_type='IP Address', seed=target_ip)
 
     collections_page.coll_scan_now_btn.click()
-    expect(collections_page.coll_scan_now_btn._locator, 'Scan was not complete').to_be_enabled(timeout=120*1000)
+    # expect(collections_page.coll_scan_now_btn._locator, 'Scan was not complete').to_be_enabled(timeout=120*1000)
+    collections_page.wait_for_scans_completed(timeout=120)
 
     collections_page.open_scan(0)
     scan_tasks = collections_page.get_scan_tasks()
@@ -56,10 +57,10 @@ def test_bat(reset_rules_to_default, collections_page, cleanup, ltfrc_console_ap
 #
 #
 # @pytest.mark.regression
-# def test_bat_attack_surfaces_entities(entities_page):
-#     """Attack Surfaces - BAT, Entities, verifying elements are visible"""
+# def test_bat_attack_surfaces_assets(entities_page):
+#     """Attack Surfaces - BAT, Assets, verifying elements are visible"""
 #     entities_page.wait_for_error()
-#     assert entities_page.entities_header.is_visible(), 'The page header is not visible'  # remove after other asserts are present
+#     assert entities_page.assets_header.is_visible(), 'The page header is not visible'  # remove after other asserts are present
 #
 #
 # @pytest.mark.regression

@@ -105,8 +105,9 @@ run_tests:
       --junitxml=junit-report.xml
       --alluredir=$ALLURE_RESULTS_DIR/
       --screenshot=only-on-failure
+      --video=retain-on-failure
       --output=${CI_PROJECT_DIR}/screenshots
-      --slowmo=50
+      --slowmo=200
   after_script:
     - |
       echo "date=$(date '+%Y/%m/%d %H:%M:%S')" >> $ALLURE_RESULTS_DIR/environment.properties
