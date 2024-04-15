@@ -369,5 +369,5 @@ def test_access_rules_request_limit(security_logged):
         "Add Access Rule button should be dissabled"
 
     expected_msg = "You can only add up to 99 rules"
-    assert security_logged.get_by_title(expected_msg).is_visible(), \
+    assert security_logged.get_by_label(expected_msg).is_visible(), \
         f"`{expected_msg}` message should be visible"

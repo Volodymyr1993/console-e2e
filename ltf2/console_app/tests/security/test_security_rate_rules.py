@@ -251,5 +251,5 @@ def test_rate_rules_request_limit(security_logged):
         "Add Rate Rule button should be disabled"
 
     expected_msg = "You can only add up to 99 rules"
-    assert security_logged.get_by_title(expected_msg).is_visible(), \
+    assert security_logged.get_by_label(expected_msg).is_visible(), \
         f"`{expected_msg}` message should be visible"

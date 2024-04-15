@@ -296,5 +296,5 @@ def test_security_application_rules_limit(security_logged):
     assert security_logged.new_seccurity_application.is_disabled(), \
         "'Add New' button should be disabled"
     expected_msg = "You can only add up to 99 security applications"
-    assert security_logged.get_by_title(expected_msg).is_visible(), \
+    assert security_logged.get_by_label(expected_msg).is_visible(), \
         f"`{expected_msg}` message should be visible"
