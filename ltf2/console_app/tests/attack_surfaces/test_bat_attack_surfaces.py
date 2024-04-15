@@ -16,7 +16,7 @@ def test_bat(reset_rules_to_default, collections_page, cleanup, ltfrc_console_ap
     """Attack Surfaces - BAT 1"""
     target_ip = ltfrc_console_app['exposure_service_ip']
     opened_port = 5900
-    # open_port(p_type='http', port=opened_port)
+    open_port(p_type='http', port=opened_port)
 
     coll_name = f'coll-{time.time()}'
     collections_page.create_collection(coll_name)
