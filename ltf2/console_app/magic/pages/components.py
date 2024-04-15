@@ -1,6 +1,7 @@
 """
 Classes that describe page elements
 """
+import time
 from itertools import product
 
 from playwright._impl import _errors
@@ -650,10 +651,10 @@ class AttackSurfacesMixin:
         self.rules = PageElement(self.page, "//div[@data-qa='asm-rules']")
 
         # Dashboard items
-        self.dash_header = PageElement(self.page, "//div[text()='Attack Surfaces Dashboard']")
+        self.dash_header = PageElement(self.page, "//h2[text()='Attack Surfaces Dashboard']")
 
         # Collections items
-        self.collections_header = PageElement(self.page, "//div[text()='Collections']")
+        self.collections_header = PageElement(self.page, "//h2[text()='Collections']")
         self.create_collection_btn = PageElement(self.page, "//button[@data-qa='create-collection-btn']")
         self.collections_table = TableElement(self.page, "//table[@data-qa='collections-tbl']")
 
@@ -686,10 +687,10 @@ class AttackSurfacesMixin:
         # -------------------- TBD overview here ------------------
         # Seeds
         self.seeds_tbl = PageElement(self.page, "//div[@data-qa='collection-seeds']//table")
-        self.add_seed_btn = PageElement(self.page, "//div[@data-qa='collection-seeds' and text()='Add a Seed...']")
+        self.add_seed_btn = PageElement(self.page, "//div[@data-qa='collection-seeds']//button[text()='Add a Seed...']")
         # Add Seed dialog
         self.add_seed_dlg_type = PageElement(self.page, "//input[@name='seed_type_id']")
-        self.add_seed_dlg_type_select = DynamicSelectElement(self.page, "//ul[@id='seed_type_id-popup']/li[text()='{seed_type}']")
+        self.add_seed_dlg_type_select = DynamicSelectElement(self.page, "//ul[@id='seed_type_id-listbox']/li[text()='{seed_type}']")
         self.add_seed_dlg_seed = PageElement(self.page, "//input[contains(@placeholder,'e.g.')]")
         self.add_seed_dlg_cancel_btn = PageElement(self.page, "//button[text()='Cancel']")
         self.add_seed_dlg_create_btn = PageElement(self.page, "//button[text()='Create Seed']")
@@ -697,26 +698,24 @@ class AttackSurfacesMixin:
         self.scans_tbl = TableElement(self.page, "//div[@data-qa='collection-scans']//table")
         # Scan details
         self.scan_exposures_tbl = TableElement(self.page, "//div[text()='Exposures']/../../../following-sibling::div//table")
-        self.scan_tasks_tbl = TableElement(self.page, "//div[text()='Tasks']/../../following-sibling::div//table")
+        self.scan_tasks_tbl = TableElement(self.page, "//span[text()='Tasks']/../../following-sibling::div//table")
 
         # Reset Collection
         self.reset_collection_btn = PageElement(self.page, "(//button[text()='Reset Collection'])[1]")
         self.reset_collection_dlg_reset_btn = PageElement(self.page, "(//button[text()='Reset Collection'])[2]")
 
-        # Entities items
-        self.entities_header = PageElement(self.page, "//div[text()='Entities']")
+        # Assets (Entities) items
+        self.assets_header = PageElement(self.page, "//h2[text()='Assets']")
 
         # Exposures items
-        self.exposures_header = PageElement(self.page, "//div[text()='Exposures']")
-        self.exposures_tbl = TableElement(self.page, "//div[text()='Exposures']/../../../following-sibling::div//table")
+        self.exposures_header = PageElement(self.page, "//h2[text()='Exposures']")
+        self.exposures_tbl = TableElement(self.page, "//h2[text()='Exposures']/../../../following-sibling::div//table")
 
         # Technologies items
-        self.technologies_header = PageElement(self.page, "//div[text()='Technologies']")
-
-
+        self.technologies_header = PageElement(self.page, "//h2[text()='Technologies']")
 
         # Rules items
-        self.rules_header = PageElement(self.page, "//div[text()='Rules']")
+        self.rules_header = PageElement(self.page, "//h2[text()='Rules']")
         self.rules_reset_to_defaults_btn = PageElement(self.page, "//button[text()='Reset to Default']")
         self.rules_reset_dlg_reset_btn = PageElement(self.page, "//button[text()='Reset']")
 
@@ -755,6 +754,7 @@ class AttackSurfacesMixin:
         self.coll_scan_now_btn.wait_for(state='visible', timeout=5000)
         self.go_back()  # go back to the collections list
         self.wait_for_load_state('networkidle')
+        self.log.debug(f"Collections: {self.get_collections()}")
 
     def remove_collection(self, collection_name: str, skip_empty_table=False):
         self.log.debug(f"Removing collection '{collection_name}'")
@@ -802,6 +802,16 @@ class AttackSurfacesMixin:
             })
         return scans
 
+    def wait_for_scans_completed(self, timeout=5):
+        while timeout > 0:
+            scans = self.get_scans()
+            if all('completed' in s['status'].lower() for s in scans):
+                break
+            time.sleep(1)
+            timeout -= 1
+        else:
+            raise TimeoutError(f"Timed out waiting for scans to complete")
+
     def open_scan(self, index):
         self.log.debug(f"Opening scan index: {index}")
         self.collections_table.tbody.tr[index][0].click()  # 0 index - first TD
@@ -828,7 +838,7 @@ class AttackSurfacesMixin:
         exposures = []
         self.scan_exposures_tbl.scroll_into_view_if_needed()
         for row in self.scan_exposures_tbl.tbody.tr:
-            exposures.append(row[0].text_content())
+            exposures.append(row[1].text_content())
         return exposures
 
 
