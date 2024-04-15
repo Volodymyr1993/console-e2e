@@ -50,8 +50,8 @@ class CommonMixin:
         self.submit_button = PageElement(self.page, "//button[text()='Submit']")
         self.delete_button = PageElement(self.page, "//button[text()='Delete']")
         self.confirm_button = PageElement(self.page, "//button[text()='Confirm']")
-        self.revert_button = PageElement(self.page, "//button[./*[text()='Revert']]")
-        self.revert_confirm_button = PageElement(self.page, "//button[./*[text()='Revert Changes']]")
+        self.revert_button = PageElement(self.page, "//button[text()='Revert']")
+        self.revert_confirm_button = PageElement(self.page, "//button[text()='Revert Changes']")
         self.delete_button_list = ListElement(self.page,"//button[@data-qa='delete-button']")
         self.deploy_changes_button = PageElement(self.page, "//button[text()='Deploy Changes']")
         self.create_org_button = PageElement(self.page, "//*[text()='Create an Organization']")
@@ -269,7 +269,7 @@ class EnvironmentMixin:
             self.page,
             "(//form/div/div/div[@data-rbd-draggable-id][{num}]//button[text()='Add'])[last()]")
         self.ai_rule_generation_error = PageElement(self.page,
-                                                    "//p[contains(@class, 'MuiTypography-colorError')]")
+                                                    "//form//p[contains(@class, 'MuiTypography-body1')]")
         # ====== Cache =====
 
         self.purge_the_cache = PageElement(self.page,

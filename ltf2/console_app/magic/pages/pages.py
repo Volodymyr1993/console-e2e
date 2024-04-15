@@ -10,7 +10,7 @@ from __future__ import annotations
 import csv
 from io import StringIO
 
-from playwright.sync_api import Page, TimeoutError
+from playwright.sync_api import Page, TimeoutError, expect
 
 from ltf2.console_app.magic.nested_rules import NestedRules
 from ltf2.console_app.magic.pages.base_page import BasePage
@@ -134,8 +134,8 @@ class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
         self.generate_rule.click()
         try:
             # Wait for rule generation
-            self.deploy_changes_button.wait_for(timeout=40000)
-        except TimeoutError:
+            expect(self.rules_list._locator).to_have_count(rules_count+1, timeout=40000)
+        except AssertionError:
             # Check if rule generation failed
             try:
                 error = self.ai_rule_generation_error.inner_text(timeout=10)
@@ -143,7 +143,6 @@ class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
             except TimeoutError:
                 pass
             raise
-        assert rules_count + 1 == self.rules_list.count(), f"Rule '{rule}' was not created"
 
 
 class SecurityPage(CommonMixin, SecurityMixin, BasePage):
