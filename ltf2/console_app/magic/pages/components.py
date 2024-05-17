@@ -126,7 +126,7 @@ class EnvironmentMixin:
         self.revert_changes_button = PageElement(self.page,
                                                  "//button[text()='Revert Changes']")
         # ======== Rules =========
-        self.add_rule = PageElement(self.page, "//button[text()='Add Rule']")
+        self.add_rule = PageElement(self.page, "//button[text()='Add Router Rule']")
         self.add_element = PageElement(self.page, "//button[text()='Add']")
         self.select_rule_element = DynamicSelectElement(
             self.page,
