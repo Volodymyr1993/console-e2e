@@ -138,7 +138,7 @@ class EnvironmentMixin:
         self.select_operator_name = DynamicSelectElement(
             self.page,
             "//div[@role='presentation' and not(@aria-hidden='true')]/div/ul[@role='menu']/li[text()='{name}']")
-        self.delete_rule_button = PageElement(self.page, "//button[text()='Delete Rule']")
+        self.delete_rule_button = PageElement(self.page, "//button[text()='Delete Router Rule']")
         self.add_feature_button = PageElement(
             self.page, "//button[@type='submit' and text()='Add Feature']")
         self.deploy_changes = PageElement(self.page, "//button[text()='Deploy Changes']")
