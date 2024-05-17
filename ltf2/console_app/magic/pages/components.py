@@ -251,7 +251,7 @@ class EnvironmentMixin:
                                             "//label[text()='Origin Name']/../div/input")
         # AI Rules
         self.add_rule_using_ai = PageElement(self.page,
-                                             "//button[text()='Add Rule Using AI...']")
+                                             "//button[text()='Add Router Rule Using AI...']")
         self.add_rule_using_ai_input = PageElement(
             self.page, "//input[@data-qa='add-rule-using-ai-text']")
         self.generate_rule = PageElement(self.page, "//button[text()='Generate Rule']")
