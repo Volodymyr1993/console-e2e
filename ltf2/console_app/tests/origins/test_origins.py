@@ -85,6 +85,7 @@ def test_add_two_origins(origins_page):
                             origins_number=1)
     # Deploy changes
     origins_page.deploy_changes()
+    origins_page.origin_row.nth(1).click()
     assert origins_page.origin_name_field(origin=1).input_value() == random_name2, "Name field is not as expected"
     assert origins_page.origin_override_host_headers(origin=1).input_value() == override_host_header2, \
         "Origin Host Header field is not as expected"
