@@ -21,7 +21,7 @@ from ltf2.console_app.magic.constants import PAGE_TIMEOUT
 from ltf2.console_app.magic.pages.pages import (ExperimentsPage, LoginPage,
                                                 OrgPage, PropertyPage,
                                                 TrafficPage, RedirectsPage,
-                                                OriginsPage)
+                                                OriginsPage, EnvironmentVariablesPage)
 
 Credentials = namedtuple('Credentials', 'users password')
 
@@ -32,6 +32,7 @@ EXPERIMENTS_URL_PATH = f"{ENV_URL_PATH}configuration/experiments"
 PROPERTY_URL_PATH = f"{ENV_URL_PATH}configuration/rules"
 REDIRECTS_URL_PATH = f"{ENV_URL_PATH}redirects"
 ORIGINS_URL_PATH = f"{ENV_URL_PATH}configuration/origins"
+ENV_VARIABLE_URL_PATH = f"{ENV_URL_PATH}variables"
 
 
 @pytest.fixture(scope='session')
@@ -325,3 +326,27 @@ def origins_page(use_login_state: dict,
 
     yield origins_page
 
+@pytest.fixture
+def env_variable_page(use_login_state: dict,
+                page: Page,
+                ltfrc_console_app: dict,
+                base_url: str) -> Generator[EnvironmentVariablesPage, None, None]:
+    # Set global timeout
+    page.set_default_timeout(PAGE_TIMEOUT)
+    try:
+        property_path = (f"{ltfrc_console_app['team']}/"
+                         f"{ltfrc_console_app['property']}/"
+                         f"{ENV_VARIABLE_URL_PATH}")
+    except KeyError:
+        raise ValueError(f'team and property variables are missed in .ltfrc')
+
+    env_var = EnvironmentVariablesPage(page, url=urljoin(base_url, property_path))
+    env_var.goto()
+    env_var.env_variable_title.wait_for(timeout=30000)
+
+    # delete all environment variables if present
+    if env_var.delete_button_list.first.is_visible():
+        env_var.delete_all_variables()
+        env_var.deploy_changes_button.wait_for(timeout=30000)
+
+    yield env_var

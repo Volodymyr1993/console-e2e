@@ -23,7 +23,8 @@ from ltf2.console_app.magic.pages.components import (CommonMixin,
                                                      SecurityMixin,
                                                      TrafficMixin,
                                                      OriginsMixin,
-                                                     AttackSurfacesMixin)
+                                                     AttackSurfacesMixin,
+                                                     EnvironmentVariables)
 from ltf2.console_app.magic.ruleconfig import (ExperimentCondition,
                                                ExperimentFeature,
                                                RuleCondition, RuleFeature)
@@ -297,3 +298,16 @@ class OriginsPage(CommonMixin, OriginsMixin, BasePage):
 
 class AttackSurfacesPage(CommonMixin, AttackSurfacesMixin, BasePage):
     pass
+
+
+class EnvironmentVariablesPage(CommonMixin, EnvironmentVariables, BasePage):
+    def delete_all_variables(self):
+        for _ in range(self.delete_button_list.count()):
+            self.delete_button_list.first.click()
+            self.confirm_remove_var.click()
+
+    def add_env_variable(self, key: str, value: str):
+        self.add_env_variable_button.click()
+        self.the_key_field.fill(key)
+        self.the_value_field.fill(value)
+        self.add_value_button.click()

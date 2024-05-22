@@ -44,6 +44,7 @@ class CommonMixin:
         self.close = PageElement(self.page, "//button[text()='Close']").nth(1)
         self.cancel_button = PageElement(self.page, "//*[text()='Cancel']")
         self.select = UlElement(self.page, "//ul[@role='listbox']")
+        self.redeploy_button = PageElement(self.page, "//button[@data-qa='redeploy-btn']")
         self.select_by_name = DynamicSelectElement(
             self.page, "//ul[@role='listbox']/li[text()='{name}']")
         # self.select_by_name = DynamicPageElement(self.page, "//ul[@role='listbox']/li[text()='{name}']")
@@ -371,7 +372,6 @@ class RedirectsMixin:
         self.import_override_existing = PageElement(self.page, "//span[text()='Override existing list with file content']")
         self.import_append_file = PageElement(self.page, "//span[text()='Append file content to existing redirects list']")
         self.upload_redirect_button = PageElement(self.page, "//button[text()='Upload redirects']")
-        self.redeploy_button = PageElement(self.page, "//button[@data-qa='redeploy-btn']")
         self.redeploy_confirmation = PageElement(self.page, "//div[@role='dialog']//button[contains(text(), 'Deploy Now')]")
         self.delete_all_checkbox = PageElement(self.page, "//table//tr//th//input[@type='checkbox']")
         self.first_checkbox_from_the_table = PageElement(self.page, "//table//tbody//td//input[@type='checkbox']")
@@ -972,6 +972,22 @@ class ExperimentsMixin:
             self.page, "//label[text()='Proxy Special Headers']/../div/input")
         self.set_origin_input = PageElement(self.page,
                                             "//label[text()='Origin Name']/../div/input")
+
+
+class EnvironmentVariables:
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+        self.env_variable_title = PageElement(self.page, "//h2[text()='Environment Variables']")
+        self.add_env_variable_button = PageElement(self.page, "//button[text()='Add Environment Variable']")
+        self.import_env_variable_button = PageElement(self.page, "//button[text()='Import Environment Variables']")
+        self.the_key_field = PageElement(self.page, "//input[@id='key']")
+        self.the_value_field = PageElement(self.page, "//div//textarea[@id='value']")
+        self.keep_this_value_secret_checkbox = PageElement(self.page, "")
+        self.add_variable_button = PageElement(self.page, "//button[text()='Add variable']")
+        self.import_variables_text_area = PageElement(self.page, "//textarea[@id=':r1j:']")
+        self.import_variables_button = PageElement(self.page, "//button[text()='Import Variables']")
+        self.confirm_remove_var = PageElement(self.page, "//button[text()='Remove Variable']")
+
 
 
 class OriginsMixin:
