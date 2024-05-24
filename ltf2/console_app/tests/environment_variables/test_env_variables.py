@@ -3,7 +3,7 @@ from ltf2.console_app.magic.helpers import random_str
 
 
 @pytest.mark.regression
-def test_add_environment_variable(env_variable_page):
+def test_environment_variable_add_(env_variable_page):
     """Environment Variables - Add variable
 
     Preconditions:
@@ -32,7 +32,7 @@ def test_add_environment_variable(env_variable_page):
 
 
 @pytest.mark.regression
-def test_add_env_var_with_secret_value(env_variable_page):
+def test_environment_variable_add_with_secret(env_variable_page):
     """Environment Variables - Add variable with secret value
 
     Preconditions:
@@ -62,7 +62,7 @@ def test_add_env_var_with_secret_value(env_variable_page):
     
 
 @pytest.mark.regression
-def test_import_env_var(env_variable_page):
+def test_environment_variable_import(env_variable_page):
     """Environment Variables - Import variable
 
     Preconditions:
@@ -90,7 +90,7 @@ def test_import_env_var(env_variable_page):
 
 
 @pytest.mark.regression
-def test_import_env_var_secret(env_variable_page):
+def test_environment_variable_import_secret(env_variable_page):
     """Environment Variables - Import variable with secret
 
     Preconditions:
@@ -119,7 +119,7 @@ def test_import_env_var_secret(env_variable_page):
 
 
 @pytest.mark.regression
-def test_env_var_deploy_now(env_variable_page):
+def test_environment_variable_deploy_now(env_variable_page):
     """Environment Variables - Deploy Environment Variable
 
     Preconditions:
@@ -156,7 +156,7 @@ def test_env_var_deploy_now(env_variable_page):
 
 
 @pytest.mark.regression
-def test_import_env_var_deploy_secret(env_variable_page):
+def test_environment_variable_import_deploy_secret(env_variable_page):
     """Environment Variables - Deploy Environment Variable
 
     Preconditions:
