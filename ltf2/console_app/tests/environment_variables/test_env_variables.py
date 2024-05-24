@@ -24,10 +24,7 @@ def test_add_environment_variable(env_variable_page):
     random_key = random_str(15)
     random_value = f"{random_str(15)},{random_str(10)},{random_str(20)}"
 
-    env_variable_page.add_env_variable_button.click()
-    env_variable_page.the_key_field.fill(random_key)
-    env_variable_page.the_value_field.fill(random_value)
-    env_variable_page.add_variable_button.click()
+    env_variable_page.add_env_variable(random_key, random_value, False)
     env_variable_page.wait_for_timeout(timeout=1500)
     assert env_variable_page.redeploy_button.is_visible()
     assert env_variable_page.row_key(row=1).inner_text() == random_key, "Key does not match"
@@ -57,10 +54,7 @@ def test_add_env_var_with_secret_value(env_variable_page):
     random_key = random_str(15)
     random_value = random_str(15)
 
-    env_variable_page.add_env_variable_button.click()
-    env_variable_page.the_key_field.fill(random_key)
-    env_variable_page.the_value_field.fill(random_value)
-    env_variable_page.keep_this_value_secret_checkbox.set_checked(True)
+    env_variable_page.add_env_variable(random_key, random_value, True)
     env_variable_page.add_variable_button.click()
     env_variable_page.wait_for_timeout(timeout=1500)
     assert env_variable_page.row_key(row=1).inner_text() == random_key, "Key does not match"
@@ -88,9 +82,7 @@ def test_import_env_var(env_variable_page):
     random_value = f"{random_str(15)}"
     random_data = f"{random_key}=" + random_value
 
-    env_variable_page.import_env_variable_button.click()
-    env_variable_page.import_text_field.fill(random_data)
-    env_variable_page.import_variables_button.click()
+    env_variable_page.import_env_variable(random_data, False)
     env_variable_page.wait_for_timeout(timeout=1500)
     assert env_variable_page.redeploy_button.is_visible()
     assert env_variable_page.row_key(row=1).inner_text() == random_key, "Key does not match"
@@ -120,10 +112,7 @@ def test_import_env_var_secret(env_variable_page):
     random_value = f"{random_str(15)}"
     random_data = f"{random_key}=" + random_value
 
-    env_variable_page.import_env_variable_button.click()
-    env_variable_page.import_text_field.fill(random_data)
-    env_variable_page.keep_this_value_secret_checkbox.set_checked(True)
-    env_variable_page.import_variables_button.click()
+    env_variable_page.import_env_variable(random_data, True)
     env_variable_page.wait_for_timeout(timeout=1500)
     assert env_variable_page.row_key(row=1).inner_text() == random_key, "Key does not match"
     assert env_variable_page.row_value(row=1).inner_text() == "****" + random_value[12:15], "Value does not match"
@@ -152,10 +141,7 @@ def test_env_var_deploy_now(env_variable_page):
     random_key = random_str(15)
     random_value = f"{random_str(15)},{random_str(10)},{random_str(20)}"
 
-    env_variable_page.add_env_variable_button.click()
-    env_variable_page.the_key_field.fill(random_key)
-    env_variable_page.the_value_field.fill(random_value)
-    env_variable_page.add_variable_button.click()
+    env_variable_page.add_env_variable(random_key, random_value, False)
     env_variable_page.redeploy_button.wait_for(timeout=2000)
     env_variable_page.redeploy_button.click()
     env_variable_page.deploy_confirmation.click()
@@ -192,10 +178,7 @@ def test_import_env_var_deploy_secret(env_variable_page):
     random_key = random_str(15)
     random_value = random_str(15)
 
-    env_variable_page.add_env_variable_button.click()
-    env_variable_page.the_key_field.fill(random_key)
-    env_variable_page.the_value_field.fill(random_value)
-    env_variable_page.keep_this_value_secret_checkbox.set_checked(True)
+    env_variable_page.add_env_variable(random_key, random_value, True)
     env_variable_page.add_variable_button.click()
     env_variable_page.redeploy_button.wait_for(timeout=2000)
     env_variable_page.redeploy_button.click()

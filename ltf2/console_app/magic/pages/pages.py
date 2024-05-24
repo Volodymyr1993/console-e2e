@@ -306,8 +306,15 @@ class EnvironmentVariablesPage(CommonMixin, EnvironmentVariables, BasePage):
             self.delete_button_list.first.click()
             self.confirm_remove_var.click()
 
-    def add_env_variable(self, key: str, value: str):
+    def add_env_variable(self, key: str, value: str, checkbox: bool):
         self.add_env_variable_button.click()
         self.the_key_field.fill(key)
         self.the_value_field.fill(value)
-        self.add_value_button.click()
+        self.keep_this_value_secret_checkbox.set_checked(checkbox)
+        self.add_variable_button.click()
+
+    def import_env_variable(self, random_data: str, checkbox: bool):
+        self.import_env_variable_button.click()
+        self.import_text_field.fill(random_data)
+        self.keep_this_value_secret_checkbox.set_checked(checkbox)
+        self.import_variables_button.click()
