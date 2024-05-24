@@ -105,7 +105,6 @@ def saved_login(project_dir,
     # go to login page
     login_page = LoginPage(page, url=base_url)
     login_page.goto()
-    login_page.login_button.click()
     # perform login
     login_page.login(credentials.users[0], credentials.password)
     assert not login_page.submit.is_visible()
@@ -189,10 +188,9 @@ def login_page(page: Page,
                base_url: str) -> Generator[LoginPage, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
-    login_page = LoginPage(page, url=base_url)
-    login_page.goto()
-    login_page.login_button.click()
-    yield login_page
+    loginpage = LoginPage(page, url=base_url)
+    loginpage.goto()
+    yield loginpage
 
 
 @pytest.fixture

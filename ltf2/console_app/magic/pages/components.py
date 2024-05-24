@@ -16,7 +16,6 @@ from ltf2.console_app.magic.elements import PageElement, UlElement, MembersTable
 class LoginMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
-        self.login_button = PageElement(self.page, "//button[text()='Login']")
         self.username = PageElement(self.page, "//input[@id='username']")
         self.password = PageElement(self.page, "//input[@id='password']")
         self.next_button = PageElement(self.page, "//button[text()='Next']")
