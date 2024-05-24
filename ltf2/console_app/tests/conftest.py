@@ -330,7 +330,7 @@ def origins_page(use_login_state: dict,
 def env_variable_page(use_login_state: dict,
                 page: Page,
                 ltfrc_console_app: dict,
-                base_url: str) -> Generator[EnvironmentVariablesPage, None, None]:
+                base_url: str) -> Generator[Page, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
     try:
@@ -347,6 +347,5 @@ def env_variable_page(use_login_state: dict,
     # delete all environment variables if present
     if env_var.delete_button_list.first.is_visible():
         env_var.delete_all_variables()
-        env_var.deploy_changes_button.wait_for(timeout=30000)
 
     yield env_var

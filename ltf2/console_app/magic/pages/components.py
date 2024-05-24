@@ -88,6 +88,7 @@ class CommonMixin:
         self.status_iframe_close_button = IframeElement(self.status_iframe,
                                                         "//div[contains(@class, 'frame-close')]//button")
         self.status_snackbar_close = PageElement(self.page, "//div[@id='notistack-snackbar']/..//button")
+        self.online_status = PageElement(self.page, "//i[text()='Deployed']")
 
 
 class OrgMixin:
@@ -382,7 +383,6 @@ class RedirectsMixin:
         self.table_value_query_field = DynamicPageElement(self.page, "//table//tbody//tr[{row}]//td[5]")
         self.import_browse_button = PageElement(self.page, "//button[@data-qa='redirect-import-browse-btn']")
         self.redirects_page = PageElement(self.page, "//span[text()='Redirects']")
-        self.online_status = PageElement(self.page, "//i[text()='Deployed']")
         self.no_redirects_matching = PageElement(self.page, "//div[text()='No redirects matching \"']")
 
 
@@ -982,11 +982,16 @@ class EnvironmentVariables:
         self.import_env_variable_button = PageElement(self.page, "//button[text()='Import Environment Variables']")
         self.the_key_field = PageElement(self.page, "//input[@id='key']")
         self.the_value_field = PageElement(self.page, "//div//textarea[@id='value']")
-        self.keep_this_value_secret_checkbox = PageElement(self.page, "")
+        self.keep_this_value_secret_checkbox = PageElement(self.page, "//span[@data-qa='secret-checkbox']")
+        self.import_text_field = PageElement(self.page, "//div[@data-qa='import-textfield']//textarea[1]")
         self.add_variable_button = PageElement(self.page, "//button[text()='Add variable']")
         self.import_variables_text_area = PageElement(self.page, "//textarea[@id=':r1j:']")
         self.import_variables_button = PageElement(self.page, "//button[text()='Import Variables']")
         self.confirm_remove_var = PageElement(self.page, "//button[text()='Remove Variable']")
+        self.row_key = DynamicPageElement(self.page, "//table//tbody//tr[{row}]//td[1]")
+        self.row_value = DynamicPageElement(self.page, "//table/tbody/tr[{row}]/td[2]")
+        self.env_page = PageElement(self.page, "//span[text()='Environment Variables']")
+        self.deploy_confirmation = PageElement(self.page, "//div[@role='dialog']//button[text()='Deploy Now']")
 
 
 
