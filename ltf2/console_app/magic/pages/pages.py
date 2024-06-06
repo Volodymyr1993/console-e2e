@@ -110,13 +110,15 @@ class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
         self.change_conditions_operator('and')
 
     def revert_rules(self):
+        self.add_rule.wait_for()
         try:
             # Click `Revert` button if available
             self.revert_button.click(timeout=4000)
-            self.revert_changes_button.click(timeout=2000)
-            self.wait_for_timeout(timeout=2000)
         except TimeoutError:
-            pass
+            return
+        self.revert_changes_button.click(timeout=2000)
+        # Wait for 'Revent' button to dissapear
+        self.revert_button.wait_for(state='hidden', timeout=10000)
 
     def generate_ai_rule(self, rule: str):
         """
@@ -138,7 +140,7 @@ class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
         try:
             # Wait for rule generation
             expect(self.rules_list._locator).to_have_count(rules_count+1, timeout=40000)
-        except AssertionError:
+        except (AssertionError, TimeoutError):
             # Check if rule generation failed
             try:
                 error = self.ai_rule_generation_error.inner_text(timeout=10)
