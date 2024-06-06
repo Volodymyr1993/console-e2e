@@ -28,6 +28,8 @@ def test_experiments_add(experiment_page):
     experiment_page.variant_name_input(exp_id=0, var_id=0).press("Enter")
     experiment_page.variant_name_input(exp_id=0, var_id=1).fill("test2")
     experiment_page.variant_name_input(exp_id=0, var_id=1).press("Enter")
+    # Click for deploy button to appear
+    experiment_page.variant_percentage_input(exp_id=0, var_id=0).press("Enter")
     # wait for deploy button
     deploy_button = experiment_page.deploy_changes_button
     deploy_button.wait_for(timeout=10000)
@@ -58,9 +60,6 @@ def test_experiment_delete(experiment_page):
     exp_name = f"test{int(time.time())}"
     experiment_page.add_experiment(name=exp_name,
                                    variants=["variant1", "variant2"])
-    # wait for deploy button
-    deploy_button = experiment_page.deploy_changes_button
-    deploy_button.wait_for(timeout=10000)
     # check that experiment name is present
     assert experiment_page.experiment_name(name=exp_name)
     # delete experiment
@@ -96,9 +95,6 @@ def test_experiment_edit(experiment_page):
     exp_name = f"test{int(time.time())}"
     experiment_page.add_experiment(name=exp_name,
                                    variants=["variant1", "variant2"])
-    # wait for deploy button
-    deploy_button = experiment_page.deploy_changes_button
-    deploy_button.wait_for(timeout=10000)
     # check that experiment name is present
     assert experiment_page.experiment_name(name=exp_name)
     # edit experiment
@@ -132,9 +128,6 @@ def test_experiment_add_variants(experiment_page):
     exp_name = f"test{int(time.time())}"
     experiment_page.add_experiment(name=exp_name,
                                    variants=["variant1", "variant2"])
-    # wait for deploy button
-    deploy_button = experiment_page.deploy_changes_button
-    deploy_button.wait_for(timeout=10000)
     # check that experiment name is present
     assert experiment_page.experiment_name(name=exp_name)
     # add variants

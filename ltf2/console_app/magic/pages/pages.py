@@ -76,11 +76,13 @@ class ExperimentsPage(CommonMixin, ExperimentsMixin, BasePage):
 
     def add_experiment(self, name: str, variants: list):
         self.add_experiment_button.click()
-        for id, variant in enumerate(variants):
-            self.variant_name_input(exp_id=0, var_id=id).fill(variant)
-            self.variant_name_input(exp_id=0, var_id=id).press("Enter")
+        for variant_id, variant in enumerate(variants):
+            self.variant_name_input(exp_id=0, var_id=variant_id).fill(variant)
+            self.variant_name_input(exp_id=0, var_id=variant_id).press("Enter")
         self.experiment_name_input(id=0).fill(name)
         self.experiment_name_input(id=0).press("Enter")
+        # Press for deploy button to appear
+        self.variant_percentage_input(exp_id=0, var_id=0).press("Enter")
         deploy_button = self.deploy_changes_button
         deploy_button.wait_for(timeout=10000)
 
