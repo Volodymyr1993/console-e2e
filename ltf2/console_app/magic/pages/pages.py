@@ -42,7 +42,7 @@ class LoginPage(CommonMixin, LoginMixin, BasePage):
         except TimeoutError:
             pass
         try:
-            self.overview.wait_for()
+            self.settings.wait_for()
         except TimeoutError as e:
             if self.reset_pasword.is_visible():
                 raise AssertionError(
