@@ -133,6 +133,7 @@ class PropertyPage(CommonMixin, EnvironmentMixin, BasePage):
         returned by the AI rule generation process, or if the rule count does not
         increase by 1 after the operation, indicating that the rule was not successfully added.
         """
+        self.add_rule_using_ai.wait_for()
         rules_count = self.rules_list.count()
         self.add_rule_using_ai.click()
         self.add_rule_using_ai_input.fill(rule)

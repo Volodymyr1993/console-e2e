@@ -401,7 +401,7 @@ class SecurityMixin:
         self.event_logs = PageElement(self.page, "//*[text()='Logs']")
         self.security_application = PageElement(self.page,
                                                 "//*[text()='Security Apps']")
-        self.dashboard = PageElement(self.page, "//*[text()='Dashboard']")
+        self.dashboard = PageElement(self.page, "//*[text()='Dashboard']").first
         self.rules_manager = PageElement(self.page, "//*[text()='Rules Manager']")
         self.access_rules = PageElement(self.page, "//*[text()='Access Rules']")
         self.rate_rules = PageElement(self.page, "//*[text()='Rate Rules']")

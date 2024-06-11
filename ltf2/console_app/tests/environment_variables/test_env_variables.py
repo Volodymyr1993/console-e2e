@@ -59,7 +59,7 @@ def test_environment_variable_add_with_secret(env_variable_page):
     env_variable_page.wait_for_timeout(timeout=1500)
     assert env_variable_page.row_key(row=1).inner_text() == random_key, "Key does not match"
     assert env_variable_page.row_value(row=1).inner_text() == "****" + random_value[12:15], "Value does not match"
-    
+
 
 @pytest.mark.regression
 def test_environment_variable_import(env_variable_page):
