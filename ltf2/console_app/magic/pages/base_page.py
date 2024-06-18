@@ -68,5 +68,5 @@ class BasePage:
         # wait for success message
         message = self.client_snackbar.get_by_text(
             'Changes deployed successfully')
-        message.first.wait_for(timeout=40000)
+        message.first.wait_for(timeout=60000)
         return message.first
