@@ -123,6 +123,9 @@ run_tests:
 
 email-report:
   stage: email
+  rules:
+    - if: '$MK_DOC == ""'
+      when: always
   image: python:3.8-alpine
   allow_failure: true
   before_script:
