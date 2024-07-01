@@ -573,7 +573,7 @@ class SecurityMixin:
 
         self.other_methods = PageElement(self.page, "//input[@name='other http methods']")
         self.other_methods_buttons = ListElement(
-            self.page, '//div[@placeholder="Add..."]//div[@role="button"]')
+            self.page, '//label[@id="other http methods"]/..//div[@role="button"]')
 
         self.response_header_name = PageElement(self.page,
                                                 "//input[@name='responseHeaderName']")
