@@ -21,7 +21,8 @@ from ltf2.console_app.magic.constants import PAGE_TIMEOUT
 from ltf2.console_app.magic.pages.pages import (ExperimentsPage, LoginPage,
                                                 OrgPage, PropertyPage,
                                                 TrafficPage, RedirectsPage,
-                                                OriginsPage, EnvironmentVariablesPage)
+                                                OriginsPage, EnvironmentVariablesPage,
+                                                OrgActivityPage, WebPropertyPage)
 
 Credentials = namedtuple('Credentials', 'users password')
 
@@ -296,6 +297,7 @@ def redirect_page(use_login_state: dict,
 
     yield red_page
 
+
 @pytest.fixture
 def origins_page(use_login_state: dict,
                  page: Page,
@@ -324,6 +326,7 @@ def origins_page(use_login_state: dict,
 
     yield origins_page
 
+
 @pytest.fixture
 def env_variable_page(use_login_state: dict,
                 page: Page,
@@ -347,3 +350,40 @@ def env_variable_page(use_login_state: dict,
         env_var.delete_all_variables()
 
     yield env_var
+
+
+@pytest.fixture
+def org_activity(use_login_state: dict,
+                 page: Page,
+                 ltfrc_console_app: dict,
+                 base_url: str) -> Generator[Page, None, None]:
+    # Set global timeout
+    page.set_default_timeout(PAGE_TIMEOUT)
+    try:
+        org_activity = (f"{ltfrc_console_app['team']}/activity")
+    except KeyError:
+        raise ValueError(f'team and property variables are missed in .ltfrc')
+
+    org_activity = OrgActivityPage(page, url=urljoin(base_url, org_activity))
+    org_activity.goto()
+    org_activity.table.wait_for(timeout=30000)
+
+    yield org_activity
+
+@pytest.fixture
+def web_properties(use_login_state: dict,
+                 page: Page,
+                 ltfrc_console_app: dict,
+                 base_url: str) -> Generator[Page, None, None]:
+    # Set global timeout
+    page.set_default_timeout(PAGE_TIMEOUT)
+    try:
+        web_properties_path = (f"{ltfrc_console_app['team']}")
+    except KeyError:
+        raise ValueError(f'team and property variables are missed in .ltfrc')
+
+    web_properties = WebPropertyPage(page, url=urljoin(base_url, web_properties_path))
+    web_properties.goto()
+    web_properties.new_property_button.wait_for(timeout=30000)
+
+    yield web_properties
