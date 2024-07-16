@@ -8,35 +8,43 @@ def get_utc_time_range(time_period):
     Generate a time range strings (-1m, now, +1m) based on a specified time period.
 
     Parameters:
-    - time_period (str): A string representing the time period, e.g., 'Last 10 minutes', 'Last 7 days'.
+    - time_period (str): A string representing the time period, e.g., 'Last 10 minutes', 'Last 7 days', 'This Month'.
 
     Returns:
     - str: A formatted string representing the time range in UTC.
            Format: 'Monday, February 28, 2024 at 10:30 AM - Monday, February 28, 2024 at 10:40 AM'.
     """
     now_utc = datetime.now()
-
-    assert 'Last' in time_period, "Wrong time_period format"
-
-    period = time_period.split()[1:]
-    if len(period) == 2:
-        num, unit = period
-        num = int(num)
-    elif len(period) == 1:
-        # Last hour, Last day
-        unit = time_period.split()[1:]
-        num = 1
+    if time_period == 'This Month':
+        start_time_utc = datetime(now_utc.year, now_utc.month, 1)
+    elif time_period == 'Last Month':
+        first_day_this_month = datetime(now_utc.year, now_utc.month, 1)
+        last_month = first_day_this_month - timedelta(minutes=1)
+        start_time_utc = datetime(last_month.year, last_month.month, 1)
+        now_utc = last_month
     else:
-        raise ValueError("Invalid time_period")
 
-    if 'minute' in unit:
-        start_time_utc = now_utc - timedelta(minutes=num)
-    elif 'hour' in unit:
-        start_time_utc = now_utc - timedelta(hours=num)
-    elif 'day' in unit:
-        start_time_utc = now_utc - timedelta(days=num)
-    else:
-        raise ValueError("Invalid time period")
+        assert 'Last' in time_period, "Wrong time_period format"
+
+        period = time_period.split()[1:]
+        if len(period) == 2:
+            num, unit = period
+            num = int(num)
+        elif len(period) == 1:
+            # Last hour, Last day
+            unit = time_period.split()[1:]
+            num = 1
+        else:
+            raise ValueError("Invalid time_period")
+
+        if 'minute' in unit:
+            start_time_utc = now_utc - timedelta(minutes=num)
+        elif 'hour' in unit:
+            start_time_utc = now_utc - timedelta(hours=num)
+        elif 'day' in unit:
+            start_time_utc = now_utc - timedelta(days=num)
+        else:
+            raise ValueError("Invalid time period")
     start_tuple = (start_time_utc - timedelta(minutes=1),
                    start_time_utc,
                    start_time_utc + timedelta(minutes=1))

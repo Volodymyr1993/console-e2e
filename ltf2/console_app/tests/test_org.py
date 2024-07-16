@@ -35,7 +35,7 @@ def test_create_org(org_page: OrgPage, orgs_to_delete: list):
     org_page.button_create_org_dialog.click()
     orgs_to_delete.append(org_name)
     # Org name is a current organization
-    org_page.locator('p', has_text=org_name).wait_for(timeout=5000)
+    org_page.get_by_role("link", name=org_name).wait_for(timeout=5000)
     # Get text of org_switcher_list elements
     org_page.org_switcher_button.click()
     texts = org_page.org_switcher_list.li.all_text_contents()

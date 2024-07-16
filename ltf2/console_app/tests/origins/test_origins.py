@@ -85,6 +85,7 @@ def test_add_two_origins(origins_page):
                             origins_number=1)
     # Deploy changes
     origins_page.deploy_changes()
+    origins_page.origin_row.nth(1).click()
     assert origins_page.origin_name_field(origin=1).input_value() == random_name2, "Name field is not as expected"
     assert origins_page.origin_override_host_headers(origin=1).input_value() == override_host_header2, \
         "Origin Host Header field is not as expected"
@@ -270,18 +271,20 @@ def test_origin_tls_settings(origins_page):
     random_data = generate_random_domain()
     use_sni = origins_page.origin_use_sni
     allow_sert = origins_page.allow_self_signed_certs
-
+    use_sni_hint = origins_page.use_sni_hint
     origins_page.add_origin(name=random_name,
                             override_host_header=override_host_header,
                             origin_hostname=random_data,
                             origins_number=0)
     use_sni.click()
+    use_sni_hint.click()
     allow_sert.click()
     origins_page.origin_use_the_following_sni_field(origin=0).fill(random_data)
     # Deploy Changes
     origins_page.deploy_changes()
     assert use_sni.is_checked() is False
     assert allow_sert.is_checked() is True
+    assert use_sni_hint.is_checked() is True
     assert origins_page.origin_use_the_following_sni_field(origin=0).input_value() == random_data, "value does not match"
 
 

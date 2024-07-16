@@ -21,7 +21,8 @@ from ltf2.console_app.magic.constants import PAGE_TIMEOUT
 from ltf2.console_app.magic.pages.pages import (ExperimentsPage, LoginPage,
                                                 OrgPage, PropertyPage,
                                                 TrafficPage, RedirectsPage,
-                                                OriginsPage)
+                                                OriginsPage, EnvironmentVariablesPage,
+                                                OrgActivityPage, WebPropertyPage)
 
 Credentials = namedtuple('Credentials', 'users password')
 
@@ -32,6 +33,7 @@ EXPERIMENTS_URL_PATH = f"{ENV_URL_PATH}configuration/experiments"
 PROPERTY_URL_PATH = f"{ENV_URL_PATH}configuration/rules"
 REDIRECTS_URL_PATH = f"{ENV_URL_PATH}redirects"
 ORIGINS_URL_PATH = f"{ENV_URL_PATH}configuration/origins"
+ENV_VARIABLE_URL_PATH = f"{ENV_URL_PATH}variables"
 
 
 @pytest.fixture(scope='session')
@@ -105,7 +107,6 @@ def saved_login(project_dir,
     # go to login page
     login_page = LoginPage(page, url=base_url)
     login_page.goto()
-    login_page.login_button.click()
     # perform login
     login_page.login(credentials.users[0], credentials.password)
     assert not login_page.submit.is_visible()
@@ -189,10 +190,9 @@ def login_page(page: Page,
                base_url: str) -> Generator[LoginPage, None, None]:
     # Set global timeout
     page.set_default_timeout(PAGE_TIMEOUT)
-    login_page = LoginPage(page, url=base_url)
-    login_page.goto()
-    login_page.login_button.click()
-    yield login_page
+    loginpage = LoginPage(page, url=base_url)
+    loginpage.goto()
+    yield loginpage
 
 
 @pytest.fixture
@@ -297,6 +297,7 @@ def redirect_page(use_login_state: dict,
 
     yield red_page
 
+
 @pytest.fixture
 def origins_page(use_login_state: dict,
                  page: Page,
@@ -325,3 +326,64 @@ def origins_page(use_login_state: dict,
 
     yield origins_page
 
+
+@pytest.fixture
+def env_variable_page(use_login_state: dict,
+                page: Page,
+                ltfrc_console_app: dict,
+                base_url: str) -> Generator[Page, None, None]:
+    # Set global timeout
+    page.set_default_timeout(PAGE_TIMEOUT)
+    try:
+        property_path = (f"{ltfrc_console_app['team']}/"
+                         f"{ltfrc_console_app['property']}/"
+                         f"{ENV_VARIABLE_URL_PATH}")
+    except KeyError:
+        raise ValueError(f'team and property variables are missed in .ltfrc')
+
+    env_var = EnvironmentVariablesPage(page, url=urljoin(base_url, property_path))
+    env_var.goto()
+    env_var.env_variable_title.wait_for(timeout=30000)
+
+    # delete all environment variables if present
+    if env_var.delete_button_list.first.is_visible():
+        env_var.delete_all_variables()
+
+    yield env_var
+
+
+@pytest.fixture
+def org_activity(use_login_state: dict,
+                 page: Page,
+                 ltfrc_console_app: dict,
+                 base_url: str) -> Generator[Page, None, None]:
+    # Set global timeout
+    page.set_default_timeout(PAGE_TIMEOUT)
+    try:
+        org_activity = (f"{ltfrc_console_app['team']}/activity")
+    except KeyError:
+        raise ValueError(f'team and property variables are missed in .ltfrc')
+
+    org_activity = OrgActivityPage(page, url=urljoin(base_url, org_activity))
+    org_activity.goto()
+    org_activity.table.wait_for(timeout=30000)
+
+    yield org_activity
+
+@pytest.fixture
+def web_properties(use_login_state: dict,
+                 page: Page,
+                 ltfrc_console_app: dict,
+                 base_url: str) -> Generator[Page, None, None]:
+    # Set global timeout
+    page.set_default_timeout(PAGE_TIMEOUT)
+    try:
+        web_properties_path = (f"{ltfrc_console_app['team']}")
+    except KeyError:
+        raise ValueError(f'team and property variables are missed in .ltfrc')
+
+    web_properties = WebPropertyPage(page, url=urljoin(base_url, web_properties_path))
+    web_properties.goto()
+    web_properties.new_property_button.wait_for(timeout=30000)
+
+    yield web_properties

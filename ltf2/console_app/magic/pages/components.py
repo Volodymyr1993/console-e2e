@@ -16,7 +16,6 @@ from ltf2.console_app.magic.elements import PageElement, UlElement, MembersTable
 class LoginMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
-        self.login_button = PageElement(self.page, "//button[text()='Login']")
         self.username = PageElement(self.page, "//input[@id='username']")
         self.password = PageElement(self.page, "//input[@id='password']")
         self.next_button = PageElement(self.page, "//button[text()='Next']")
@@ -44,9 +43,10 @@ class CommonMixin:
         self.close = PageElement(self.page, "//button[text()='Close']").nth(1)
         self.cancel_button = PageElement(self.page, "//*[text()='Cancel']")
         self.select = UlElement(self.page, "//ul[@role='listbox']")
+        self.redeploy_button = PageElement(self.page, "//button[@data-qa='redeploy-btn']")
         self.select_by_name = DynamicSelectElement(
             self.page, "//ul[@role='listbox']/li[text()='{name}']")
-        # self.select_by_name = DynamicPageElement(self.page, "//ul[@role='listbox']/li[text()='{name}']")
+        self.select_by_name_extra_level = DynamicPageElement(self.page, "//ul[@role='listbox']//li[text()='{name}']")
         self.table = TableElement(self.page, "//table")
         self.submit_button = PageElement(self.page, "//button[text()='Submit']")
         self.delete_button = PageElement(self.page, "//button[text()='Delete']")
@@ -76,10 +76,15 @@ class CommonMixin:
 
         self.org_switcher_button = PageElement(self.page, "//button[@id='organization-switcher']")
         self.org_switcher_list = UlElement(self.page, "//ul[@role='menu']")
+        self.property_switcher_button = PageElement(self.page, "//button[@id='property-switcher']")
         self.delete_org_checkbox = PageElement(
             self.page,
             "//*[text()='Confirm that I want to delete this organization.']/../..//input[@type='checkbox']")
+        self.delete_property_checkbox = DynamicPageElement(
+            self.page, "//*[text()='Confirm that I want to delete the property \"{property_name}\".']/../..//input[@type='checkbox']"
+        )
         self.delete_org_button = PageElement(self.page, "//*[text()='Delete Organization']")
+        self.delete_property_button = PageElement(self.page, "//*[text()='Delete Property']")
 
         self.visible_page_content = PageElement(self.page,
                                                 "//div[@id='__next' and not(@aria-hidden='true')]")
@@ -87,6 +92,7 @@ class CommonMixin:
         self.status_iframe_close_button = IframeElement(self.status_iframe,
                                                         "//div[contains(@class, 'frame-close')]//button")
         self.status_snackbar_close = PageElement(self.page, "//div[@id='notistack-snackbar']/..//button")
+        self.online_status = PageElement(self.page, "//i[text()='Deployed']")
 
 
 class OrgMixin:
@@ -371,7 +377,6 @@ class RedirectsMixin:
         self.import_override_existing = PageElement(self.page, "//span[text()='Override existing list with file content']")
         self.import_append_file = PageElement(self.page, "//span[text()='Append file content to existing redirects list']")
         self.upload_redirect_button = PageElement(self.page, "//button[text()='Upload redirects']")
-        self.redeploy_button = PageElement(self.page, "//button[@data-qa='redeploy-btn']")
         self.redeploy_confirmation = PageElement(self.page, "//div[@role='dialog']//button[contains(text(), 'Deploy Now')]")
         self.delete_all_checkbox = PageElement(self.page, "//table//tr//th//input[@type='checkbox']")
         self.first_checkbox_from_the_table = PageElement(self.page, "//table//tbody//td//input[@type='checkbox']")
@@ -382,7 +387,6 @@ class RedirectsMixin:
         self.table_value_query_field = DynamicPageElement(self.page, "//table//tbody//tr[{row}]//td[5]")
         self.import_browse_button = PageElement(self.page, "//button[@data-qa='redirect-import-browse-btn']")
         self.redirects_page = PageElement(self.page, "//span[text()='Redirects']")
-        self.online_status = PageElement(self.page, "//i[text()='Deployed']")
         self.no_redirects_matching = PageElement(self.page, "//div[text()='No redirects matching \"']")
 
 
@@ -402,7 +406,7 @@ class SecurityMixin:
         self.event_logs = PageElement(self.page, "//*[text()='Logs']")
         self.security_application = PageElement(self.page,
                                                 "//*[text()='Security Apps']")
-        self.dashboard = PageElement(self.page, "//*[text()='Dashboard']")
+        self.dashboard = PageElement(self.page, "//*[text()='Dashboard']").first
         self.rules_manager = PageElement(self.page, "//*[text()='Rules Manager']")
         self.access_rules = PageElement(self.page, "//*[text()='Access Rules']")
         self.rate_rules = PageElement(self.page, "//*[text()='Rate Rules']")
@@ -574,7 +578,7 @@ class SecurityMixin:
 
         self.other_methods = PageElement(self.page, "//input[@name='other http methods']")
         self.other_methods_buttons = ListElement(
-            self.page, '//div[@placeholder="Add..."]//div[@role="button"]')
+            self.page, '//label[@id="other http methods"]/..//div[@role="button"]')
 
         self.response_header_name = PageElement(self.page,
                                                 "//input[@name='responseHeaderName']")
@@ -974,6 +978,27 @@ class ExperimentsMixin:
                                             "//label[text()='Origin Name']/../div/input")
 
 
+class EnvironmentVariables:
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+        self.env_variable_title = PageElement(self.page, "//h2[text()='Environment Variables']")
+        self.add_env_variable_button = PageElement(self.page, "//button[text()='Add Environment Variable']")
+        self.import_env_variable_button = PageElement(self.page, "//button[text()='Import Environment Variables']")
+        self.the_key_field = PageElement(self.page, "//input[@id='key']")
+        self.the_value_field = PageElement(self.page, "//div//textarea[@id='value']")
+        self.keep_this_value_secret_checkbox = PageElement(self.page, "//span[@data-qa='secret-checkbox']")
+        self.import_text_field = PageElement(self.page, "//div[@data-qa='import-textfield']//textarea[1]")
+        self.add_variable_button = PageElement(self.page, "//button[text()='Add variable']")
+        self.import_variables_text_area = PageElement(self.page, "//textarea[@id=':r1j:']")
+        self.import_variables_button = PageElement(self.page, "//button[text()='Import Variables']")
+        self.confirm_remove_var = PageElement(self.page, "//button[text()='Remove Variable']")
+        self.row_key = DynamicPageElement(self.page, "//table//tbody//tr[{row}]//td[1]")
+        self.row_value = DynamicPageElement(self.page, "//table/tbody/tr[{row}]/td[2]")
+        self.env_page = PageElement(self.page, "//span[text()='Environment Variables']")
+        self.deploy_confirmation = PageElement(self.page, "//div[@role='dialog']//button[text()='Deploy Now']")
+
+
+
 class OriginsMixin:
     def __init__(self, page: Page, url: str):
         super().__init__(page, url)
@@ -1004,3 +1029,28 @@ class OriginsMixin:
         self.origin_editor = PageElement(self.page, "//button[@data-qa='origins-editor-button']")
         self.json_field = PageElement(self.page, "//div[@class='lines-content monaco-editor-background']")
         self.balancer_type = DynamicPageElement(self.page, "//input[@name='origins.{origin}.balancer']")
+        self.use_sni_hint = ListElement(
+            self.page, "//span[@data-qa='use-sni-hint-and-enforce-origin-san-cn-checking-checkbox']")
+
+
+class OrgActivity:
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+        self.activity_header = PageElement(self.page, "//h2[text()='Organization Activity']")
+        self.add_filter_button = PageElement(self.page, "//table//button[text()='Add a Filter']")
+        self.show_more_button = PageElement(self.page, "//button[text()='Show More']")
+        self.filter_search_field = PageElement(self.page, "//input[@id='activity-search']")
+        self.filter_action_type_field = PageElement(self.page, "//input[@id='action-type']")
+        self.from_date_field = PageElement(self.page, "//input[@id='from']")
+        self.to_date_field = PageElement(self.page, "//input[@id='to']")
+        self.clear_filters_button = PageElement(self.page, "//button[text()='Clear Filters']")
+
+
+class WebProperty:
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+        self.search_field = PageElement(self.page, "//input[@id='property-search']")
+        self.sorting_drop_down = PageElement(self.page, "//input[@id='sort']")
+        self.property_name = DynamicPageElement(self.page, "//div//p[text()='{name}']")
+        self.latest_deployment_header = PageElement(self.page, "//span[text()='Latest Production Deployment']")
+        self.property_cards = ListElement(self.page, "//div[@class='property-cards']//a")

@@ -21,7 +21,6 @@ def test_bat(reset_rules_to_default, collections_page, cleanup, ltfrc_console_ap
     coll_name = f'coll-{time.time()}'
     collections_page.create_collection(coll_name)
     cleanup.append(coll_name)
-
     new_coll = collections_page.get_collections(name_filter=coll_name)
     assert new_coll['name'] == coll_name
 
@@ -30,13 +29,14 @@ def test_bat(reset_rules_to_default, collections_page, cleanup, ltfrc_console_ap
 
     collections_page.coll_scan_now_btn.click()
     # expect(collections_page.coll_scan_now_btn._locator, 'Scan was not complete').to_be_enabled(timeout=120*1000)
+    collections_page.collections.click()
+    collections_page.open_collection(coll_name)
     collections_page.wait_for_scans_completed(timeout=120)
 
     collections_page.open_scan(0)
     scan_tasks = collections_page.get_scan_tasks()
     collections_page.log.debug(scan_tasks)
     assert all(x['status'].lower() == 'completed' for x in scan_tasks)
-
     scan_exposures = collections_page.get_scan_exposures()
     collections_page.log.debug(scan_exposures)
     assert f'Open port {opened_port} on {target_ip}' in scan_exposures
