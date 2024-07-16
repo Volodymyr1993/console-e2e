@@ -46,7 +46,7 @@ class CommonMixin:
         self.redeploy_button = PageElement(self.page, "//button[@data-qa='redeploy-btn']")
         self.select_by_name = DynamicSelectElement(
             self.page, "//ul[@role='listbox']/li[text()='{name}']")
-        # self.select_by_name = DynamicPageElement(self.page, "//ul[@role='listbox']/li[text()='{name}']")
+        self.select_by_name_extra_level = DynamicPageElement(self.page, "//ul[@role='listbox']//li[text()='{name}']")
         self.table = TableElement(self.page, "//table")
         self.submit_button = PageElement(self.page, "//button[text()='Submit']")
         self.delete_button = PageElement(self.page, "//button[text()='Delete']")
@@ -76,10 +76,15 @@ class CommonMixin:
 
         self.org_switcher_button = PageElement(self.page, "//button[@id='organization-switcher']")
         self.org_switcher_list = UlElement(self.page, "//ul[@role='menu']")
+        self.property_switcher_button = PageElement(self.page, "//button[@id='property-switcher']")
         self.delete_org_checkbox = PageElement(
             self.page,
             "//*[text()='Confirm that I want to delete this organization.']/../..//input[@type='checkbox']")
+        self.delete_property_checkbox = DynamicPageElement(
+            self.page, "//*[text()='Confirm that I want to delete the property \"{property_name}\".']/../..//input[@type='checkbox']"
+        )
         self.delete_org_button = PageElement(self.page, "//*[text()='Delete Organization']")
+        self.delete_property_button = PageElement(self.page, "//*[text()='Delete Property']")
 
         self.visible_page_content = PageElement(self.page,
                                                 "//div[@id='__next' and not(@aria-hidden='true')]")
@@ -1024,3 +1029,28 @@ class OriginsMixin:
         self.origin_editor = PageElement(self.page, "//button[@data-qa='origins-editor-button']")
         self.json_field = PageElement(self.page, "//div[@class='lines-content monaco-editor-background']")
         self.balancer_type = DynamicPageElement(self.page, "//input[@name='origins.{origin}.balancer']")
+        self.use_sni_hint = ListElement(
+            self.page, "//span[@data-qa='use-sni-hint-and-enforce-origin-san-cn-checking-checkbox']")
+
+
+class OrgActivity:
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+        self.activity_header = PageElement(self.page, "//h2[text()='Organization Activity']")
+        self.add_filter_button = PageElement(self.page, "//table//button[text()='Add a Filter']")
+        self.show_more_button = PageElement(self.page, "//button[text()='Show More']")
+        self.filter_search_field = PageElement(self.page, "//input[@id='activity-search']")
+        self.filter_action_type_field = PageElement(self.page, "//input[@id='action-type']")
+        self.from_date_field = PageElement(self.page, "//input[@id='from']")
+        self.to_date_field = PageElement(self.page, "//input[@id='to']")
+        self.clear_filters_button = PageElement(self.page, "//button[text()='Clear Filters']")
+
+
+class WebProperty:
+    def __init__(self, page: Page, url: str):
+        super().__init__(page, url)
+        self.search_field = PageElement(self.page, "//input[@id='property-search']")
+        self.sorting_drop_down = PageElement(self.page, "//input[@id='sort']")
+        self.property_name = DynamicPageElement(self.page, "//div//p[text()='{name}']")
+        self.latest_deployment_header = PageElement(self.page, "//span[text()='Latest Production Deployment']")
+        self.property_cards = ListElement(self.page, "//div[@class='property-cards']//a")

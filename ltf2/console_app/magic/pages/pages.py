@@ -11,6 +11,7 @@ import csv
 from io import StringIO
 
 from playwright.sync_api import Page, TimeoutError, expect
+from urllib.parse import urljoin
 
 from ltf2.console_app.magic.nested_rules import NestedRules
 from ltf2.console_app.magic.pages.base_page import BasePage
@@ -24,7 +25,9 @@ from ltf2.console_app.magic.pages.components import (CommonMixin,
                                                      TrafficMixin,
                                                      OriginsMixin,
                                                      AttackSurfacesMixin,
-                                                     EnvironmentVariables)
+                                                     EnvironmentVariables,
+                                                     OrgActivity,
+                                                     WebProperty)
 from ltf2.console_app.magic.ruleconfig import (ExperimentCondition,
                                                ExperimentFeature,
                                                RuleCondition, RuleFeature)
@@ -51,7 +54,7 @@ class LoginPage(CommonMixin, LoginMixin, BasePage):
             raise AssertionError(f"Cannot login to {self.url}") from e
 
 
-class OrgPage(CommonMixin, OrgMixin, BasePage):
+class OrgPage(CommonMixin, OrgMixin, OriginsMixin, BasePage):
     def delete_orgs(self, orgs: list[str]) -> None:
         for org_name in orgs:
             # To make sure that org_switcher_button will be available
@@ -62,6 +65,27 @@ class OrgPage(CommonMixin, OrgMixin, BasePage):
             self.delete_org_checkbox.click()
             self.delete_org_button.click()
 
+
+class WebPropertyPage(CommonMixin, WebProperty, OrgMixin, OriginsMixin, BasePage):
+    def delete_property(self, path_to_property, property_name):
+        self.goto(path_to_property)
+        self.settings.click()
+        self.delete_property_checkbox(property_name=property_name).click()
+        self.delete_property_button.click()
+
+    def add_property(self, property_name, origin_name, origin_header, org_name_path=None):
+        if org_name_path is not None:
+            self.goto(org_name_path)
+        self.new_property_button.click()
+        self.create_property_button.nth(0).click()
+        self.input_name.fill(property_name)
+        self.origin_hostname_input.fill(origin_name)
+        self.origin_hostname(origin=0, row=0).fill(origin_name)
+        self.use_sni_hint.click()
+        self.origin_override_host_headers(origin=0).fill(origin_header)
+        self.origin_use_the_following_sni_field(origin=0).fill(origin_header)
+        self.create_property_button.click()
+        self.latest_deployment_header.wait_for(timeout=30000)
 
 class ExperimentsPage(CommonMixin, ExperimentsMixin, BasePage):
     def __init__(self, page: Page, url: str):
@@ -323,3 +347,8 @@ class EnvironmentVariablesPage(CommonMixin, EnvironmentVariables, BasePage):
         self.import_text_field.fill(random_data)
         self.keep_this_value_secret_checkbox.set_checked(checkbox)
         self.import_variables_button.click()
+
+
+class OrgActivityPage(CommonMixin, OrgActivity, BasePage):
+    pass
+
