@@ -19,16 +19,51 @@ variables:
   REPORT_FILE: ${CI_PROJECT_DIR}/junit-report.xml
   MK_DOC:
     value: ""
-    description: "set to true if you want to re-gen the doc"
+    description: "Set to true if you want to re-gen the doc"
   EMAIL_LIST:
     value: "mbondarenko@edg.io"
     description: "Set the emails to send reports"
+  REGRESSION:
+    value: ""
+    description: "Set 'true' to run test cases with 'regression' mark"
+  BROWSERS:
+    value: "chromium"
+    description: "Browser names to run test cases on (use space to set multiple browsers, e.g. chromium firefox)"
+  PYTEST_OPTS:
+    value: ""
+    description: "Set additional pytest options (e.g. -k test_positive_login, -m somemark)"
 
 stages:
+  - prepare
   - test
   - email
   - report
   - mkdoc
+
+exposure_service:
+  tags: [exposures]
+  rules:
+    - if: '$MK_DOC == ""'
+      when: always
+  stage: prepare
+  cache:
+    key: ${CI_JOB_NAME}
+    paths:
+      - ${CI_PROJECT_DIR}/.cache/pip
+  before_script:
+    - cp $PIP_CONFIG ${CI_PROJECT_DIR}/pip.conf
+    - python3 -m venv venv/
+    - source venv/bin/activate
+    - pip install -U pip setuptools
+    - sudo pkill -TERM -P $(pgrep ltf2-exposure) || true  # kill subs
+    - sudo kill -9 $(pgrep ltf2-exposure) || true  # kill parent
+    - pip install -e .
+    - cp ${CI_PROJECT_DIR}/_ltfrc_sample ${HOME}/.ltfrc
+  script:
+    - nohup ltf2-exposure > /tmp/flask_log.txt 2>&1 &
+    - sleep 5
+    - ps aux | grep ltf2
+    - netstat -ntlp
 
 run_tests:
   rules:
@@ -50,10 +85,29 @@ run_tests:
     - pip install -e .
     - playwright install --with-deps
     - cp ${CI_PROJECT_DIR}/_ltfrc_sample ${HOME}/.ltfrc
+    - |
+      BROWSER_OPTS=""
+      # Split the BROWSERS variable on spaces and construct the command-line argument
+      for browser in $BROWSERS; do
+        BROWSER_OPTS+="--browser=$browser "
+      done
+    - |
+      # Add -m regression to PYTEST_OPTS if $REGRESSION is set
+      if [ "$REGRESSION" == "true" ]; then
+        PYTEST_OPTS+=" -m regression"
+      fi
+    - echo "Running pytest with options $PYTEST_OPTS $BROWSER_OPTS"
   script:
-    - export EDGIO_USER=$EDGIO_USER
-    - export EDGIO_PASSWORD=$EDGIO_PASSWORD
-    - pytest ltf2/console_app/tests/ --junitxml=junit-report.xml --alluredir=$ALLURE_RESULTS_DIR/ --slowmo=200 --screenshot=only-on-failure --output=${CI_PROJECT_DIR}/screenshots
+    - >
+      pytest ltf2/console_app/tests/
+      $PYTEST_OPTS
+      $BROWSER_OPTS
+      --junitxml=junit-report.xml
+      --alluredir=$ALLURE_RESULTS_DIR/
+      --screenshot=only-on-failure
+      --video=retain-on-failure
+      --output=${CI_PROJECT_DIR}/screenshots
+      --slowmo=200
   after_script:
     - |
       echo "date=$(date '+%Y/%m/%d %H:%M:%S')" >> $ALLURE_RESULTS_DIR/environment.properties
@@ -69,6 +123,9 @@ run_tests:
 
 email-report:
   stage: email
+  rules:
+    - if: '$MK_DOC == ""'
+      when: always
   image: python:3.8-alpine
   allow_failure: true
   before_script:

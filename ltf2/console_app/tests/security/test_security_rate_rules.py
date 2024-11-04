@@ -4,14 +4,12 @@ from datetime import datetime, timezone
 import pytest
 from playwright.sync_api import Page
 
-from ltf2.console_app.magic.helpers import random_str, random_int, open_rule_editor
-
-
-open_rate_rule = lambda page, rule: open_rule_editor(page, 'rate_rules', rule)
+from ltf2.console_app.magic.constants import SECURITY_RULE_NAME_PREFIX
+from ltf2.console_app.magic.helpers import random_str, random_int
 
 
 def fill_in_rule_name(page: Page) -> str:
-    name = f'ltf-{random_str(10)}'
+    name = f'{SECURITY_RULE_NAME_PREFIX}{random_str(10)}'
     rate = '1000'
     # Add rule
     page.add_rate_rule.click()
@@ -20,6 +18,7 @@ def fill_in_rule_name(page: Page) -> str:
     return name
 
 
+@pytest.mark.regression
 def test_rate_rules_add_rule_without_condition_group(rate_rules_page: Page,
                                                      delete_rate_rules: list):
     """ Rate Rules - Add and delete Managed rule
@@ -40,7 +39,7 @@ def test_rate_rules_add_rule_without_condition_group(rate_rules_page: Page,
     3. 'Rate rule created' should appear on the snackbar
     """
     # Add rule
-    name = f'ltf-{random_str(10)}'
+    name = f'{SECURITY_RULE_NAME_PREFIX}{random_str(10)}'
     rate = random_int(4)
     # Add rule
     rate_rules_page.add_rate_rule.click()
@@ -49,13 +48,14 @@ def test_rate_rules_add_rule_without_condition_group(rate_rules_page: Page,
 
     rate_rules_page.save.click()
     # Verify if created
-    delete_rate_rules.append((rate_rules_page, name))
+    delete_rate_rules.append(name)
     assert rate_rules_page.client_snackbar.text_content() == "Rate rule created"
-    open_rate_rule(rate_rules_page, name)
+    rate_rules_page.open_rate_rule_editor(name)
     assert rate_rules_page.input_name.input_value() == name
     assert rate_rules_page.input_num.input_value() == rate
 
 
+@pytest.mark.regression
 @pytest.mark.parametrize('param',
                          ['ASN','Country', 'File_extension', 'IP_address',
                           'Request_header', 'Request_method', 'Request_URL_path'])
@@ -104,17 +104,18 @@ def test_rate_rules_add_rule_with_condition_group(rate_rules_page: Page,
     rate_rules_page.rate_condition_value_input.fill(value[match_param])
     rate_rules_page.save.click()
     # Verify if created
-    delete_rate_rules.append((rate_rules_page, name))
+    delete_rate_rules.append(name)
     assert rate_rules_page.client_snackbar.text_content() == "Rate rule created"
 
-    open_rate_rule(rate_rules_page, name)
+    rate_rules_page.open_rate_rule_editor(name)
     # Verification
+    rate_rules_page.rate_condition_match_by(group=0, condition=0).wait_for()
     assert rate_rules_page.rate_condition_match_by(
         group=0, condition=0).input_value() == match_param
     assert rate_rules_page.rate_condition_values.text_content() == value[match_param]
 
 
-
+@pytest.mark.regression
 def test_rate_rules_add_rule_with_five_conditions(rate_rules_page: Page,
                                                          delete_rate_rules: list):
     """ Rate Rules - Add WAF rate rule with 5 conditions
@@ -152,10 +153,10 @@ def test_rate_rules_add_rule_with_five_conditions(rate_rules_page: Page,
         rate_rules_page.rate_condition_value_input.fill(f'10.10.10.{i}')
     rate_rules_page.save.click()
     # Verify if created
-    delete_rate_rules.append((rate_rules_page, name))
+    delete_rate_rules.append(name)
     assert rate_rules_page.client_snackbar.text_content() == "Rate rule created"
 
-    open_rate_rule(rate_rules_page, name)
+    rate_rules_page.open_rate_rule_editor(name)
     # Validate conditions
     for i in range(5):
         rate_rules_page.rate_conditions(group=0, condition=i).click()
@@ -164,6 +165,7 @@ def test_rate_rules_add_rule_with_five_conditions(rate_rules_page: Page,
         assert rate_rules_page.rate_condition_values.text_content() == f'10.10.10.{i}'
 
 
+@pytest.mark.regression
 def test_rate_rules_add_rule_with_empty_condition_value(rate_rules_page: Page,
                                                         delete_rate_rules: list):
     """ Rate Rules - Add Security rate rule with empty condition value
@@ -195,7 +197,7 @@ def test_rate_rules_add_rule_with_empty_condition_value(rate_rules_page: Page,
     # Trying to save the rule
     rate_rules_page.rate_condition_value_input.fill('')
     rate_rules_page.save.click()
-    delete_rate_rules.append((rate_rules_page, name))
+    delete_rate_rules.append(name)
 
     # for item, err in ((rate_rules_page.rate_condition_value_input,
     #                    'Type desired value and ENTER to apply.'),):
@@ -204,7 +206,6 @@ def test_rate_rules_add_rule_with_empty_condition_value(rate_rules_page: Page,
     # Refresh page
     rate_rules_page.goto()
     rate_rules_page.security.click()
-    rate_rules_page.rules_manager.click()
     rate_rules_page.rate_rules.click()
 
     for row in rate_rules_page.table.tbody.tr:
@@ -214,6 +215,7 @@ def test_rate_rules_add_rule_with_empty_condition_value(rate_rules_page: Page,
     delete_rate_rules.pop()
 
 
+@pytest.mark.regression
 def test_rate_rules_request_limit(security_logged):
     """ Rate Rules - Max Rules count
 
@@ -242,7 +244,6 @@ def test_rate_rules_request_limit(security_logged):
     security_logged.mock.schedule(
         match={'variables': {"path": "/limit"}},
         body_json=mock_data)
-    security_logged.rules_manager.click()
     security_logged.rate_rules.click()
     security_logged.table.wait_for(timeout=5000)
     time.sleep(1)
@@ -250,5 +251,5 @@ def test_rate_rules_request_limit(security_logged):
         "Add Rate Rule button should be disabled"
 
     expected_msg = "You can only add up to 99 rules"
-    assert security_logged.get_by_title(expected_msg).is_visible(), \
+    assert security_logged.get_by_label(expected_msg).is_visible(), \
         f"`{expected_msg}` message should be visible"

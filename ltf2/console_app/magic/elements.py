@@ -130,7 +130,7 @@ class ListElement(PageElement):
 class UlElement(PageElement):
     def __init__(self, page: Page, selector: str):
         super().__init__(page, selector)
-        self.li = ListElement(page, f'{selector} > li')
+        self.li = ListElement(page, f'{selector}/li')
 
 
 # ============= Table ============================
@@ -151,7 +151,7 @@ class TrElements(ListElement):
 
     def __getitem__(self, index: int):
         return self.td_type(self.page,
-                            f'{self.selector}:nth-child({index + 1}) > td')
+                            f'{self.selector}[{index + 1}]/td')
 
 
 class TbodyElement(PageElement):
@@ -162,38 +162,37 @@ class TbodyElement(PageElement):
                  tr_type: PageElement,
                  td_type: PageElement):
         super().__init__(page, selector)
-        self.tr = tr_type(td_type, page, f'{selector} > tr')
+        self.tr = tr_type(td_type, page, f'{selector}/tr')
 
 
 class TheadElement(PageElement):
     """ Class for describing table headers elements. """
     def __init__(self, page: Page, selector: str):
         super().__init__(page, selector)
-        self.th = ListElement(page, f'{selector} tr > th')
+        self.th = ListElement(page, f'{selector}/tr/th')
 
 
 class TableElement(PageElement):
     """ Class for describing HTML table """
     def __init__(self, page: Page, selector: str):
         super().__init__(page, selector)
-        self.thead = TheadElement(page, f'{selector} thead')
-        self.tbody = TbodyElement(page, f'{selector} tbody', TrElements, TdElements)
+        self.thead = TheadElement(page, f'{selector}/thead')
+        self.tbody = TbodyElement(page, f'{selector}/tbody', TrElements, TdElements)
 
 
 class MembersTableElement(PageElement):
     class TdMembersElement(TdElements):
         def __init__(self, page: Page, selector: str):
             super().__init__(page, selector)
-            self.role_input = self[3].locator('input[name="role-select"]')
-            self.resend_email_button = self[1].locator('button', has_text="Resend Email")
             self.member_checkbox = self[0].locator('input[type="checkbox"]')
-            self.delete_member_button = self[4].locator('button')
-            self.username = self[2]
+            self.resend_email_button = self[2].locator('button', has_text="Resend Email")
+            self.username = self[3]
+            self.role = self[4]
 
     def __init__(self, page: Page, selector: str):
         super().__init__(page, selector)
-        self.thead = TheadElement(page, f'{selector} thead')
-        self.tbody = TbodyElement(page, f'{selector} tbody',
+        self.thead = TheadElement(page, f'{selector}/thead')
+        self.tbody = TbodyElement(page, f'{selector}/tbody',
                                   TrElements, MembersTableElement.TdMembersElement)
 
 

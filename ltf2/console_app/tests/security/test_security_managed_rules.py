@@ -3,21 +3,20 @@ from datetime import datetime, timezone
 
 import pytest
 
-from ltf2.console_app.magic.helpers import random_str, random_int, open_rule_editor
+from ltf2.console_app.magic.constants import SECURITY_RULE_NAME_PREFIX
+from ltf2.console_app.magic.helpers import random_int, random_str
 from ltf2.console_app.magic.pages.pages import SecurityPage
 
 
-open_managed_rule = lambda page, rule: open_rule_editor(page, 'managed_rules', rule)
-
-
 def fill_in_rule_name(page: SecurityPage) -> str:
-    name = f'ltf-{random_str(10)}'
+    name = f'{SECURITY_RULE_NAME_PREFIX}{random_str(10)}'
     # Add rule
     page.add_managed_rule.click()
     page.input_name.fill(name)
     return name
 
 
+@pytest.mark.regression
 def test_managed_rules_add(managed_rules_page: SecurityPage,
                            delete_managed_rules: list):
     """ Managed Rules - Add and delete Managed rule
@@ -41,12 +40,13 @@ def test_managed_rules_add(managed_rules_page: SecurityPage,
     name = fill_in_rule_name(managed_rules_page)
     managed_rules_page.save.click()
     # Verify if created
-    delete_managed_rules.append((managed_rules_page, name))
+    delete_managed_rules.append(name)
     assert managed_rules_page.client_snackbar.text_content() == "Managed rule created"
-    open_managed_rule(managed_rules_page, name)
+    managed_rules_page.open_managed_rule_editor(name)
     assert managed_rules_page.input_name.input_value() == name
 
 
+@pytest.mark.regression
 def test_managed_rules_add_rule_with_header_and_ignore_list(managed_rules_page: SecurityPage,
                                                             delete_managed_rules: list):
     """ Managed Rules - Add rule - Optional fields
@@ -85,10 +85,10 @@ def test_managed_rules_add_rule_with_header_and_ignore_list(managed_rules_page: 
 
     managed_rules_page.save.click()
     # Verify if created
-    delete_managed_rules.append((managed_rules_page, name))
+    delete_managed_rules.append(name)
     assert managed_rules_page.client_snackbar.text_content() == "Managed rule created"
 
-    open_managed_rule(managed_rules_page, name)
+    managed_rules_page.open_managed_rule_editor(name)
     # Verify fields
     assert managed_rules_page.header_name_input.input_value() == header
     assert managed_rules_page.ignore_cookies_buttons[0].text_content() == cookie
@@ -96,6 +96,7 @@ def test_managed_rules_add_rule_with_header_and_ignore_list(managed_rules_page: 
     assert managed_rules_page.ignore_query_args_buttons[0].text_content() == query_args
 
 
+@pytest.mark.regression
 def test_managed_rules_add_rule_more_details(managed_rules_page: SecurityPage,
                                              delete_managed_rules: list):
     """ Managed Rules - Add rule - More Details
@@ -137,10 +138,9 @@ def test_managed_rules_add_rule_more_details(managed_rules_page: SecurityPage,
 
     managed_rules_page.save.click()
     # Verify if created
-    delete_managed_rules.append((managed_rules_page, name))
+    delete_managed_rules.append(name)
     assert managed_rules_page.client_snackbar.text_content() == "Managed rule created"
-
-    open_managed_rule(managed_rules_page, name)
+    managed_rules_page.open_managed_rule_editor(name)
     # Verify fields
     managed_rules_page.more_details.click()
     assert managed_rules_page.max_args_reqs_input.input_value() == max_args_reqs
@@ -151,6 +151,7 @@ def test_managed_rules_add_rule_more_details(managed_rules_page: SecurityPage,
     assert not managed_rules_page.json_parser_input.is_checked()
 
 
+@pytest.mark.regression
 def test_managed_rules_add_rule_with_more_details_negative_value(
         managed_rules_page: SecurityPage):
     """ Managed Rules - Add rule - Negative - More Details - Negative values
@@ -192,6 +193,7 @@ def test_managed_rules_add_rule_with_more_details_negative_value(
             f'{item.selector} should contain error'
 
 
+@pytest.mark.regression
 def test_managed_rules_add_rule_with_more_details_empty_value(
         managed_rules_page: SecurityPage):
     """ Managed Rules - Add rule - Negative - More Details - Empty values
@@ -233,6 +235,7 @@ def test_managed_rules_add_rule_with_more_details_empty_value(
             f'{item.selector} should contain error'
 
 
+@pytest.mark.regression
 def test_managed_rules_add_rule_with_policies(
         managed_rules_page: SecurityPage, delete_managed_rules: list):
     """ Managed Rules - Add rule - Policies
@@ -276,11 +279,13 @@ def test_managed_rules_add_rule_with_policies(
 
     managed_rules_page.ruleset_switch.check()
     managed_rules_page.save.click()
-    delete_managed_rules.append((managed_rules_page, name))
+    delete_managed_rules.append(name)
 
     # Verification
-    open_managed_rule(managed_rules_page, name)
+    managed_rules_page.open_managed_rule_editor(name)
     managed_rules_page.policies.click()
+    managed_rules_page.ruleset_input.wait_for(timeout=5000)
+
     assert managed_rules_page.ruleset_input.is_disabled()
     assert managed_rules_page.ruleset_input.input_value() == ruleset
     assert managed_rules_page.threshold_input.input_value() == threshold
@@ -288,6 +293,7 @@ def test_managed_rules_add_rule_with_policies(
     assert managed_rules_page.ruleset_switch.is_checked()
 
 
+@pytest.mark.regression
 @pytest.mark.parametrize('parameter', ['Argument', 'Headers', 'Cookies'])
 def test_managed_rules_add_rule_with_exception(
         managed_rules_page: SecurityPage, delete_managed_rules: list, parameter: str):
@@ -333,10 +339,10 @@ def test_managed_rules_add_rule_with_exception(
     ids = random_str(5)
     managed_rules_page.rule_ids.fill(ids)
     managed_rules_page.save.click()
-    delete_managed_rules.append((managed_rules_page, name))
+    delete_managed_rules.append(name)
     assert managed_rules_page.client_snackbar.text_content() == f"Managed rule created"
     # Verification
-    open_managed_rule(managed_rules_page, name)
+    managed_rules_page.open_managed_rule_editor(name)
     managed_rules_page.exceptions.click()
 
     assert condition_name in managed_rules_page.conditions[0].text_content()
@@ -346,6 +352,7 @@ def test_managed_rules_add_rule_with_exception(
 
 
 # Error cases
+@pytest.mark.regression
 def test_managed_rules_graphql_plaintext_error(managed_rules_page: SecurityPage,
                                                delete_managed_rules: list):
     """ Managed Rules - Plain text error
@@ -373,9 +380,9 @@ def test_managed_rules_graphql_plaintext_error(managed_rules_page: SecurityPage,
     name = fill_in_rule_name(managed_rules_page)
     managed_rules_page.save.click()
     # Verify if created
-    delete_managed_rules.append((managed_rules_page, name))
+    delete_managed_rules.append(name)
     assert managed_rules_page.client_snackbar.text_content() == "Managed rule created"
-    open_managed_rule(managed_rules_page, name)
+    managed_rules_page.open_managed_rule_editor(name)
     # Delete rule
     managed_rules_page.delete_button.click()
     managed_rules_page.mock.schedule(
@@ -392,6 +399,7 @@ def test_managed_rules_graphql_plaintext_error(managed_rules_page: SecurityPage,
     managed_rules_page.client_snackbar.get_by_text('Error from mock').wait_for()
 
 
+@pytest.mark.regression
 def test_managed_rules_add_delete_graphql_jsonasstring_error(
         managed_rules_page: SecurityPage,
         delete_managed_rules: list):
@@ -420,9 +428,9 @@ def test_managed_rules_add_delete_graphql_jsonasstring_error(
     name = fill_in_rule_name(managed_rules_page)
     managed_rules_page.save.click()
     # Verify if created
-    delete_managed_rules.append((managed_rules_page, name))
+    delete_managed_rules.append(name)
     assert managed_rules_page.client_snackbar.text_content() == "Managed rule created"
-    open_managed_rule(managed_rules_page, name)
+    managed_rules_page.open_managed_rule_editor(name)
     # Delete rule
     managed_rules_page.delete_button.click()
     managed_rules_page.mock.schedule(
@@ -434,11 +442,11 @@ def test_managed_rules_add_delete_graphql_jsonasstring_error(
                              "response":None,
                              "__typename": "MutateWafConfigPayload"}}})
     managed_rules_page.confirm_button.click()
-
     # Wait message on the snackbar to change
     managed_rules_page.client_snackbar.get_by_text('Message inside JSON').wait_for()
 
 
+@pytest.mark.regression
 def test_managed_rules_request_limit(security_logged):
     """ Managed Rules - Max Rules count
 
@@ -470,7 +478,6 @@ def test_managed_rules_request_limit(security_logged):
     security_logged.mock.schedule(
         match={'variables': {"path": "/profile"}},
         body_json=mock_data)
-    security_logged.rules_manager.click()
     security_logged.managed_rules.click()
     security_logged.table.wait_for(timeout=5000)
     time.sleep(1)
@@ -478,5 +485,5 @@ def test_managed_rules_request_limit(security_logged):
         "Add Manage Rule button should be disabled"
 
     expected_msg = "You can only add up to 99 rules"
-    assert security_logged.get_by_title(expected_msg).is_visible(), \
+    assert security_logged.get_by_label(expected_msg).is_visible(), \
         f"`{expected_msg}` message should be visible"

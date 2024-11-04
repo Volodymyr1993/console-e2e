@@ -12,13 +12,15 @@ CONDITIONS_MAP = {
     'brand_name': 'Brand Name',
     'city': 'City',
     'client_ip': 'Client IP',
-  #  'continent': 'Continent',
+    # 'continent': 'Continent',
     'cookie': 'Cookie',
-    'country': 'Country',
+    # 'country': 'Country',
+    'directory': 'Directory',
     'dma_code': 'DMA Code',
     'dual_orientation': 'Dual Orientation',
+    'extension': 'Extension',
     'filename': 'Filename',
- #   'html_preferred_dtd': 'HTML Preferred DTD',
+    'html_preferred_dtd': 'HTML Preferred DTD',
     'image_inlining': 'Image Inlining',
     'is_android': 'Is Android',
     'is_app': 'Is App',
@@ -34,11 +36,12 @@ CONDITIONS_MAP = {
     'is_touchscreen': 'Is Touchscreen',
     'is_windows_phone': 'Is Windows Phone',
     'is_wireless_device': 'Is Wireless Device',
-    'is_wml_preferred': 'Is WML Preferred',
+    # 'is_wml_preferred': 'Is WML Preferred',
     'latitude': 'Latitude',
     'longitude': 'Longitude',
     'marketing_name': 'Marketing Name',
-    'method': 'Method',
+    # 'method': 'Method',
+    'metro_code': 'Metro Code',
     'mobile_browser': 'Mobile Browser',
     'model_name': 'Model Name',
     'origin_path': 'Origin Path',
@@ -58,6 +61,7 @@ CONDITIONS_MAP = {
     'request_header': 'Request Header',
     'resolution_height': 'Resolution Height',
     'resolution_width': 'Resolution Width',
+    'response_status_code': 'Response Status Code',
     'scheme': 'Scheme',
  #   'ux_full_desktop': 'UX Full Desktop',
  #   'xhtml_support_level': 'XHTML Support Level',
@@ -122,6 +126,24 @@ class RuleFeature:
         with self.prepare_feature('Cache Control Header Treatment'):
             self.page.header_treatment_input.click()
             self.page.select_by_name(name=header_treatment).click()
+
+    def add_cache_key(self, parameters_option: str = '', parameters_value: str = '',
+                    headers: str = '', cookies: str = '', expression: str = ''):
+        with self.prepare_feature('Cache Key'):
+            self.page.cache_key_option_input.click()
+            self.page.select_by_name(name=parameters_option).click()
+            if parameters_option == 'Include':
+                self.page.include_input.fill(parameters_value)
+                self.page.include_input.press('Enter')
+            elif parameters_option == 'Include All Except':
+                self.page.exclude_input.fill(parameters_value)
+                self.page.exclude_input.press('Enter')
+            self.page.headers_input.fill(headers)
+            self.page.cookies_input.fill(cookies)
+            #self.page.cookies_input.press('Enter')
+            self.page.add_expression_button.click()
+            self.page.expression_input.fill(expression)
+            self.page.expression_input.press('Enter')
 
     def add_bypass_client_cache(self, enable: bool = True):
         with self.prepare_feature('Bypass Client Cache'):
@@ -304,7 +326,7 @@ class RuleFeature:
         with self.prepare_feature('Max Keep-Alive Requests'):
             self.page.feature_value_input.fill(str(value))
 
-    def add_proxy_special_headers(self, value: Optional[list, str] = ''):
+    def add_proxy_special_headers(self, value: Optional[Union[list, str]] = ''):
         with self.prepare_feature('Proxy Special Headers'):
             if isinstance(value, list):
                 for v in value:
@@ -314,9 +336,11 @@ class RuleFeature:
                 self.page.proxy_special_headers_input.fill(value)
                 self.page.proxy_special_headers_input.press('Enter')
 
-    def add_set_origin(self, value: str):
+    def add_set_origin(self, value: str = None):
         with self.prepare_feature('Set Origin'):
             self.page.set_origin_input.click()
+            if value is None:
+                value = self.page.select.li[0].text_content()
             self.page.select_by_name(name=value).click()
 
     # ============= Response
@@ -336,7 +360,7 @@ class RuleFeature:
 
     def add_set_response_body(self, body: str = ''):
         with self.prepare_feature('Set Response Body'):
-            self.page.response_body.fill(body)
+            self.page.response_body.fill(body, force=True)
 
     def add_set_status_code(self, code: int = 200):
         with self.prepare_feature('Set Status Code'):
@@ -410,7 +434,7 @@ class RuleCondition:
     def set_condition(self,
                       method: str = '',
                       operator: str = '',
-                      value: Optional[str, float, List[str]] = None,
+                      value: Optional[Union[str, float, List[str]]] = None,
                       ignore_case: bool = False,
                       name: Optional[str] = None,
                       number: Optional[int] = None):
@@ -446,7 +470,7 @@ class RuleCondition:
     # TODO refactor the following methods
     def add_scheme(self,
                    operator: str = '',
-                   value: Optional[str, float] = None,
+                   value: Optional[Union[str, float]] = None,
                    ignore_case: bool = False):
         with self.prepare_condition('Scheme'):
             self.page.operator_input.click()
@@ -461,7 +485,7 @@ class RuleCondition:
 
     def add_method(self,
                    operator: str = '',
-                   value: Optional[str, float] = None,
+                   value: Optional[Union[str, float]] = None,
                    ignore_case: bool = False):
         with self.prepare_condition('Method'):
             self.page.operator_input.click()
@@ -475,7 +499,7 @@ class RuleCondition:
 
     def add_country(self,
                     operator: str = '',
-                    value: Optional[str, List[str]] = None):
+                    value: Optional[Union[str, List[str]]] = None):
         with self.prepare_condition('Country'):
             self.page.operator_input.click()
             self.page.select_by_name(name=operator).click()
@@ -484,3 +508,43 @@ class RuleCondition:
             for v in value:
                 self.page.match_value_input.click()
                 self.page.select_by_name(name=v).click()
+
+    def add_continent(self,
+                      operator: str = '',
+                      value: Optional[Union[str, List[str]]] = None):
+        with self.prepare_condition('Continent'):
+            self.page.operator_input.click()
+            self.page.select_by_name(name=operator).click()
+            if isinstance(value, str):
+                value = [value]
+            for v in value:
+                self.page.match_value_input.click()
+                self.page.select_by_name(name=v).click()
+
+
+class ExperimentFeature(RuleFeature):
+    @contextmanager
+    def prepare_feature(self, feature: str):
+      self.add_feature_button.click()
+      self.page.feature_input.click()
+      self.page.get_by_text(feature, exact=True).last.click()
+      try:
+        yield
+      except Exception:
+        raise
+      else:
+        self.page.add_feature_confirm_button.click()
+
+
+class ExperimentCondition(RuleCondition):
+    @contextmanager
+    def prepare_condition(self, condition: str):
+      self.add_condition_button.click()
+      self.page.variable_input.click()
+      self.page.variable_select(name=condition).click()
+      try:
+        yield
+      except Exception:
+        raise
+      else:
+        self.page.add_condition_button.click()

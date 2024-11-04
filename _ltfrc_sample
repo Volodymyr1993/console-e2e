@@ -10,3 +10,5 @@ property = component-ui-test
 
 # Optional. If set, browser will be started in headed mode
 # headed = True
+exposure_service_ip = 18.132.48.103
+exposure_service_port = 8899

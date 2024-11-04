@@ -60,3 +60,13 @@ class BasePage:
         self.log.info(f'Navigating to page: {url or self.url}')
         timeout = kwargs.pop('timeout', 30) * 1000
         self.page.goto(self.url if url is None else url, timeout=timeout, **kwargs)
+
+    def deploy_changes(self):
+        self.deploy_changes_button.last.click()
+        self.wait_for_timeout(timeout=1000)
+        self.deploy_changes_button.last.click()
+        # wait for success message
+        message = self.client_snackbar.get_by_text(
+            'Changes deployed successfully')
+        message.first.wait_for(timeout=60000)
+        return message.first
